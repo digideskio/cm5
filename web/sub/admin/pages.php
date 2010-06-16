@@ -96,6 +96,6 @@ function pages_default()
     if (count($p))
         UrlFactory::craft('page.edit', $p[0])->redirect();
     else
-        UrlFactory::craft('page.create')->redirect();
+        UrlFactory::craft('page.create', null)->redirect();
 }
 ?>

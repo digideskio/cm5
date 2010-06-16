@@ -21,7 +21,9 @@ function image_thumbnail($id)
 {
     if (!($f = Upload::open($id)))
         not_found();
-        
+
+    $f->dump_thumb();
+    exit;
     $img = new Image(Config::get('site.upload_folder') . '/' . $f->store_file);
 
     $img->resize(50, 50)

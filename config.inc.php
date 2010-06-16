@@ -19,4 +19,6 @@ Config::set('site.deploy_checks', '');
 
 Config::set('site.upload_folder', '/home/sque/workspace/0x0lab/uploads');
 
+Config::set('site.thumbs_folder', '/home/sque/workspace/0x0lab/uploads/thumbs');
+
 ?>

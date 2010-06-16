@@ -23,10 +23,10 @@
             if ($col_id == 'info')
             {
                 $res = '';
-                if ($imginfo = $record->image_info())
+                if ($record->is_image)
                 {
                     $res .= tag('img class="thumb"', array('src' => UrlFactory::craft('upload.thumb', $record->id)));
-                    $res .= tag('span class="imagesize"', "{$imginfo->width}x{$imginfo->height}");
+                    $res .= tag('span class="imagesize"', "{$record->image_width}x{$record->image_height}");
                 }
                 $res .= tag('span class="size"', html_human_fsize($record->filesize, ''));
                 return $res;

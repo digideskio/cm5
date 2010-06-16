@@ -1,17 +1,5 @@
 <?php
 
-
-class ImageUpload extends DB_Record
-{
-    static public $table = 'image_uploads';
-
-    static public $fields = array(
-        'upload_id' => array('pk' => true, 'fk' => 'Upload'),
-        'width',
-        'height',
-        );
-}
-        
 class Upload extends DB_Record
 {
     static public $table = 'uploads';
@@ -22,13 +10,22 @@ class Upload extends DB_Record
         'filesize',
         'store_file',
         'mime',
-        'description'
+        'description',
+        'is_image' => array('default' => false),
+        'image_width',
+        'image_height'
         );
     
+    static public $thumb_cache = null;
     private function update_image_info()
     {
-        if ($info = $this->image_info())
-            $info->delete();
+        $this->is_image = false;
+        $this->image_width = null;
+        $this->image_height = null;
+        $this->save();
+        // Clear thumb image cache
+        if (self::$thumb_cache)
+            self::$thumb_cache->delete($this->id);
             
         // Check if it is image
         if (($info = getimagesize(Config::get('site.upload_folder') .'/' . $this->store_file)) === false)
@@ -37,12 +34,12 @@ class Upload extends DB_Record
         if (! in_array($info[2], array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)))
             return;
 
+
         // Add image record
-        $img = ImageUpload::create(array(
-            'upload_id' => $this->id,
-            'width' => $info[0],
-            'height' => $info[1]
-        ));
+        $this->is_image = true;
+        $this->image_width = $info[0];
+        $this->image_height = $info[1];
+        $this->save();
     }
     
     static function from_file($data, $filename)
@@ -125,18 +122,42 @@ class Upload extends DB_Record
         echo file_get_contents(Config::get('site.upload_folder') . '/' . $this->store_file);
     }
     
-    function image_info()
+    function dump_thumb()
     {
-        return ImageUpload::open($this->id);
+        if (!$this->is_image)
+            return;
+
+        // Check cache
+        if (self::$thumb_cache)
+        {
+            $thumb = self::$thumb_cache->get($this->id, $succ);
+            if ($succ)
+            {
+                header('Content-Type: image/png');
+                echo $thumb;
+                exit;
+            }
+        }
+        $img = new Image(Config::get('site.upload_folder') . '/' . $this->store_file);
+        $thumb = $img->resize(80,80)->data(array('quality' => '91', 'format' => IMAGETYPE_PNG));
+        
+        if (self::$thumb_cache)
+            self::$thumb_cache->set($this->id, $thumb);
+            
+        header('Content-Type: image/png');
+        echo $thumb;
     }
 }
 
+Upload::$thumb_cache = new Cache_File(Config::get('site.thumbs_folder'));
 Upload::events()->connect('op.pre.delete', function($e){
-    // Delete image if any
+
     $r = $e->arguments['record'];
-    if ($i = $r->image_info())
-        $i->delete();
-        
+
+    // Clear thumb image cache
+    if (Upload::$thumb_cache)
+        Upload::$thumb_cache->delete($r->id);
+    
     // delete file from file system
     unlink(Config::get('site.upload_folder') . '/' . $r->store_file);
 });

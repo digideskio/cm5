@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS `image_uploads`;
 DROP TABLE IF EXISTS `uploads`;
 DROP TABLE IF EXISTS `pages`;
 DROP TABLE IF EXISTS `users`;
@@ -48,18 +47,13 @@ CREATE TABLE `uploads` (
     `mime` varchar(255) not null,
     `store_file` varchar(512) not null,
     `description` TEXT not null,
+    `is_image` BOOL not null,
+    `image_height` integer,
+    `image_width` integer,
     PRIMARY KEY(`id`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
--- Images files
-CREATE TABLE `image_uploads` (
-    `upload_id` integer not null,
-    `width` integer not null,
-    `height` integer not null,
-    PRIMARY KEY(`upload_id`)
-)ENGINE=InnoDB
-DEFAULT CHARSET='UTF8';
 
 INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
 

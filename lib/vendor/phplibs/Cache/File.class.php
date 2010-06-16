@@ -57,7 +57,7 @@ class Cache_File extends Cache
 	}
 	
 	public function set($key, $value, $ttl = 0)
-	{	if (($fh = fopen($this->filename_by_key($key),'w+')) === false)
+	{	if (($fh = @fopen($this->filename_by_key($key),'w+')) === false)
 			return false; 
 		
 		// Lock file
