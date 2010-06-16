@@ -27,6 +27,9 @@ Output_HTMLTag::$default_render_mode = 'xhtml';
 $dl = new Layout_Default('default');
 $dl->deactivate();
 
+// Layout "admin"
+$dl = new Layout_Admin('admin');
+$dl->deactivate();
 
 function not_found()
 {

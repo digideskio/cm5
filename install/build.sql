@@ -46,17 +46,9 @@ CREATE TABLE `uploads` (
     `filename` varchar(255) not null,
     `filesize` integer not null,
     `mime` varchar(255) not null,
-    primary key(`id`),
-)ENGINE=InnoDB
-DEFAULT CHARSET='UTF8';
-
--- Upload files
-CREATE TABLE `uploads` (
-    `id` integer auto_increment not null,
-    `filename` varchar(255) not null,
-    `filesize` integer not null,
-    `mime` varchar(255) not null,
-    primary key(`id`),
+    `store_file` varchar(512) not null,
+    `description` TEXT not null,
+    PRIMARY KEY(`id`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
@@ -65,7 +57,7 @@ CREATE TABLE `image_uploads` (
     `upload_id` integer not null,
     `width` integer not null,
     `height` integer not null,
-    primary key(`upload_id`),
+    PRIMARY KEY(`upload_id`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 

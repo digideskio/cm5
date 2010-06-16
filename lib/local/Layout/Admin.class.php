@@ -20,7 +20,7 @@
  */
 
 
-class Layout_Default extends Layout
+class Layout_Admin extends Layout
 {
     private $mainmenu = null;
     
@@ -28,7 +28,6 @@ class Layout_Default extends Layout
     {
         return $this->mainmenu;
     }
-
 
     private function init_menu()
     {
@@ -40,32 +39,23 @@ class Layout_Default extends Layout
                 ->append($layout->get_mainmenu()->render());
         '));
 
-        $add_menu_entries = function($parent_link, $parent_page = null) use(&$add_menu_entries)
-        {
-            if ($parent_page === null)
-                $subpages = Page::open_query()->where('parent_id is null')->execute();
-            else
-                $subpages = Page::open_query()->where('parent_id = ?')->execute($parent_page->id);
-                
-            foreach($subpages as $p)
-            {
-                $sublink = $parent_link->create_link($p->title, $p->full_path());
-                $add_menu_entries($sublink, $p);
-            }
-        };
+        $this->mainmenu->create_link('Pages', '/admin/page');
+        $this->mainmenu->create_link('Files', '/admin/files');
+        $this->mainmenu->create_link('Users', '/admin/user');
         
-        $add_menu_entries($this->mainmenu);
     }
     
     protected function __init_layout()
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = Config::get('site.title');
+        $this->get_document()->title = 'CMS - Admin';
         $this->get_document()->add_ref_css(surl('/static/css/default.css'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
-        $this->get_document()->add_ref_css(surl('/static/css/ui-lightness/jquery-ui-1.8.2.custom.css'));
-        
+        $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
+        $this->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
+        $this->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
+
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', Config::get('site.title')),

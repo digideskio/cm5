@@ -62,7 +62,6 @@ $(document).ready(function(){
         window.onbeforeunload = function(){
             return 'You have not saved this article. Any changes you made will be lost!';
         };
-        console.log('enabled guard');
 	}
     $('#page_editor input[type=submit]').click(function(){ window.onbeforeunload = null; });
     $('#page_editor textarea[name=body]').change(enable_page_guard);

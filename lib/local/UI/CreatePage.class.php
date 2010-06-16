@@ -2,9 +2,9 @@
 
 class UI_CreatePage extends Output_HTML_Form
 {
-    public function __construct()
+    public function __construct($parent_id)
     {
-       
+        $this->parent_id = $parent_id;
         parent::__construct(array(
 			'title' => array('display' => 'Title', 'value'),
 			'slug' => array('display' => 'Slug', 'value'),
@@ -26,7 +26,8 @@ class UI_CreatePage extends Output_HTML_Form
     }
 
     public function on_valid($values)
-    {
+    {   
+        $values['parent_id'] = $this->parent_id;    
         $p = Page::create($values);
         UrlFactory::craft('page.edit', $p)->redirect();
     }

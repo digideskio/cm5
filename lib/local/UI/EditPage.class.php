@@ -16,7 +16,7 @@ class UI_EditPage extends Output_HTML_Form
 			    ),
 			    'value' => 'draft'
 			 ),
-			'body' => array('dispaly' => 'Body', 'type'=> 'textarea', 'value' => $page->body,
+			'body' => array('display' => 'Body', 'type'=> 'textarea', 'value' => $page->body,
 			    'htmlattribs' => array('id' => 'bodyeditor'))
         ),
         array('title' => 'Edit page',

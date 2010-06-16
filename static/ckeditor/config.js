@@ -24,4 +24,5 @@ CKEDITOR.editorConfig = function( config )
     ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
     ];
     config.scayt_autoStartup = false;
+    config.startupOutlineBlocks = true;
 };
