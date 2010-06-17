@@ -7,11 +7,12 @@ CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here. For example:
 	config.language = 'en';
-	config.uiColor = '#AADC6E';
+//	config.uiColor = '#AADC6E';
+    config.height = '30em';
     config.toolbar = [
     ['Source',],
     ['Preview', 'Maximize', 'ShowBlocks'],
-    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
+    ['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker', 'Scayt'],
     ['Undo','Redo','-','Find','Replace'],
     '/',
     ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
@@ -21,7 +22,7 @@ CKEDITOR.editorConfig = function( config )
     '/',
     ['Styles','Format','Font','FontSize'],
     ['TextColor','BGColor', 'RemoveFormat'],
-    ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
+    ['Image', 'Table','HorizontalRule','Smiley','SpecialChar'],
     ];
     config.scayt_autoStartup = false;
     config.startupOutlineBlocks = true;

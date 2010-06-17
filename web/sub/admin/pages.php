@@ -18,9 +18,9 @@ function show_pages_tree()
     $draw_tree_entry = function($p) use(&$draw_tree_entry)
     {
         $li = tag('li id="page_' . $p->id . ' class=""',
-            UrlFactory::craft('page.edit', $p)->anchor($p->title . ' ')->add_class('edit'),
-            $ul = tag('ul " class="sortable"'),
-            UrlFactory::craft('page.create', $p->id)->anchor('add child')->add_class('add')
+            UrlFactory::craft('page.edit', $p)->anchor($p->title . ' ')->add_class('edit')->add_class($p->status),
+            $ul = tag('ul class="sortable"'),
+            UrlFactory::craft('page.create', $p->id)->anchor('add subpage')->add_class('add')
         );
 
         foreach($p->subpages->all() as $sp)
@@ -31,9 +31,10 @@ function show_pages_tree()
     
     // Create page tree
     etag('div id="pages_tree"', 
-        tag('span class="resort-button"', '(resort)'),
+        tag('span class="title"', 'Pages tree'),
+        tag('span class="resort"', '(resort)')->add_class('button'),
         $ul = tag('ul class="sortable"'),
-        UrlFactory::craft('page.create', '')->anchor('add child')->add_class('add')
+        UrlFactory::craft('page.create', '')->anchor('add subpage')->add_class('add')
     );
 
     foreach(Page::open_query()->where('parent_id is null')->execute() as $p)
@@ -61,9 +62,8 @@ function create_page()
     $parent_id = Net_HTTP_RequestParam::get('parent', 'get');
     if ($parent_id === '')
         $parent_id = null;
-        var_dump($parent_id);
     $frm = new UI_CreatePage($parent_id);
-    etag('div id="page_editor', $frm->render());
+    etag('div', $frm->render());
 }
 
 function move_page($page_id)

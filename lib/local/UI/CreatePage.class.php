@@ -6,8 +6,10 @@ class UI_CreatePage extends Output_HTML_Form
     {
         $this->parent_id = $parent_id;
         parent::__construct(array(
-			'title' => array('display' => 'Title', 'value'),
-			'slug' => array('display' => 'Slug', 'value'),
+			'title' => array('display' => 'Title', 'value', 'regcheck' => '/.{3,}/',
+			    'onerror' => 'You must put a title on article'),
+			'slug' => array('display' => 'Slug', 'value', 'regcheck' => '/.{1,}/',
+			    'onerror' => 'You must setup a slug for this article'),
 			'status' => array('display' => 'Status', 'type' => 'dropbox',
 			    'optionlist' => array(
 			        'published' => 'Published',
@@ -16,8 +18,8 @@ class UI_CreatePage extends Output_HTML_Form
 			    'value' => 'draft'
 			 )
         ),
-        array('title' => 'Edit page',
-            'css' => array('ui-form'),
+        array('title' => 'Create page',
+            'css' => array('ui-form', 'ui-page-form'),
 		    'buttons' => array(
 		        'create' => array('display' =>'Create')
                 )

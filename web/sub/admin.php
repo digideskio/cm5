@@ -1,5 +1,21 @@
 <?php
 
+// Initialize authentication for admin
+$auth = new Authn_Backend_DB(array(
+    'query_user' => User::open_query()
+        ->where('enabled = ?')->push_exec_param(1)
+        ->where('username = ?'),
+    'field_username' => 'username',
+    'field_password' => 'password',
+    'hash_function' => 'sha1'
+));
+Authn_Realm::set_backend($auth);
+Authn_Realm::set_session(
+    new Authn_Session_Cache(
+        new Cache_Apc('0x0lab-sessions'),
+        new Net_HTTP_Cookie('0x0lab-session', null)
+    )
+);
 
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/files.php');    },
     array('type' => 'url_path', 'chunk[2]' => '/^files?$/')

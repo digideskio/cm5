@@ -42,15 +42,14 @@ class Layout_Admin extends Layout
         $this->mainmenu->create_link('Pages', '/admin/page');
         $this->mainmenu->create_link('Files', '/admin/files');
         $this->mainmenu->create_link('Users', '/admin/user');
-        
     }
     
     protected function __init_layout()
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = 'CMS - Admin';
-        $this->get_document()->add_ref_css(surl('/static/css/default.css'));
+        $this->get_document()->title = Config::get('site.title') . ' | Admin panel';
+        $this->get_document()->add_ref_css(surl('/static/css/admin.css'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
         $this->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
