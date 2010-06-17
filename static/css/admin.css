@@ -203,22 +203,27 @@ a:hover {
     font-size: 0.9em;
 }
 
-.ui-form input[type=text]{
+.ui-form input[type=text], .ui-form textarea{
     border: 1px solid black;
     -moz-border-radius: 3px;
     padding: 2px;
-    width: 80%;
+    width: 98%;
     background-color: #dedede;
 }
 
-.ui-form input[type=text]:focus{
+.ui-form input[type=text]:focus, .ui-form textarea{
     background-color: white;
     border: 1px solid #d20000;
 }
 
+
 .ui-form .buttons{
     text-align: right;
     margin-top: 8px;
+}
+
+.ui-form .buttons input{
+    margin-left: 15px;
 }
 
 .ui-form-hint, .ui-form-error{
@@ -234,5 +239,103 @@ a:hover {
 
 #page_editor .ui-form{
     width: auto;
+}
+
+/** ui-grid **/
+.ui-grid{
+    margin: 5px auto;
+    background-color: #656565;
+    padding: 15px;
+    -moz-border-radius: 5px;
+    border: 1px solid #898989;
+}
+
+.ui-grid table{
+    width: 100%;
+    border-spacing: 0px;
+    -moz-border-radius: 5px;
+    border: 1px solid #555555;
+}
+
+.ui-grid thead{
+    color: white;
+    background-color: #454545;
+}
+
+.ui-grid thead th{
+    border-right: 1px solid #9a9a9a;
+    padding: 3px 5px;
+    text-align: left;
+}
+
+.ui-grid thead th:last-child{
+    border-right: 0px;
+}
+
+.ui-grid tbody{
+    background-color: #696969;
+    font-size: 9pt;
+}
+
+.ui-grid tbody tr.ui-even{
+    background-color: #757575;
+}
+
+.ui-grid tbody tr:hover{
+    background-color: #858585;
+    color: #343434;
+}
+
+.ui-grid tbody tr td{
+    border-bottom: 1px solid #555555;
+}
+
+.ui-grid tbody td{
+    border-right: 1px solid #555555;
+    padding: 3px 8px;
+}
+
+.ui-grid tbody td:last-child{
+    border-right: 0px;
+}
+
+.ui-grid p{
+    margin: 2px;
+    color: #b3b3b3;
+    font-style: italic;
+}
+
+.ui-grid ul.actions{
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+.ui-grid ul.actions li{
+    margin: 0px;
+    padding: 0px 3px;
+    display: inline;
+}
+
+
+.ui-grid ul.info{
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+.ui-grid ul.info li{
+    margin: 0px;
+    padding: 3px 3px;
+    color: #b3b3b3;
+}
+
+.ui-grid ul.info li span{
+    color: #D3D3D3;
+}
+
+.ui-grid img{
+    float: right;
+    margin: 0px 5px;
 }
 

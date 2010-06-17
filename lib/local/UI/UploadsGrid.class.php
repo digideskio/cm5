@@ -10,7 +10,7 @@
                     'id' => array('caption' => 'ID'),
                     'filename' => array('caption' => 'Filename', 'customdata' => 'true'),
                     'info' => array('caption' => 'Info', 'customdata' => 'true'),
-                    'tools' => array('customdata' => 'true')
+                    'tools' => array('caption' => 'Actions', 'customdata' => 'true')
                 ),
                 array(
                 ), 
@@ -22,25 +22,32 @@
         {
             if ($col_id == 'info')
             {
-                $res = '';
+                $res = tag('ul class="info"');
                 if ($record->is_image)
-                {
-                    $res .= tag('img class="thumb"', array('src' => UrlFactory::craft('upload.thumb', $record->id)));
-                    $res .= tag('span class="imagesize"', "{$record->image_width}x{$record->image_height}");
-                }
-                $res .= tag('span class="size"', html_human_fsize($record->filesize, ''));
+                    $res->append(tag('li', 'Image size: ',
+                        tag('span class="imagesize"', "{$record->image_width} x {$record->image_height}")));
+                $res->append(tag('li', 'File size: ',
+                    tag('span class="size"', html_human_fsize($record->filesize, ''))));
+                $res->append(tag('li', 'Last updated: ',
+                    tag('span class="size"', date_exformat($record->lastupdated)->human_diff())));
+
                 return $res;
             }
             else if ($col_id == 'tools')
             {
-                $res = '';
-                $res .= UrlFactory::craft('upload.edit', $record->id)->anchor('Edit')->add_class('edit');
-                $res .= UrlFactory::craft('upload.delete',  $record->id)->anchor('Delete')->add_class('delete');
+                return tag('ul class="actions"',
+                    tag('li',
+                        UrlFactory::craft('upload.edit', $record->id)->anchor('Edit')->add_class('edit')),
+                    tag('li',
+                        UrlFactory::craft('upload.delete',  $record->id)->anchor('Delete')->add_class('delete'))
+                );
                 return $res;
             }
             else if ($col_id == 'filename')
             {
-                return UrlFactory::craft('upload.view', $record->id)->anchor($record->filename) .
+                return ($record->is_image?
+                        tag('img class="thumb"', array('src' => UrlFactory::craft('upload.thumb', $record->id))):'') .
+                    UrlFactory::craft('upload.view', $record->id)->anchor($record->filename) .
                     tag('p', $record->description);
             }
         }

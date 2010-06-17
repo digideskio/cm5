@@ -34,7 +34,7 @@ function show_pages_tree()
         tag('span class="title"', 'Pages tree'),
         tag('span class="resort"', '(resort)')->add_class('button'),
         $ul = tag('ul class="sortable"'),
-        UrlFactory::craft('page.create', '')->anchor('add subpage')->add_class('add')
+        UrlFactory::craft('page.create', '')->anchor('add page')->add_class('add')
     );
 
     foreach(Page::open_query()->where('parent_id is null')->execute() as $p)
@@ -46,18 +46,22 @@ function show_pages_tree()
 function edit_page($id)
 {
     Layout::open('admin')->activate();
+    Layout::open('admin')->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
+    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
+    
     if (!$p = Page::open($id))
         not_found();
 
     $frm = new UI_EditPage($p);
     
     show_pages_tree();
-    etag('div id="page_editor', $frm->render());
+    etag('div id="page_editor"', $frm->render());
 }
 
 function create_page()
 {
     Layout::open('admin')->activate();
+    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
     
     $parent_id = Net_HTTP_RequestParam::get('parent', 'get');
     if ($parent_id === '')

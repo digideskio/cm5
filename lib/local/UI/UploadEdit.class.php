@@ -18,7 +18,9 @@ class UI_UploadEdit extends Output_HTML_Form
         array('title' => 'Edit upload',
             'css' => array('ui-form'),
 		    'buttons' => array(
-		        'upload' => array('display' =>'Save')
+		        'upload' => array('display' =>'Save'),
+	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
+	                'onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
                 )
             )
         );

@@ -44,6 +44,8 @@ CREATE TABLE `uploads` (
     `id` integer auto_increment not null,
     `filename` varchar(255) not null,
     `filesize` integer not null,
+    `uploader` varchar(50),
+    `lastupdated` datetime not null,
     `mime` varchar(255) not null,
     `store_file` varchar(512) not null,
     `description` TEXT not null,
