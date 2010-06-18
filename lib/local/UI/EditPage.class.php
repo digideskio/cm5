@@ -8,7 +8,8 @@ class UI_EditPage extends Output_HTML_Form
         
         parent::__construct(array(
 			'title' => array('display' => 'Title', 'value' => $page->title),
-			'slug' => array('display' => 'Slug', 'value' => $page->slug),
+			'slug' => array('display' => 'Slug', 'value' => $page->slug, 'regcheck' => '/^[\w\-]{1,}$/',
+			    'onerror' => 'You must setup a slug for this article'),
 			'status' => array('display' => 'Status', 'type' => 'dropbox',
 			    'optionlist' => array(
 			        'published' => 'Published',

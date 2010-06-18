@@ -24,7 +24,7 @@ $(document).ready(function(){
                     
                     $.post(page_id + '/+move/', { parent_id: parent_id});
                 }
-	        }).disableSelection();
+	        }).disableSelection().sortable('enable');
 	        $('#pages_tree').toggleClass('sort-mode');
 	        $(this).toggleClass('pressed');
         },

@@ -9,9 +9,9 @@ class UI_CreatePage extends Output_HTML_Form
 
         $this->parent_id = $parent_id;
         parent::__construct(array(
-			'title' => array('display' => 'Title', 'value', 'regcheck' => '/.{3,}/',
+			'title' => array('display' => 'Title', 'value', 'regcheck' => '/^.{3,}$/',
 			    'onerror' => 'You must put a title on article'),
-			'slug' => array('display' => 'Slug', 'value', 'regcheck' => '/.{1,}/',
+			'slug' => array('display' => 'Slug', 'value', 'regcheck' => '/^[\w\-]{1,}$/',
 			    'onerror' => 'You must setup a slug for this article'),
 			'status' => array('display' => 'Status', 'type' => 'dropbox',
 			    'optionlist' => array(
