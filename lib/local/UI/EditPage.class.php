@@ -15,7 +15,7 @@ class UI_EditPage extends Output_HTML_Form
 			        'published' => 'Published',
 			        'draft' => 'Draft'
 			    ),
-			    'value' => 'draft'
+			    'value' => $this->page->status
 			 ),
 			'body' => array('display' => '', 'type'=> 'textarea', 'value' => $page->body,
 			    'htmlattribs' => array('id' => 'bodyeditor'))

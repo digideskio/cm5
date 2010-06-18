@@ -44,16 +44,6 @@ if (Config::get('site.deploy_checks'))
         exit;
     }
 }
-// Special handling for special urls
-Stupid::add_rule(create_function('', 'require(\'web/login.php\');'),
-    array('type' => 'url_path', 'chunk[-1]' => '/\+login/')
-);
-Stupid::add_rule(create_function('', 'require(\'web/login.php\');'),
-    array('type' => 'url_path', 'chunk[-1]' => '/\+logout/')
-);
-Stupid::add_rule(create_function('', 'require(\'web/home.php\');'),
-    array('type' => 'url_path', 'path' => '/^\/?$/')
-);
 
 // Include all sub directories under /web
 function is_valid_sub($sub)
@@ -70,7 +60,6 @@ Stupid::add_rule('include_sub',
     array('type' => 'url_path', 'chunk[1]' => '/^([\w]+)$/'),
     array('type' => 'func', 'func' => 'is_valid_sub')
 );
-
 
 Stupid::set_default_action(create_function('', 'require(dirname(__FILE__) . "/web/page.php");'));
 Stupid::chain_reaction();

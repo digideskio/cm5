@@ -29,7 +29,6 @@ class Layout_Default extends Layout
         return $this->mainmenu;
     }
 
-
     private function init_menu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));
