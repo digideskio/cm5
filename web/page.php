@@ -1,6 +1,6 @@
 <?php
 // Show a web page
-
+//CMS_Core::get_instance()->serve();
 Layout::open('default')->activate();
 $path = substr($_SERVER['PATH_INFO'], 1);
 
