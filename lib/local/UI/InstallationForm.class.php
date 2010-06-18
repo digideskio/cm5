@@ -89,6 +89,8 @@ class UI_InstallationForm extends Output_HTML_Form
         Config::set('db.schema', $values['db-schema']);
         Config::set('site.google_analytics', $values['site-ga']);
         Config::set('site.deploy_checks', $values['deploy-checks']);
+        Config::set('site.upload_folder', realpath(dirname(__FILE__) . '/../../../uploads'));
+        Config::set('site.thumbs_folder', realpath(dirname(__FILE__) . '/../../../uploads/thumbs'));
         
         // Timezone
         if (isset($this->tzones[$values['timezone']]))
