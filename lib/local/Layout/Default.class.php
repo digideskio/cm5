@@ -32,13 +32,6 @@ class Layout_Default extends Layout
     private function init_menu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));
-        $this->events()->connect('pre-flush', create_function('$event',
-        '
-            $layout = $event->arguments["layout"];
-            $layout->get_document()->get_body()->getElementById("main-menu")
-                ->append($layout->get_mainmenu()->render());
-        '));
-
         $add_menu_entries = function($parent_link, $parent_page = null) use(&$add_menu_entries)
         {
             $q = Page::open_query()->where('status = ?')->push_exec_param('published');
@@ -55,6 +48,10 @@ class Layout_Default extends Layout
         };
         
         $add_menu_entries($this->mainmenu);
+        
+        // Append menu
+        $this->get_document()->get_body()->getElementById("main-menu")
+                ->append($this->mainmenu->render());
     }
     
     protected function __init_layout()
@@ -64,7 +61,6 @@ class Layout_Default extends Layout
         $this->get_document()->title = Config::get('site.title');
         $this->get_document()->add_ref_css(surl('/static/css/default.css'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
-        $this->get_document()->add_ref_css(surl('/static/css/ui-lightness/jquery-ui-1.8.2.custom.css'));
         
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
@@ -78,18 +74,6 @@ class Layout_Default extends Layout
         etag('div id="footer"', 
             tag('a', 'PHPlibs', array('href' => 'http://phplibs.kmfa.net')),' skeleton'
         );
-        
-        if (Config::get('site.google_analytics'))
-            etag('script type="text/javascript" html_escape_off',
-            " var _gaq = _gaq || [];
-              _gaq.push(['_setAccount', '" . Config::get('site.google_analytics') ."']);
-              _gaq.push(['_trackPageview']);
-
-              (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-              })();");
         $this->set_default_container($def_content);
 
         // Search widgeet

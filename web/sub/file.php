@@ -19,7 +19,7 @@ function dump_file($id)
     {
         $if_modified_since = date_create($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-        if ($if_modified_since->format('U') >= $f->lastupdated->format('U'))
+        if ($if_modified_since->format('U') >= $f->lastmodified->format('U'))
         {
             // Client has latest version
             header( "HTTP/1.1 304 Not Modified" );
@@ -28,7 +28,7 @@ function dump_file($id)
     }
 
     // Add expire header
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastupdated->format('U')) . ' GMT' );
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
     
     $f->dump_file();
 }
@@ -43,7 +43,7 @@ function image_thumbnail($id)
     {
         $if_modified_since = date_create($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-        if ($if_modified_since->format('U') >= $f->lastupdated->format('U'))
+        if ($if_modified_since->format('U') >= $f->lastmodified->format('U'))
         {
             // Client has latest version
             header( "HTTP/1.1 304 Not Modified" );
@@ -52,7 +52,7 @@ function image_thumbnail($id)
     }
 
     // Add expire header
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastupdated->format('U')) . ' GMT' );
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
     
     $f->dump_thumb();
 }

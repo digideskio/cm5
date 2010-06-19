@@ -1,106 +1,123 @@
 body {
-/*	font: 12pt Monospace;
-    background-color: black;
-	color: #45ae69;
-*/
+	font: 10pt "Trebuchet MS";
+    background-color: #780000;
+	color: #d1d1d1;
     margin: 0px 0px;
 }
 
 a {
 	text-decoration: none;
-
-	color: #89d189;
 	font-weight: bold;
+	color: #454545;
 }
 
-a:hover {
-	color: #eaea22;
+a:active {
+    color: #a3a3a3;
+}
+
+#header h1{
+    margin-left: 15px;
+    color: #f1f1f1;
+
+}
+#content{
+    background: #e2e2e2;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    margin: 10px 15px;
+    padding: 5px;
+    min-height: 400px;
+    color: #444444;
 }
 
 #footer{
     clear: both;
     text-align: right;
 }
+#footer a{
+    color: white;
+}
 
-#page_editor
-{
-    width: 75%;
-    float: left;
+h1{
+    margin: 10px 0px;
 }
 
 /** menu **/
-.menu
+.menu, .menu ul 
 {
-    margin: 2px 15px;
+    font: 10pt "Monospace";
+    margin: 0px;
     padding: 0px;
+
 }
 
 .menu li{
-    display: inline;
     margin: 0px 5px;
     padding: 0px;
-    background-color: red;
+
 }
+
 .menu li a{
+	color: #dedede;
     padding: 5px;
 }
 
 .menu li.selected a{
-	color: #eaea22;
+	color: #343434;
+}
+
+.menu > li.selected{
+    background-color: white;
+}
+
+/* 1st lvl */
+.menu{
+    margin: 2px 15px;
+    list-style-type: none;
+    border-bottom: 2px solid white;
+}
+
+.menu >li{
+    display: inline-block;
+    position: relative;
+    padding: 5px 10px;
+    background-color: red;
+}
+
+.menu >li:hover{
+    background-color: white;
+}
+
+.menu >li:hover a{
+	color: #343434;
 }
 
 /* 2nd lvl menus */
-.menu > li{
-
-}
 
 .menu li ul{
-    display: none;
+    top: 25px;
+    left: 0px;
     position: absolute;
+    display: none;
+    width: 200px;
+    padding: 10px 2px;
+    background-color: white;
+    -moz-border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+    border-radius: 0px 0px 5px 5px;
 }
 
 .menu li:hover ul{
     display: block;
+    list-style-type: disc;
 }
 
-/** Pages tree **/
-#pages_tree
-{
-    float: left;
-    width: 20%;
-    font: 9pt 'Trebuchet MS';
+.menu li ul li{
+    font-size: 9pt;
+    margin: 2px 0px 2px 20px;
+
 }
-
-#pages_tree .sortable{
-    padding-left: 15px;
+.menu li ul a{
+    color: black;
 }
-
-#pages_tree > .sortable{
-    padding-left: 0px;
-}
-
-.sortable{
-
-    list-style-type: none;
-    padding-bottom: 10px;
-}
-
-.sortable > li > ul{
-    z-index: 2;
-}
-
-
-.sortable li{
-    margin: 3px 0px;
-    padding: 3px;
-    border: 1px solid #113511;
-}
-
-.ui-sortable-placeholder{
-    background-color: gray !important;
-    visibility: visible !important;
-    margin: 0px;
-    height: 2px;
-}
-
-

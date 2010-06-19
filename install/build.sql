@@ -33,6 +33,7 @@ create table `pages` (
     `created` datetime not null,
     `lastmodified` datetime not null,
     `status` enum('published', 'draft') default 'draft',
+    `order` int default 0,
     PRIMARY KEY(`id`),
     UNIQUE (`slug`),
     INDEX (`parent_id`)
@@ -46,7 +47,7 @@ CREATE TABLE `uploads` (
     `filename` varchar(255) not null,
     `filesize` integer not null,
     `uploader` varchar(50),
-    `lastupdated` datetime not null,
+    `lastmodified` datetime not null,
     `mime` varchar(255) not null,
     `store_file` varchar(512) not null,
     `description` TEXT not null,

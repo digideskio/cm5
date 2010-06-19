@@ -29,7 +29,7 @@
                 $res->append(tag('li', 'File size: ',
                     tag('span class="size"', html_human_fsize($record->filesize, ''))));
                 $res->append(tag('li', 'Last updated: ',
-                    tag('span class="size"', date_exformat($record->lastupdated)->human_diff())));
+                    tag('span class="size"', date_exformat($record->lastmodified)->human_diff())));
 
                 return $res;
             }

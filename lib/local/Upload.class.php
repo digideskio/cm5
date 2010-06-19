@@ -11,7 +11,7 @@ class Upload extends DB_Record
         'store_file',
         'mime',
         'uploader',
-        'lastupdated' => array('type' => 'datetime'),
+        'lastmodified' => array('type' => 'datetime'),
         'description',
         'is_image' => array('default' => false),
         'image_width',
@@ -73,7 +73,7 @@ class Upload extends DB_Record
             'filesize' => strlen($data),
             'store_file' => $store_file,
             'mime' => $mime_type,
-            'lastupdated' => new DateTime()
+            'lastmodified' => new DateTime()
         ));
         
         // Check if it is image
@@ -101,7 +101,7 @@ class Upload extends DB_Record
         // Save to database
         $this->filesize = strlen($data);
         $this->filename = $filename;
-        $this->lastupdated = new DateTime();
+        $this->lastmodified = new DateTime();
         $this->mime = $mime_type;
         $this->save();
         

@@ -23,7 +23,7 @@ function show_pages_tree()
             UrlFactory::craft('page.create', $p->id)->anchor('add subpage')->add_class('add')
         );
 
-        foreach($p->subpages->all() as $sp)
+        foreach($p->subpages->subquery()->order_by('order', 'DESC')->execute() as $sp)
             $ul->append($draw_tree_entry($sp));
 
         return $li;
@@ -72,8 +72,6 @@ function create_page()
 
 function move_page($page_id)
 {
-    sleep(1);   //artificial lag!
-    
     if (!($p = Page::open($page_id)))
         not_found();
         

@@ -14,7 +14,8 @@ class Page extends DB_Record
         'author' => array('fk' => 'User'),
         'status',
         'created',
-        'lastmodified' => array('type' => 'datetime')
+        'lastmodified' => array('type' => 'datetime'),
+        'order'
     );
     
     public function full_path()

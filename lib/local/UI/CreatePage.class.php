@@ -24,7 +24,9 @@ class UI_CreatePage extends Output_HTML_Form
         array('title' => 'Create page',
             'css' => array('ui-form', 'ui-page-form'),
 		    'buttons' => array(
-		        'create' => array('display' =>'Create')
+		        'create' => array('display' =>'Create'),
+	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
+	                'onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
                 )
             )
         );

@@ -7,7 +7,7 @@ class CMS_Core
     protected $events = null;
     
     //! An array with all modules
-    protected $modules = array();
+    protected $modules = null;
     
     //! Cache engine
     protected $cache = null;
@@ -49,6 +49,8 @@ class CMS_Core
     //! Scan modules folder and load them all
     public function load_modules()
     {
+        $this->modules = array();
+        
         // Load modules
         $modules_folder = dirname(__FILE__) . '/../../../modules';
         if ($dh = opendir($modules_folder))
@@ -76,6 +78,8 @@ class CMS_Core
     //! Enumerate modules    
     public function modules()
     {
+        if ($this->modules === null)
+            $this->load_modules();
         return $this->modules;
     }
     
@@ -94,9 +98,6 @@ class CMS_Core
     {        
         // Create instance
         self::$instance = new CMS_Core($cache_engine);
-        
-        // Initialize modules
-        self::$instance->load_modules();
     }
     
     //! Get the running instance of core
@@ -113,38 +114,51 @@ class CMS_Core
         if ($url === null)
             $url = substr((isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:''), 1);
 
-        // Check cache first
+        // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);
         if ($succ)
         {
-            echo $response;
+            $response->show();
             exit;
         }
         
-        // Dispatch page request to modules
-        $cancel = false;
-        $this->events->filter('page.request', $cancel, array('url' => $url));
-        if ($cancel)
-            exit;
+        // Initialize modules
+        self::$instance->load_modules();
+
+        $response = new CMS_Response();
                 
-        Layout::open('default')->activate();    
-        $p = Page::open_query()
-            ->where('slug = ?')
-            ->limit(1)
-            ->execute($url);
+        // Dispatch page request to modules
+        $stop_propagation = false;
+        $this->events->filter('page.request', $stop_propagation, array('url' => $url, 'response' => $response));
 
-        if (!$p)
-            not_found();
+        if (!$stop_propagation)
+        {  
+            // Check for CMS pages
+            Layout::open('default')->activate();
+            $p = Page::open_query()
+                ->where('slug = ?')
+                ->limit(1)
+                ->execute($url);
 
-        $this->events->filter('page.pre-render', $p[0]);
-        etag('h1', $p[0]->title);
-        etag('div html_escape_off', $p[0]->body);
+            if (!$p)
+                not_found();
+
+            $this->events->filter('page.pre-render', $p[0], array('url' => $url, 'response' => $response));
+            etag('h1', $p[0]->title);
+            etag('div html_escape_off', $p[0]->body);
+            Layout::open('default')->deactivate();
+            $response->document = Layout::open('default')->get_document()->render();
+
+            // Trigger post render
+            $this->events->filter('page.post-render', $response, array('url' => $url, 'page' => $p[0]));
+        }
+
+        // Show response
+        $response->show();
         
         // Add cache hook
-        $cache = $this->cache;
-        Layout::open('default')->events()->connect('post-flush', function($e) use($cache, $url){
-            $cache->set('url-' . $url, $e->arguments['layout']->get_document()->render(), 600);
-        });
+        if ($response->cachable)
+            $this->cache->set('url-' . $url, $response, 600);
     }
 }
 ?>

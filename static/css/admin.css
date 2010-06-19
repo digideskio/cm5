@@ -61,6 +61,8 @@ a:hover {
     background-color: gray;
     padding: 2px 6px;
     -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
 }
 
 .button:hover{
@@ -124,6 +126,8 @@ a:hover {
     padding: 10px;
     margin: 5px 0px;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     border: 1px solid #898989;
     position: absolute;
 }
@@ -182,13 +186,15 @@ a:hover {
     background: #454545;
     border: 1px dotted #757575;
     -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
     margin: 4px 0px;
 }
 .ui-sortable-placeholder{
     background-color: gray !important;
     visibility: visible !important;
     margin: 0px;
-    height: 2px;
+    height: 5px;
 }
 
 /** ui-form **/
@@ -198,6 +204,8 @@ a:hover {
     background-color: #656565;
     padding: 15px;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     border: 1px solid #898989;
 }
 
@@ -219,6 +227,8 @@ a:hover {
 .ui-form input[type=text], .ui-form textarea{
     border: 1px solid black;
     -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
     padding: 2px;
     width: 98%;
     background-color: #dedede;
@@ -258,7 +268,8 @@ a:hover {
 }
 
 .ui-form .button.suggest{
-    position: absolute;
+    height: 14px;
+    z-index: 1000;
 }
 
 /** ui-grid **/
@@ -267,6 +278,8 @@ a:hover {
     background-color: #656565;
     padding: 15px;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     border: 1px solid #898989;
 }
 
@@ -274,6 +287,8 @@ a:hover {
     width: 100%;
     border-spacing: 0px;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     border: 1px solid #555555;
 }
 
@@ -284,7 +299,7 @@ a:hover {
 
 .ui-grid thead th{
     border-right: 1px solid #9a9a9a;
-    padding: 3px 5px;
+    padding: 3px 15px;
     text-align: left;
 }
 

@@ -5,15 +5,17 @@ $(document).ready(function(){
     $('#pages_tree .resort.button').toggle(
         function(){
 	        $('#pages_tree .sortable').sortable({
-		        connectWith: '.sortable',
+	            connectWith: '.sortable',
                 helper: 'original',
                 tolerance: 'pointer',
                 opacity: 0.6,
-                grid: [10, 10],
-                distance: 5,
+                grid: [10,10],
+                axis: 'y',
                 update: function(event, ui) { 
                     if (ui.sender != null)
                         return;
+//                    console.log($(this));
+//                    console.log($(this).sortable('serialize'));
                     var page_id = parseInt(ui.item.attr('id').replace(/page_/, ''));
                     var par = ui.item.parent().parent('li');
                     
@@ -27,11 +29,13 @@ $(document).ready(function(){
 	        }).disableSelection().sortable('enable');
 	        $('#pages_tree').toggleClass('sort-mode');
 	        $(this).toggleClass('pressed');
+	        $('#pages_tree ul a').click(function(){return false;});
         },
         function(){
             $('#pages_tree .sortable').sortable('disable');
 	        $('#pages_tree').toggleClass('sort-mode');
 	        $(this).toggleClass('pressed');
+	        $('#pages_tree ul a').unbind('click');
         }
     );
     
@@ -60,10 +64,11 @@ $(document).ready(function(){
 	        .click(request_translit)
         );
         var io = input.offset();
-        suggest.offset({
+        var new_off = {
             left: io.left + input.innerWidth() - suggest.outerWidth() - 1,
             top: io.top + ((input.outerHeight() -  suggest.outerHeight()) /2)
-        });
+        };
+        suggest.offset(new_off);
 	}
 	
 	// Page editor ckeditor
