@@ -7,8 +7,8 @@ class CMS_Module_Sitemap implements CMS_Module
     {
         return array(
             'nickname' => 'sitemap',
-            'title' => 'Search engines sitemap xml',
-            'description' => 'Servers /sitemap.xml and provide information about pages of cms.'
+            'title' => 'Search Engine Optimizations',
+            'description' => 'Generates and servers /sitemap.xml to provide information about content of cms.'
         );
     }
     
@@ -19,9 +19,34 @@ class CMS_Module_Sitemap implements CMS_Module
         $c->events()->connect('page.request', array($this, 'event_page_request'));
     }
     
-    public function event_page_request($event, & $page)
+    public function generate_sitemap()
     {
-        var_dump($page);
+        $xml = "<?xml version='1.0' encoding='UTF-8'?>";
+        $urlset = tag('urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '.
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+        )->attr('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 '.
+			'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
+        
+        $pages = Page::open_query()->where('status = ?')->execute('published');
+        foreach ($pages as $p)
+        {
+            tag('url',
+                tag('loc', (string)UrlFactory::craft('page.view', $p)),
+                tag('lastmod', gmdate(DATE_ISO8601, $p->lastmodified->format('U'))),
+                tag('changefreq', 'weekly')
+            )->appendto($urlset);
+        }
+        return $xml . $urlset;
+
+    }
+    public function event_page_request($event)
+    {
+        if ($event->arguments['url'] != 'sitemap.xml')
+            return;
+
+        $event->filtered_value = true;
+        header('Content-Type: text/xml');
+        echo $this->generate_sitemap();
     }
 }
 

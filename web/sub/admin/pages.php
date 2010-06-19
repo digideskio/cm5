@@ -32,7 +32,7 @@ function show_pages_tree()
     // Create page tree
     etag('div id="pages_tree"', 
         tag('span class="title"', 'Pages tree'),
-        tag('span class="resort"', '(resort)')->add_class('button'),
+        tag('span class="resort"', 'resort')->add_class('button'),
         $ul = tag('ul class="sortable"'),
         UrlFactory::craft('page.create', '')->anchor('add page')->add_class('add')
     );

@@ -41,6 +41,7 @@ class Layout_Admin extends Layout
 
         $this->mainmenu->create_link('Pages', '/admin/page');
         $this->mainmenu->create_link('Files', '/admin/files');
+        $this->mainmenu->create_link('Modules', '/admin/modules');
         $this->mainmenu->create_link('Users', '/admin/user');
     }
     

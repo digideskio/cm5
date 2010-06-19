@@ -31,6 +31,7 @@ create table `pages` (
     `body` MEDIUMTEXT not null,
     `author` varchar(50) not null,
     `created` datetime not null,
+    `lastmodified` datetime not null,
     `status` enum('published', 'draft') default 'draft',
     PRIMARY KEY(`id`),
     UNIQUE (`slug`),

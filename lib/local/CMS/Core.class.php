@@ -20,6 +20,7 @@ class CMS_Core
             'page.pre-render',
             'page.post-render',
             'page.cache-delete',
+            'page.request',
         ));
         
         // Save caching engine
@@ -42,6 +43,7 @@ class CMS_Core
     public function invalidate_page_cache($page)
     {
         $this->cache->delete_all();
+        $this->events()->notify('page.cache-delete', array('page' => $page));
     }
     
     //! Scan modules folder and load them all
@@ -109,14 +111,21 @@ class CMS_Core
     public function serve($url = null)
     {
         if ($url === null)
-            $url = substr($_SERVER['PATH_INFO'], 1);
+            $url = substr((isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:''), 1);
 
+        // Check cache first
         $response = $this->cache->get('url-' . $url, $succ);
         if ($succ)
         {
             echo $response;
             exit;
         }
+        
+        // Dispatch page request to modules
+        $cancel = false;
+        $this->events->filter('page.request', $cancel, array('url' => $url));
+        if ($cancel)
+            exit;
                 
         Layout::open('default')->activate();    
         $p = Page::open_query()
@@ -130,12 +139,11 @@ class CMS_Core
         $this->events->filter('page.pre-render', $p[0]);
         etag('h1', $p[0]->title);
         etag('div html_escape_off', $p[0]->body);
-        $this->events->filter('page.post-render', $p[0]);
         
         // Add cache hook
         $cache = $this->cache;
         Layout::open('default')->events()->connect('post-flush', function($e) use($cache, $url){
-            $cache->set('url-' . $url, $e->arguments['layout']->get_document()->render());
+            $cache->set('url-' . $url, $e->arguments['layout']->get_document()->render(), 600);
         });
     }
 }

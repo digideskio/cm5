@@ -47,6 +47,9 @@ Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/files.p
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/pages.php');    },
     array('type' => 'url_path', 'chunk[2]' => '/^pages?$/')
 );
+Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/modules.php');    },
+    array('type' => 'url_path', 'chunk[2]' => '/^modules?$/')
+);
 Stupid::add_rule('tool_translit',
     array('type' => 'url_path', 'chunk[2]' => '/tools/', 'chunk[3]' => '/transliterate/'),
     array('type' => 'url_params', 'op' => 'isset', 'param' => 'text', 'param_type' => 'both')

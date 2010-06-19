@@ -52,11 +52,18 @@ $(document).ready(function(){
     }
 	else
 	{
-	    $('.ui-page-form input[name=slug]').parent().append(
-	        $('<span class="suggest button"/>')
+	    var input = $('.ui-page-form input[name=slug]');
+	    var suggest;
+	    input.parent().append(
+	        suggest = $('<span class="suggest button"/>')
 	        .text('suggest')
 	        .click(request_translit)
         );
+        var io = input.offset();
+        suggest.offset({
+            left: io.left + input.innerWidth() - suggest.outerWidth() - 1,
+            top: io.top + ((input.outerHeight() -  suggest.outerHeight()) /2)
+        });
 	}
 	
 	// Page editor ckeditor

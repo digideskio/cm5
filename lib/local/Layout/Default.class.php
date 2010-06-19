@@ -41,10 +41,11 @@ class Layout_Default extends Layout
 
         $add_menu_entries = function($parent_link, $parent_page = null) use(&$add_menu_entries)
         {
+            $q = Page::open_query()->where('status = ?')->push_exec_param('published');
             if ($parent_page === null)
-                $subpages = Page::open_query()->where('parent_id is null')->execute();
+                $subpages = $q->where('parent_id is null')->execute();
             else
-                $subpages = Page::open_query()->where('parent_id = ?')->execute($parent_page->id);
+                $subpages = $q->where('parent_id = ?')->execute($parent_page->id);
                 
             foreach($subpages as $p)
             {

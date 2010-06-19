@@ -13,7 +13,8 @@ class Page extends DB_Record
         'body',
         'author' => array('fk' => 'User'),
         'status',
-        'created'
+        'created',
+        'lastmodified' => array('type' => 'datetime')
     );
     
     public function full_path()
@@ -24,5 +25,16 @@ class Page extends DB_Record
         return $p->full_path() . '/' . $this->slug;
     }
 }
+Page::events()->connect('op.pre.save', function($e){
+
+    $r = $e->arguments['record'];
+    $r->lastmodified = new DateTime();
+});
+
+Page::events()->connect('op.pre.create', function($e){
+    $e->filtered_value['created'] = new DateTime();
+    $e->filtered_value['lastmodified'] = new DateTime();
+});
+
 Page::one_to_Many('Page', 'parent', 'subpages');
 ?>

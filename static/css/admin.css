@@ -2,6 +2,7 @@ body {
     background-color: black;
     margin: 0px 0px;
     color: #f1f1f1;
+    font: 10pt "Trebuchet MS";
 }
 
 h1{
@@ -9,6 +10,7 @@ h1{
     padding: 10px 5px;
     margin: 0px;
     background-color: #000000;
+    font-family: "Courier New";
 }
 a {
 	text-decoration: none;
@@ -52,19 +54,29 @@ a:hover {
 
 .button{
     font-size: 8pt;
-    padding: 10px 2px;
     margin: 2px;
     cursor: pointer;
     font-weight: bold;
+    
+    background-color: gray;
+    padding: 2px 6px;
+    -moz-border-radius: 4px;
 }
 
 .button:hover{
     color: #f2f222;
+    background-color: #454545;
 }
 
 .button.pressed{
     color: #d22222;
+    background-color: #454545;
 }
+
+.button:active{
+    color: #757575;
+}
+
 
 /** menu **/
 .menu
@@ -107,7 +119,7 @@ a:hover {
 {
     float: left;
     width: 20%;
-    font: 9pt 'Trebuchet MS';
+    font-size: 8pt;
     background-color: #656565;
     padding: 10px;
     margin: 5px 0px;
@@ -118,7 +130,7 @@ a:hover {
 
 #pages_tree .resort{
     position: absolute;
-    top: 5px;
+    top: 13px;
     right: 5px;
 }
 #pages_tree .title
@@ -135,17 +147,17 @@ a:hover {
 
 #pages_tree > .sortable{
     padding-left: 0px;
-}
-
-#pages_tree > .sortable{
-
+    margin: 2px 0px;
     list-style-type: none;
     padding-bottom: 10px;
 }
+#pages_tree > .sortable li{
+    margin: 1px 0px;
+}
 
 .sortable li{
-    margin: 3px 0px;
-    padding: 3px;
+    margin: 2px 0px;
+    padding: 2px;
 }
 
 .sortable .add{
@@ -168,8 +180,9 @@ a:hover {
 }
 #pages_tree.sort-mode .sortable li{
     background: #454545;
-    border: 2px solid #656565;
+    border: 1px dotted #757575;
     -moz-border-radius: 3px;
+    margin: 4px 0px;
 }
 .ui-sortable-placeholder{
     background-color: gray !important;
@@ -210,6 +223,9 @@ a:hover {
     width: 98%;
     background-color: #dedede;
 }
+.ui-form input[type=text]{
+    height: 16px;
+}
 
 .ui-form input[type=text]:focus, .ui-form textarea{
     background-color: white;
@@ -239,6 +255,10 @@ a:hover {
 
 #page_editor .ui-form{
     width: auto;
+}
+
+.ui-form .button.suggest{
+    position: absolute;
 }
 
 /** ui-grid **/
