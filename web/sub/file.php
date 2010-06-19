@@ -28,7 +28,8 @@ function dump_file($id)
     }
 
     // Add expire header
-    header('Last-Modified: ' . $f->lastupdated->format('D, d M Y H:i:s'));
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastupdated->format('U')) . ' GMT' );
+    
     $f->dump_file();
 }
 
@@ -51,7 +52,7 @@ function image_thumbnail($id)
     }
 
     // Add expire header
-    header('Last-Modified: ' . $f->lastupdated->format('D, d M Y H:i:s'));
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastupdated->format('U')) . ' GMT' );
     
     $f->dump_thumb();
 }

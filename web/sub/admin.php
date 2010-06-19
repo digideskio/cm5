@@ -1,5 +1,21 @@
 <?php
 
+// Deploy checks
+if (Config::get('site.deploy_checks'))
+{
+    if (is_writable(dirname(__FILE__) . '/config.inc.php'))
+    {
+        echo 'Security check: "config.inc.php" is writable, change file permissions and retry.';
+        exit;
+    }
+    
+    if (is_dir(dirname(__FILE__) . '/install'))
+    {
+        echo 'Security check: You must delete folder "/install" if you have installed site.';
+        exit;
+    }
+}
+
 // Initialize authentication for admin
 $auth = new Authn_Backend_DB(array(
     'query_user' => User::open_query()

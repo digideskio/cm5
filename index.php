@@ -29,21 +29,6 @@ require_once dirname(__FILE__) . '/web/layouts.php';
  * check /web folder. If you want a different global url behaviour
  * then you should it here.
  */
-// Deploy checks
-if (Config::get('site.deploy_checks'))
-{
-    if (is_writable(dirname(__FILE__) . '/config.inc.php'))
-    {
-        echo 'Security check: "config.inc.php" is writable, change file permissions and retry.';
-        exit;
-    }
-    
-    if (is_dir(dirname(__FILE__) . '/install'))
-    {
-        echo 'Security check: You must delete folder "/install" if you have installed site.';
-        exit;
-    }
-}
 
 // Include all sub directories under /web
 function is_valid_sub($sub)
@@ -61,7 +46,7 @@ Stupid::add_rule('include_sub',
     array('type' => 'func', 'func' => 'is_valid_sub')
 );
 
-Stupid::set_default_action(create_function('', 'require(dirname(__FILE__) . "/web/page.php");'));
+Stupid::set_default_action(array(CMS_Core::get_instance(), 'serve'));
 Stupid::chain_reaction();
 
 ?>

@@ -1,14 +1,18 @@
 <?php
 
-
+//! CMS Core componment
 class CMS_Core
 {
+    //! Events dispatcher with all core events
     protected $events = null;
     
+    //! An array with all modules
     protected $modules = array();
     
+    //! Cache engine
     protected $cache = null;
     
+    //! Construct core
     final private function __construct(Cache $cache)
     {
         // Create events
@@ -34,11 +38,13 @@ class CMS_Core
         });
     }
     
+    //! Invalidate all cms cache
     public function invalidate_page_cache($page)
     {
         $this->cache->delete_all();
     }
     
+    //! Scan modules folder and load them all
     public function load_modules()
     {
         // Load modules
@@ -57,45 +63,41 @@ class CMS_Core
         }
     }
     
+    //! Register a module
     public function register_module(CMS_Module $module)
-    {
-        $this->modules[] = $module;
+    {   
+        $minfo = $module->info();
+        $this->modules[$minfo['nickname']] = $module;
         $module->init();
     }
     
+    //! Enumerate modules    
     public function modules()
     {
         return $this->modules;
     }
     
+    //! Get the EventDispatcher object
     public function events()
     {
         return $this->events;
     }
     
+    //! Pointer to singleton instance
     static private $instance = null;
     
     
+    //! Initialize the CMS core
     static public function init(Cache $cache_engine)
-    {
-        /*$core = $cache_engine->get('core', $succ);
-        if ($succ)
-        {
-            error_log('core cache hit');
-            self::$instance = $core;
-            return;
-        }*/
-        
+    {        
         // Create instance
         self::$instance = new CMS_Core($cache_engine);
         
         // Initialize modules
         self::$instance->load_modules();
-        
-        // Cache core
-        //$cache_engine->set('core', self::$instance);
     }
     
+    //! Get the running instance of core
     static public function get_instance()
     {
         if (self::$instance == null)
@@ -103,6 +105,7 @@ class CMS_Core
         return self::$instance;
     }
     
+    //! Serve a url request to CMS
     public function serve($url = null)
     {
         if ($url === null)
@@ -111,7 +114,6 @@ class CMS_Core
         $response = $this->cache->get('url-' . $url, $succ);
         if ($succ)
         {
-            error_log('cache hit');
             echo $response;
             exit;
         }
