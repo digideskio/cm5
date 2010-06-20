@@ -32,22 +32,19 @@ class Layout_Default extends Layout
     private function init_menu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));
-        $add_menu_entries = function($parent_link, $parent_page = null) use(&$add_menu_entries)
+        $add_entries = function($parent_link, $childs) use(&$add_entries)
         {
-            $q = Page::open_query()->where('status = ?')->push_exec_param('published');
-            if ($parent_page === null)
-                $subpages = $q->where('parent_id is null')->execute();
-            else
-                $subpages = $q->where('parent_id = ?')->execute($parent_page->id);
-                
-            foreach($subpages as $p)
+            foreach($childs as $p)
             {
-                $sublink = $parent_link->create_link($p->title, $p->full_path());
-                $add_menu_entries($sublink, $p);
+                if ($p['status'] !== 'published')
+                    continue;
+
+                $sublink = $parent_link->create_link($p['title'], '/' . $p['slug']);
+                $add_entries($sublink, $p['childs']);
             }
         };
         
-        $add_menu_entries($this->mainmenu);
+        $add_entries($this->mainmenu, CMS_Core::get_instance()->get_tree());
         
         // Append menu
         $this->get_document()->get_body()->getElementById("main-menu")

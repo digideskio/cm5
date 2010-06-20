@@ -1,7 +1,8 @@
 <?php
 
 UrlFactory::register('page.view', '$page', '{$page->full_path()}');
-UrlFactory::register('page.edit', '$page', '/admin/page/{$page->id}');
+UrlFactory::register('page.edit', '$page_id', '/admin/page/{$page_id}');
+UrlFactory::register('page.delete', '$page_id', '/admin/page/{$page_id}/+delete');
 UrlFactory::register('page.create', '$page_id', '/admin/page/+create?parent={$page_id}');
 UrlFactory::register('page.admin', '', '/admin/page');
 UrlFactory::register('upload.admin', '', '/admin/files');

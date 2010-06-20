@@ -13,17 +13,20 @@ Stupid::add_rule('create_page',
 Stupid::set_default_action('pages_default');
 Stupid::chain_reaction();
 
-function show_pages_tree()
+function show_pages_tree($current_page_id)
 {
-    $draw_tree_entry = function($p) use(&$draw_tree_entry)
-    {
-        $li = tag('li id="page_' . $p->id . ' class=""',
-            UrlFactory::craft('page.edit', $p)->anchor($p->title . ' ')->add_class('edit')->add_class($p->status),
-            $ul = tag('ul class="sortable"'),
-            UrlFactory::craft('page.create', $p->id)->anchor('add subpage')->add_class('add')
+    $draw_tree_entry = function($p) use(&$draw_tree_entry, $current_page_id)
+    {   
+        $li = tag('li id="page_' . $p['id'] . ' class=""',
+            $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
+            tag('a html_escape_off class="delete"', '&nbsp;', array('href' => UrlFactory::craft('page.delete', $p['id']))),
+            $ul = tag('ul class="sortable"')
         );
+        
+        if ($current_page_id == $p['id'])
+            $pg->add_class('selected');
 
-        foreach($p->subpages->subquery()->order_by('order', 'DESC')->execute() as $sp)
+        foreach($p['childs'] as $sp)
             $ul->append($draw_tree_entry($sp));
 
         return $li;
@@ -32,15 +35,16 @@ function show_pages_tree()
     // Create page tree
     etag('div id="pages_tree"', 
         tag('span class="title"', 'Pages tree'),
-        tag('span class="resort"', 'resort')->add_class('button'),
+        tag('span class="resort"', 'edit')->add_class('button'),
         $ul = tag('ul class="sortable"'),
         UrlFactory::craft('page.create', '')->anchor('add page')->add_class('add')
     );
 
-    foreach(Page::open_query()->where('parent_id is null')->execute() as $p)
+    foreach(CMS_Core::get_instance()->get_tree() as $p)
     {
         $ul->append($draw_tree_entry($p));
     }
+
 }
 
 function edit_page($id)
@@ -54,7 +58,7 @@ function edit_page($id)
 
     $frm = new UI_EditPage($p);
     
-    show_pages_tree();
+    show_pages_tree($id);
     etag('div id="page_editor"', $frm->render());
 }
 
@@ -86,8 +90,34 @@ function move_page($page_id)
     else if (!($parent = Page::open($parent_id)))
         not_found();
 
+    // Read slibing page order
+    $slibing = Net_HTTP_RequestParam::get('page');
+    if ((!is_array($slibing)) || (!in_array($page_id, $slibing)))
+    {
+        header("HTTP/1.1 501 Internal server error");
+        exit;
+    }
+
+    // Change parent id
     $p->parent_id = $parent_id;
-    $p->save();
+
+    // Change order
+    $order = 0;
+    foreach($slibing as $s)
+    {
+        if ($s == $page_id)
+            $sb = $p;
+        else
+            $sb = Page::open($s);
+        if (!$sb)
+        {
+            header("HTTP/1.1 501 Internal server error");
+            exit;
+        }
+        $sb->order = $order;
+        $sb->save();
+        $order+=1;
+    }
 }
 
 function pages_default()
@@ -96,7 +126,7 @@ function pages_default()
     
     $p = Page::open_query()->limit(1)->execute();
     if (count($p))
-        UrlFactory::craft('page.edit', $p[0])->redirect();
+        UrlFactory::craft('page.edit', $p[0]->id)->redirect();
     else
         UrlFactory::craft('page.create', null)->redirect();
 }

@@ -13,6 +13,9 @@ class CMS_Core
     protected $cache = null;
     
     //! Construct core
+    /**
+     * @param $cache The caching engine to be used from CMS
+     */
     final private function __construct(Cache $cache)
     {
         // Create events
@@ -39,7 +42,10 @@ class CMS_Core
         });
     }
     
-    //! Invalidate all cms cache
+    //! Invalidate page cache
+    /**
+     * @param $page The page that gets invalidated
+     */
     public function invalidate_page_cache($page)
     {
         $this->cache->delete_all();
@@ -68,6 +74,9 @@ class CMS_Core
     }
     
     //! Register a module
+    /**
+     * @param $module The instance of the module to register
+     */
     public function register_module(CMS_Module $module)
     {   
         $minfo = $module->info();
@@ -75,7 +84,10 @@ class CMS_Core
         $module->init();
     }
     
-    //! Enumerate modules    
+    //! Enumerate modules
+    /**
+     * Get the list with all registered modules
+     */
     public function modules()
     {
         if ($this->modules === null)
@@ -94,6 +106,9 @@ class CMS_Core
     
     
     //! Initialize the CMS core
+    /**
+     * @param $cache_engine The cache engine to be used by the CMS.
+     */
     static public function init(Cache $cache_engine)
     {        
         // Create instance
@@ -108,7 +123,54 @@ class CMS_Core
         return self::$instance;
     }
     
+    //! Get the pages tree
+    public function get_tree()
+    {
+        // Read from cache
+        $pages = $this->cache->get('pages-tree', $succ);
+        if ($succ)
+           return $pages;
+            
+        // Read from database
+        $dbpages = Page::raw_query()
+            ->select(array('id', 'parent_id', 'title', 'status', 'slug'))
+            ->order_by('order', 'ASC')
+            ->execute();
+
+        // Reindex pages based on their parent id
+        $indexed_pages = array();
+        foreach($dbpages as $p)
+            $indexed_pages[$p['id']] = $p;
+
+        // Create parent/child references
+        $pages = array();
+        foreach($indexed_pages as $idx => & $p)
+        {
+            if (!isset($p['childs']))
+                $p['childs'] = array();
+
+            if ($p['parent_id'] === null)
+                $pages[] = & $p;
+            else
+            {
+                $parent = & $indexed_pages[$p['parent_id']];
+                if (!isset($parent['childs']))
+                    $parent['childs'] = array($p);
+                else
+                    $parent['childs'][] = & $p;
+
+            }
+        }
+
+        // Save to cache
+        $this->cache->set('pages-tree', $pages);
+        return $pages;
+    }
+    
     //! Serve a url request to CMS
+    /**
+     * @param $url Force a custom url to server, or null if it is auto detected.
+     */
     public function serve($url = null)
     {
         if ($url === null)

@@ -30,8 +30,8 @@ a:hover {
 
 #wrapper{
     background-color: #757575;
-   
 }
+
 #content{
     min-height: 550px;
     padding: 0px 5px;
@@ -129,7 +129,7 @@ a:hover {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     border: 1px solid #898989;
-    position: absolute;
+    position: relative;
 }
 
 #pages_tree .resort{
@@ -162,26 +162,38 @@ a:hover {
 .sortable li{
     margin: 2px 0px;
     padding: 2px;
+    position: relative;
 }
 
-.sortable .add{
+.sortable .delete{
     padding-left: 15px;
     color: #d1d1d1;
+    position: absolute;
+    top: 2px;
+    right: 0px;
     display: none;
 }
 
-.sortable .edit{
-    font-size: 1.2em;
+.sortable .page{
     color: #ffff9a;
+    display: block;
 }
 
-.sortable .edit.draft{
+.sortable .page.draft{
     color: #dedede;
 }
 
+.sortable .page.selected{
+    background-color: #505050;
+}
 #pages_tree.sort-mode .sortable{
     padding-bottom: 10px;
 }
+
+#pages_tree.sort-mode .delete{
+    display: block;
+}
+
 #pages_tree.sort-mode .sortable li{
     background: #454545;
     border: 1px dotted #757575;
@@ -189,6 +201,7 @@ a:hover {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     margin: 4px 0px;
+    padding-right: 10px;
 }
 .ui-sortable-placeholder{
     background-color: gray !important;
@@ -269,7 +282,6 @@ a:hover {
 
 .ui-form .button.suggest{
     height: 14px;
-    z-index: 1000;
 }
 
 /** ui-grid **/
@@ -372,5 +384,28 @@ a:hover {
 .ui-grid img{
     float: right;
     margin: 0px 5px;
+}
+
+
+/** Icons **/
+.add {
+    background: url('images/add-16.png') no-repeat left center;
+    padding-left: 16px;
+}
+
+.delete {
+    background: url('images/delete-16.png') no-repeat left center;
+    padding-left: 16px;
+}
+
+.edit{
+    background: url('images/edit-16.png') no-repeat left center;
+    padding-left: 16px;
+}
+
+
+.resort {
+    background: url('images/edit-16.png') no-repeat 5px center;
+    padding-left: 24px;
 }
 

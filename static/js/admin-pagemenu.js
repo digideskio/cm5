@@ -12,30 +12,31 @@ $(document).ready(function(){
                 grid: [10,10],
                 axis: 'y',
                 update: function(event, ui) { 
+
                     if (ui.sender != null)
                         return;
-//                    console.log($(this));
-//                    console.log($(this).sortable('serialize'));
+
                     var page_id = parseInt(ui.item.attr('id').replace(/page_/, ''));
+                    var order = ui.item.parent().sortable('serialize');
                     var par = ui.item.parent().parent('li');
-                    
+
                     if (par.length == 0)
                         parent_id = '';
                     else
                         parent_id = parseInt(par.attr('id').replace(/page_/, ''));
                     
-                    $.post(page_id + '/+move/', { parent_id: parent_id});
+                    $.post(page_id + '/+move/?' + order, { parent_id: parent_id});
                 }
 	        }).disableSelection().sortable('enable');
 	        $('#pages_tree').toggleClass('sort-mode');
 	        $(this).toggleClass('pressed');
-	        $('#pages_tree ul a').click(function(){return false;});
+	        $('#pages_tree ul a.page').click(function(){return false;});
         },
         function(){
             $('#pages_tree .sortable').sortable('disable');
 	        $('#pages_tree').toggleClass('sort-mode');
 	        $(this).toggleClass('pressed');
-	        $('#pages_tree ul a').unbind('click');
+	        $('#pages_tree ul a.page').unbind('click');
         }
     );
     
