@@ -31,6 +31,10 @@ a:active {
     color: #444444;
 }
 
+#spacer{
+    clear: both;
+}
+
 #footer{
     clear: both;
     text-align: right;

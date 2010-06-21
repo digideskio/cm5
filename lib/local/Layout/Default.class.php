@@ -66,7 +66,8 @@ class Layout_Default extends Layout
         );
         etag('div id="main"',
             $def_content = 
-            tag('div id="content"')
+            tag('div id="content"'),
+            tag('div id="spacer"')
         );
         etag('div id="footer"', 
             tag('a', 'PHPlibs', array('href' => 'http://phplibs.kmfa.net')),' skeleton'
