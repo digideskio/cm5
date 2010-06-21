@@ -13,7 +13,7 @@ class Page extends DB_Record
         'body',
         'author' => array('fk' => 'User'),
         'status',
-        'created',
+        'created' => array('type' => 'datetime'),
         'lastmodified' => array('type' => 'datetime'),
         'order'
     );

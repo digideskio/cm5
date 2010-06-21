@@ -36,7 +36,7 @@ class UI_CreatePage extends Output_HTML_Form
     {   
         $values['parent_id'] = $this->parent_id;
         $p = Page::create($values);
-        UrlFactory::craft('page.edit', $p)->redirect();
+        UrlFactory::craft('page.edit', $p->id)->redirect();
     }
 };
 
