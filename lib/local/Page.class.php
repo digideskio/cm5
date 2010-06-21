@@ -25,6 +25,25 @@ class Page extends DB_Record
             return '/' . $this->slug;
         return $p->full_path() . '/' . $this->slug;
     }
+    
+    public function delete_all()
+    {
+        foreach($this->subpages->all() as $p)
+            $p->delete_all();
+        $this->delete();
+    }
+    
+    public function delete_move_orphans()
+    {
+        // Move all childs to this node's parent
+        Page::raw_query()
+            ->update()
+            ->set('parent_id', $this->parent_id)
+            ->where('parent_id = ?')
+            ->execute($this->id);
+
+        $this->delete();
+    }
 }
 Page::events()->connect('op.pre.save', function($e){
 

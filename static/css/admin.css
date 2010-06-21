@@ -159,13 +159,13 @@ a:hover {
     margin: 1px 0px;
 }
 
-.sortable li{
+#pages_tree .sortable li{
     margin: 2px 0px;
     padding: 2px;
     position: relative;
 }
 
-.sortable .delete{
+#pages_tree .sortable .delete, #pages_tree .sortable .add{
     padding-left: 15px;
     color: #d1d1d1;
     position: absolute;
@@ -174,23 +174,27 @@ a:hover {
     display: none;
 }
 
-.sortable .page{
+#pages_tree .sortable .add{
+    right: 16px;
+}
+
+#pages_tree .sortable .page{
     color: #ffff9a;
     display: block;
 }
 
-.sortable .page.draft{
+#pages_tree .sortable .page.draft{
     color: #dedede;
 }
 
-.sortable .page.selected{
+#pages_tree .sortable .page.selected{
     background-color: #505050;
 }
 #pages_tree.sort-mode .sortable{
     padding-bottom: 10px;
 }
 
-#pages_tree.sort-mode .delete{
+#pages_tree.sort-mode .delete, #pages_tree.sort-mode .add{
     display: block;
 }
 
@@ -237,6 +241,14 @@ a:hover {
     font-size: 0.9em;
 }
 
+.ui-form dt.type-radio{
+    margin-bottom: 10px;
+}
+
+.ui-form dt.type-radio span{
+    display: block;
+}
+
 .ui-form input[type=text], .ui-form textarea{
     border: 1px solid black;
     -moz-border-radius: 3px;
@@ -246,6 +258,7 @@ a:hover {
     width: 98%;
     background-color: #dedede;
 }
+
 .ui-form input[type=text]{
     height: 16px;
 }
@@ -403,6 +416,10 @@ a:hover {
     padding-left: 16px;
 }
 
+.download{
+    background: url('images/download-16.png') no-repeat left center;
+    padding-left: 16px;
+}
 
 .resort {
     background: url('images/edit-16.png') no-repeat 5px center;

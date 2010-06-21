@@ -61,8 +61,7 @@ Stupid::chain_reaction();
 
 function default_admin_panel()
 {
-    Layout::open('admin')->activate();
-    etag('a', 'Edit page', array('href' => url('/admin/page/1')));
+    UrlFactory::craft('page.admin')->redirect();
 }
 
 function tool_translit()

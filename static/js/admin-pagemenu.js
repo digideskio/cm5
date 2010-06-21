@@ -1,6 +1,8 @@
 
 $(document).ready(function(){
 
+    var editor; // The ckeditor instance
+
     // Pages tree
     $('#pages_tree .resort.button').toggle(
         function(){
@@ -8,7 +10,7 @@ $(document).ready(function(){
 	            connectWith: '.sortable',
                 helper: 'original',
                 tolerance: 'pointer',
-                opacity: 0.6,
+                opacity: 0.2,
                 grid: [10,10],
                 axis: 'y',
                 update: function(event, ui) { 
@@ -57,37 +59,49 @@ $(document).ready(function(){
     }
 	else
 	{
-	    var input = $('.ui-page-form input[name=slug]');
-	    var suggest;
-	    input.parent().append(
+
+	    $('.ui-page-form input[name=slug]')
+	    .parent().append(
 	        suggest = $('<span class="suggest button"/>')
 	        .text('suggest')
 	        .click(request_translit)
         );
-        var io = input.offset();
-        var new_off = {
-            left: io.left + input.innerWidth() - suggest.outerWidth() - 1,
-            top: io.top + ((input.outerHeight() -  suggest.outerHeight()) /2)
-        };
-        suggest.offset(new_off);
+
+	    function reposition_suggest_btn()
+	    {
+    	    var input = $('.ui-page-form input[name=slug]');
+	        var suggest = $(".suggest.button");
+            var io = input.offset();
+            var new_off = {
+                left: io.left + input.innerWidth() - suggest.outerWidth() - 1,
+                top: io.top + ((input.outerHeight() -  suggest.outerHeight()) /2)
+            };
+            suggest.offset(new_off);
+        }
+        $(window).bind('resize', reposition_suggest_btn);
+        reposition_suggest_btn();
 	}
 	
 	// Page editor ckeditor
 	if ($('#page_editor textarea').length)
-    	CKEDITOR.replace($('#page_editor textarea')[0]);
-	
-	// Guard page
-	var enable_page_guard = function(){
-	    if (window.onbeforeunload != null)
-	        return;
-        window.onbeforeunload = function(){
+    	editor = CKEDITOR.replace($('#page_editor textarea')[0]);
+
+	//--- PAGE GUARD ---//
+    var dirty = false;
+
+    window.onbeforeunload = function(){
+        if (dirty || editor.checkDirty())
             return 'You have not saved this article. Any changes you made will be lost!';
-        };
-	}
+    };	
+    
+	// Guard page
+	var page_set_dirty = function(){
+	    dirty = true;	}
+	    
     $('#page_editor input[type=submit]').click(function(){ window.onbeforeunload = null; });
-    $('#page_editor textarea[name=body]').change(enable_page_guard);
-    $('#page_editor input[type=text]').change(enable_page_guard);
-    $('#page_editor input[type=text]').change(enable_page_guard);
-    $('#page_editor select').change(enable_page_guard);
+    $('#page_editor textarea[name=body]').change(page_set_dirty);
+    $('#page_editor input[type=text]').change(page_set_dirty);
+    $('#page_editor input[type=text]').change(page_set_dirty);
+    $('#page_editor select').change(page_set_dirty);
 
 });

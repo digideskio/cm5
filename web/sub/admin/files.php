@@ -51,6 +51,8 @@ function show_files()
     etag('div',
         $tab->render(),
         UrlFactory::craft('upload.create')->anchor('Upload a new file')
+            ->add_class('button')
+            ->add_class('download')
     );
 }
 ?>

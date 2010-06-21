@@ -558,10 +558,13 @@ class Output_HTML_Form
             
         // Render all fields
         foreach($this->fields as $id => $field)
-        {	etag('dt')->push_parent();
-        	// Line type
+        {
+            etag('dt')->add_class('type-' . $field['type'])->push_parent();
+
+            // Line type
             if ($field['type'] == 'line')
-            {  	etag('hr');
+            {
+                etag('hr');
             	Output_HTMLTag::pop_parent(); 	
             	continue;
             }
@@ -589,10 +592,14 @@ class Output_HTML_Form
             case 'radio':
                 foreach($field['optionlist'] as $opt_key => $opt_text)
                 {
-                	etag('input type="radio"', $field['htmlattribs'],
-                		array('name'=>$id, 'value'=>$opt_key),
-                		(($field['usepost']) && isset($field['value']) && ($opt_key == $field['value']))?array('checked'=>'checked'):array(),
-                		$opt_text
+                    etag('span',
+                        tag('input type="radio"', $field['htmlattribs'],
+                    		array('name'=>$id, 'value'=>$opt_key),
+                		    (($field['usepost']) && isset($field['value']) && ($opt_key == $field['value']))
+                		        ?array('checked'=>'checked')
+                		        :array()
+                	    ),
+                		(string)$opt_text
                 	);
                 }
                 break;

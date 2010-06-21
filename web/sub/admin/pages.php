@@ -1,8 +1,10 @@
 <?
 
 Stupid::add_rule('move_page',
-    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+move/'),
-    array('type' => 'url_params', 'op' => 'isset', 'param' => 'parent_id', 'param_type' => 'post')
+    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+move/')
+);
+Stupid::add_rule('delete_page',
+    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+delete/')
 );
 Stupid::add_rule('edit_page',
     array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/')
@@ -19,7 +21,18 @@ function show_pages_tree($current_page_id)
     {   
         $li = tag('li id="page_' . $p['id'] . ' class=""',
             $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
-            tag('a html_escape_off class="delete"', '&nbsp;', array('href' => UrlFactory::craft('page.delete', $p['id']))),
+            tag('a html_escape_off class="delete"', '&nbsp;', 
+                array(
+                    'href' => UrlFactory::craft('page.delete', $p['id']),
+                    'title' => 'Delete this page'
+                )
+            ),
+            tag('a html_escape_off class="add"', '&nbsp;', 
+                array(
+                    'href' => UrlFactory::craft('page.create', $p['id']),
+                    'title' => 'Add subpage'
+                )
+            ),
             $ul = tag('ul class="sortable"')
         );
         
@@ -60,6 +73,16 @@ function edit_page($id)
     
     show_pages_tree($id);
     etag('div id="page_editor"', $frm->render());
+}
+
+function delete_page($page_id)
+{
+    if (!($p = Page::open($page_id)))
+        not_found();
+
+    Layout::open('admin')->activate();
+    $frm = new UI_DeletePage($p);
+    etag('div', $frm->render());
 }
 
 function create_page()
