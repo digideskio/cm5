@@ -56,6 +56,6 @@ DB_Conn::events()->connect('stmt.executed',
 date_default_timezone_set(Config::get('site.timezone'));
 
 // Initialize CMS
-CMS_Core::init(new Cache_Apc('a'));
+CMS_Core::init(new Cache_File(dirname(__FILE__) . '/cache'));
 
 ?>

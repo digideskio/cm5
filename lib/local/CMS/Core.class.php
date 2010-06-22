@@ -197,22 +197,29 @@ class CMS_Core
         {  
             // Check for CMS pages
             Layout::open('default')->activate();
-            $p = Page::open_query()
-                ->where('slug = ?')
-                ->limit(1)
-                ->execute($url);
+            
+            if ($url == '')
+                $p = Page::open(1);   // Home page
+            else
+            {
+                $p = Page::open_query()
+                    ->where('slug = ?')
+                    ->limit(1)
+                    ->execute($url);
 
-            if (!$p)
-                not_found();
-
-            $this->events->filter('page.pre-render', $p[0], array('url' => $url, 'response' => $response));
-            etag('h1', $p[0]->title);
-            etag('div html_escape_off', $p[0]->body);
+                if (!$p)
+                    not_found();
+                $p = $p[0];
+            }
+            
+            $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
+            etag('h1', $p->title);
+            etag('div html_escape_off', $p->body);
             Layout::open('default')->deactivate();
             $response->document = Layout::open('default')->get_document()->render();
 
             // Trigger post render
-            $this->events->filter('page.post-render', $response, array('url' => $url, 'page' => $p[0]));
+            $this->events->filter('page.post-render', $response, array('url' => $url, 'page' => $p));
         }
 
         // Show response

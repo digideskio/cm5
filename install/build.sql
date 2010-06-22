@@ -27,17 +27,15 @@ create table `pages` (
     `slug` varchar(255) not null,
     `parent_id` integer,
     `title` varchar(512) not null,
-    `excerpt` TEXT not null,
     `body` MEDIUMTEXT not null,
     `author` varchar(50) not null,
     `created` datetime not null,
     `lastmodified` datetime not null,
     `status` enum('published', 'draft') default 'draft',
+    `system` bool not null default false,
     `order` int default 0,
     PRIMARY KEY(`id`),
-    UNIQUE (`slug`),
     INDEX (`parent_id`)
-    
 ) ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
@@ -58,6 +56,10 @@ CREATE TABLE `uploads` (
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
-
+-- Default user
 INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
+
+-- Home page
+INSERT INTO `pages` (`system`, `title`, `slug`, `body`, `author`, `created`, `lastmodified`, `status`)
+    VALUES(true, 'Home', '', '', 'root', NOW(), NOW(), 'published');
 

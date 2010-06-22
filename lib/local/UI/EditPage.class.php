@@ -6,7 +6,8 @@ class UI_EditPage extends Output_HTML_Form
     {
         $this->page = $page;
         
-        parent::__construct(array(
+        $title = 'Edit page';
+        $fields = array(
 			'title' => array('display' => 'Title', 'value' => $page->title),
 			'slug' => array('display' => 'Slug', 'value' => $page->slug, 'regcheck' => '/^[\w\-]{1,}$/',
 			    'onerror' => 'You must setup a slug for this article'),
@@ -19,11 +20,19 @@ class UI_EditPage extends Output_HTML_Form
 			 ),
 			'body' => array('display' => '', 'type'=> 'textarea', 'value' => $page->body,
 			    'htmlattribs' => array('id' => 'bodyeditor'))
-        ),
-        array('title' => 'Edit page',
-            'css' => array('ui-form', 'ui-page-form'),
-		    'buttons' => array(
-		        'save' => array('display' =>'Save')
+        );
+        
+        if ($page->system)
+        {
+            unset($fields['slug'], $fields['title'], $fields['status']);
+            $title = "Edit \"{$page->title}\" page";
+        }
+        
+        parent::__construct($fields,
+            array('title' => $title,
+                'css' => array('ui-form', 'ui-page-form'),
+		        'buttons' => array(
+		            'save' => array('display' =>'Save')
                 )
             )
         );

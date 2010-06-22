@@ -52,14 +52,15 @@ $(document).ready(function(){
          );
     };
 
-    if ($('.ui-page-form input[name=slug]').val() == '')
+    if ($('.ui-page-form input[name=slug]').length == 0)
+        ;
+    else if ($('.ui-page-form input[name=slug]').val() == '')
     {
         $('.ui-page-form input[name=title]').change(request_translit);
         request_translit();
     }
 	else
 	{
-
 	    $('.ui-page-form input[name=slug]')
 	    .parent().append(
 	        suggest = $('<span class="suggest button"/>')

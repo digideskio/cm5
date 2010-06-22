@@ -6,10 +6,10 @@ class Page extends DB_Record
 
     static public $fields = array(
         'id' => array('pk' => true, 'ai' => true),
+        'system' => array('default' => false),
         'slug',
         'parent_id' => array('fk' => 'Page'),
         'title',
-        'excerpt',
         'body',
         'author' => array('fk' => 'User'),
         'status',
@@ -54,6 +54,11 @@ Page::events()->connect('op.pre.save', function($e){
 Page::events()->connect('op.pre.create', function($e){
     $e->filtered_value['created'] = new DateTime();
     $e->filtered_value['lastmodified'] = new DateTime();
+});
+
+Page::events()->connect('op.pre.delete', function($e){
+    if ($e->arguments['record']->system)
+        $e->filtered_value = true;
 });
 
 Page::one_to_Many('Page', 'parent', 'subpages');

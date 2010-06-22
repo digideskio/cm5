@@ -53,6 +53,14 @@ if (! is_writable(dirname(__FILE__) . '/../uploads/thumbs'))
     exit;
 }
 
+if (! is_writable(dirname(__FILE__) . '/../cache'))
+{
+    etag('div class="error" nl_escape_on', 'Cannot continue installing ' . Config::get('site.title') .'
+        The thumbnails cache folder "/cache" must be writable, you can change
+        permissions and retry installation.');
+    exit;
+}
+
 require $fn_config;
 $f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build.sql');
 etag('div', $f->render());
