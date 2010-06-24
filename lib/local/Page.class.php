@@ -45,6 +45,7 @@ class Page extends DB_Record
         $this->delete();
     }
 }
+
 Page::events()->connect('op.pre.save', function($e){
 
     $r = $e->arguments['record'];

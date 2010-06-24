@@ -40,6 +40,9 @@ class Layout_Default extends Layout
                     continue;
 
                 $sublink = $parent_link->create_link($p['title'], '/' . $p['slug']);
+                if ($p['slug'] == '')
+                    $sublink->set_autoselect_mode('equal');
+                    
                 $add_entries($sublink, $p['childs']);
             }
         };

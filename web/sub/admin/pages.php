@@ -19,23 +19,30 @@ function show_pages_tree($current_page_id)
 {
     $draw_tree_entry = function($p) use(&$draw_tree_entry, $current_page_id)
     {   
-        $li = tag('li id="page_' . $p['id'] . ' class=""',
-            $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
-            tag('a html_escape_off class="delete"', '&nbsp;', 
-                array(
-                    'href' => UrlFactory::craft('page.delete', $p['id']),
-                    'title' => 'Delete this page'
-                )
-            ),
-            tag('a html_escape_off class="add"', '&nbsp;', 
-                array(
-                    'href' => UrlFactory::craft('page.create', $p['id']),
-                    'title' => 'Add subpage'
-                )
-            ),
-            $ul = tag('ul class="sortable"')
-        );
-        
+        if ($p['system'])
+            $li = tag('li',
+                $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status'])
+            );
+        else
+        {
+            $li = tag('li id="page_' . $p['id'] . ' ',
+                $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
+                tag('a html_escape_off class="delete"', '&nbsp;', 
+                    array(
+                        'href' => UrlFactory::craft('page.delete', $p['id']),
+                        'title' => 'Delete this page'
+                    )
+                ),
+                tag('a html_escape_off class="add"', '&nbsp;', 
+                    array(
+                        'href' => UrlFactory::craft('page.create', $p['id']),
+                        'title' => 'Add subpage'
+                    )
+                ),
+                $ul = tag('ul class="sortable"')
+            );
+        }
+                
         if ($current_page_id == $p['id'])
             $pg->add_class('selected');
 

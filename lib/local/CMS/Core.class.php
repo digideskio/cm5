@@ -133,7 +133,7 @@ class CMS_Core
             
         // Read from database
         $dbpages = Page::raw_query()
-            ->select(array('id', 'parent_id', 'title', 'status', 'slug'))
+            ->select(array('id', 'parent_id', 'title', 'status', 'slug', 'system'))
             ->order_by('order', 'ASC')
             ->execute();
 
