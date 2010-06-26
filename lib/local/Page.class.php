@@ -8,6 +8,7 @@ class Page extends DB_Record
         'id' => array('pk' => true, 'ai' => true),
         'system' => array('default' => false),
         'slug',
+        'uri',
         'parent_id' => array('fk' => 'Page'),
         'title',
         'body',
@@ -20,7 +21,6 @@ class Page extends DB_Record
     
     public function full_path()
     {
-        return '/' . $this->slug;
         if (!($p = $this->parent))
             return '/' . $this->slug;
         return $p->full_path() . '/' . $this->slug;
@@ -46,15 +46,26 @@ class Page extends DB_Record
     }
 }
 
-Page::events()->connect('op.pre.save', function($e){
-
+Page::events()->connect('op.pre.save', function($e)
+{
+    // Update last modified
     $r = $e->arguments['record'];
     $r->lastmodified = new DateTime();
+    
+    // Update uri
+    $r->uri = $r->full_path();
 });
 
 Page::events()->connect('op.pre.create', function($e){
     $e->filtered_value['created'] = new DateTime();
     $e->filtered_value['lastmodified'] = new DateTime();
+});
+
+Page::events()->connect('op.post.create', function($e){
+    // Update uri
+    $r = $e->arguments['record'];
+    $r->uri = $r->full_path();
+    $r->save();
 });
 
 Page::events()->connect('op.pre.delete', function($e){

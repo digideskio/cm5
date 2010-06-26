@@ -3,6 +3,10 @@
 //! CMS Core componment
 class CMS_Core
 {
+
+    //! Version of CMS Engine
+    private $version = array(0, 9, 9);
+    
     //! Events dispatcher with all core events
     protected $events = null;
     
@@ -123,6 +127,12 @@ class CMS_Core
         return self::$instance;
     }
     
+    //! Get version of CMS
+    public function get_version()
+    {
+        return $this->version;
+    }
+    
     //! Get the pages tree
     public function get_tree()
     {
@@ -133,7 +143,7 @@ class CMS_Core
             
         // Read from database
         $dbpages = Page::raw_query()
-            ->select(array('id', 'parent_id', 'title', 'status', 'slug', 'system'))
+            ->select(array('id', 'parent_id', 'title', 'status', 'uri', 'system'))
             ->order_by('order', 'ASC')
             ->execute();
 
@@ -158,7 +168,6 @@ class CMS_Core
                     $parent['childs'] = array($p);
                 else
                     $parent['childs'][] = & $p;
-
             }
         }
 
@@ -174,7 +183,7 @@ class CMS_Core
     public function serve($url = null)
     {
         if ($url === null)
-            $url = substr((isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:''), 1);
+            $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
 
         // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);
@@ -203,7 +212,7 @@ class CMS_Core
             else
             {
                 $p = Page::open_query()
-                    ->where('slug = ?')
+                    ->where('uri = ?')
                     ->limit(1)
                     ->execute($url);
 

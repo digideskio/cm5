@@ -63,8 +63,20 @@ class Layout_Admin extends Layout
             $def_content = 
             tag('div id="content"')
         );
+        
+        
+        $version = CMS_Core::get_instance()->get_version();
         etag('div id="footer"', 
-            tag('a', 'PHPlibs', array('href' => 'http://phplibs.kmfa.net')),' skeleton'
+            tag('ul',
+                tag('li',
+                    tag('a', "CMS v{$version[0]}.{$version[1]}.{$version[2]}",
+                        array('href' => 'http://cms.kmfa.net', 'target' => '_blank'))
+                ),
+                tag('li',
+                    'made with ', tag('a', 'PHPlibs',
+                        array('href' => 'http://phplibs.kmfa.net', 'target' => '_blank'))
+                )
+            )
         );
         
         if (Config::get('site.google_analytics'))

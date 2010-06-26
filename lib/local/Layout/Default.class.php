@@ -39,8 +39,8 @@ class Layout_Default extends Layout
                 if ($p['status'] !== 'published')
                     continue;
 
-                $sublink = $parent_link->create_link($p['title'], '/' . $p['slug']);
-                if ($p['slug'] == '')
+                $sublink = $parent_link->create_link($p['title'], $p['uri']);
+                if ($p['uri'] == '/')
                     $sublink->set_autoselect_mode('equal');
                     
                 $add_entries($sublink, $p['childs']);

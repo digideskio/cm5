@@ -25,6 +25,7 @@ DEFAULT CHARSET='UTF8';
 create table `pages` (
     `id` integer auto_increment not null,
     `slug` varchar(255) not null,
+    `uri` varchar(512) not null,
     `parent_id` integer,
     `title` varchar(512) not null,
     `body` MEDIUMTEXT not null,
@@ -60,6 +61,6 @@ DEFAULT CHARSET='UTF8';
 INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
 
 -- Home page
-INSERT INTO `pages` (`system`, `title`, `slug`, `body`, `author`, `created`, `lastmodified`, `status`)
-    VALUES(true, 'Home', '', '', 'root', NOW(), NOW(), 'published');
+INSERT INTO `pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)
+    VALUES(true, 'Home', '', '', '/', 'root', NOW(), NOW(), 'published');
 
