@@ -20,8 +20,8 @@
  */
 
 
-Layout::open('default')->activate();
-Layout::open('default')->get_document()->add_meta('noindex', array('name' => 'robots'));
+Layout::open('admin')->activate();
+Layout::open('admin')->get_document()->add_meta('noindex', array('name' => 'robots'));
 
 // Get the reference url to redirect back
 function reference_url()

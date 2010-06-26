@@ -34,11 +34,15 @@ Authn_Realm::set_session(
 );
 
 // Special handling for special urls
-Stupid::add_rule(create_function('', 'require(\'../login.php\');'),
+Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
     array('type' => 'url_path', 'chunk[-1]' => '/\+login/')
 );
-Stupid::add_rule(create_function('', 'require(\'../login.php\');'),
+Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
     array('type' => 'url_path', 'chunk[-1]' => '/\+logout/')
+);
+
+Stupid::add_rule(create_function('', "Net_HTTP_Response::redirect(url(\$_SERVER['PATH_INFO'] . '/+login'));"),
+    array('type' => 'authn', 'op' => 'isanon')
 );
 
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/files.php');    },

@@ -57,6 +57,7 @@ class Layout_Admin extends Layout
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', Config::get('site.title')),
+            tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
         etag('div id="main"',
@@ -92,6 +93,15 @@ class Layout_Admin extends Layout
               })();");
         $this->set_default_container($def_content);
 
+        // Initialize login info
+        $loginfo = $this->get_document()->get_body()->getElementById('login-info');
+        if (Authn_Realm::has_identity())
+        {
+            $loginfo->append(
+                tag('span class="user"', Authn_Realm::get_identity()->id()), ' ',
+                tag('a', 'logout', array('href' => $_SERVER['REQUEST_URI'] . "/+logout"))
+            );
+        }
         // Search widgeet
         $this->init_menu();
         $this->deactivate();

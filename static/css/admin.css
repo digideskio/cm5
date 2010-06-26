@@ -34,7 +34,23 @@ a:hover {
 
 #content{
     min-height: 550px;
-    padding: 0px 5px;
+    padding: 1px 5px;
+}
+
+#login-info{
+    position: absolute;
+    top: 25px;
+    right: 15px;
+    font-size: 0.85em;
+}
+
+#login-info a{
+    color: gray;
+}
+
+#login-info .user{
+    font-size: 1.2em;
+    color: white;
 }
 
 #footer{
@@ -256,7 +272,7 @@ a:hover {
     display: block;
 }
 
-.ui-form input[type=text], .ui-form textarea{
+.ui-form input[type=text], .ui-form input[type=password], .ui-form textarea{
     border: 1px solid black;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -302,6 +318,16 @@ a:hover {
 
 .ui-form .button.suggest{
     height: 14px;
+}
+
+.ui-form.ui-login{
+    width: 300px;
+    margin-top: 150px;
+}
+
+.ui-form.ui-login input[type=text], .ui-form.ui-login input[type=password]{
+    font-size: 1.5em;
+    height: auto;
 }
 
 /** ui-grid **/
