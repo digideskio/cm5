@@ -62,5 +62,5 @@ INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('ro
 
 -- Home page
 INSERT INTO `pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)
-    VALUES(true, 'Home', '', '', '/', 'root', NOW(), NOW(), 'published');
+    VALUES(true, 'Home', '', '/', '', 'root', NOW(), NOW(), 'published');
 

@@ -48,7 +48,7 @@ class SmartMenuEntry
 
     //! Render this entry and all its childs;
     public function render()
-    {   $REQUEST_URL = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:$_SERVER['REQUEST_URI']);
+    {   $REQUEST_URL = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
 
         if ($this->type === 'link')
         {

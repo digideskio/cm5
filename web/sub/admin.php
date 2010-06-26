@@ -57,8 +57,6 @@ Stupid::add_rule('tool_translit',
 Stupid::set_default_action('default_admin_panel');
 Stupid::chain_reaction();
 
-
-
 function default_admin_panel()
 {
     UrlFactory::craft('page.admin')->redirect();
