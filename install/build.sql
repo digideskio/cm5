@@ -71,7 +71,7 @@ INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('ro
 -- Default groups
 INSERT INTO `groups` (`groupname`) values
     ('admin'),
-    ('editors');
+    ('editor');
     
 INSERT INTO `memberships` (`username`, `groupname`) values
     ('root', 'admin');

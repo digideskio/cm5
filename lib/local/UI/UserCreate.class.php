@@ -20,7 +20,9 @@ class UI_UserCreate extends Output_HTML_Form
         array('title' => 'Create new user',
             'css' => array('ui-form'),
 		    'buttons' => array(
-		        'create' => array('display' => 'Create')
+		        'create' => array('display' => 'Create'),
+		        'cancel' => array('display' => 'Cancel', 'type' => 'button',
+		            'onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'")
                 )
             )
         );
