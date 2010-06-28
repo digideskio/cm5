@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS `uploads`;
 DROP TABLE IF EXISTS `pages`;
+DROP TABLE IF EXISTS `memberships`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `groups`;
 
@@ -13,11 +14,18 @@ create table `users` (
 DEFAULT CHARSET='UTF8';
 
 
--- Create groups
-create table `groups` (
+-- Create memberships
+create table `memberships` (
     `username` varchar(50) not null,
     `groupname` varchar(50) not null,
     PRIMARY KEY(`username`, `groupname`)
+) ENGINE=InnoDB
+DEFAULT CHARSET='UTF8';
+
+-- Create groups
+create table `groups` (
+    `groupname` varchar(50) not null,
+    PRIMARY KEY(`groupname`)
 ) ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
@@ -60,7 +68,15 @@ DEFAULT CHARSET='UTF8';
 -- Default user
 INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
 
--- Home page
+-- Default groups
+INSERT INTO `groups` (`groupname`) values
+    ('admin'),
+    ('editors');
+    
+INSERT INTO `memberships` (`username`, `groupname`) values
+    ('root', 'admin');
+    
+-- System pages
 INSERT INTO `pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)
     VALUES(true, 'Home', '', '/', '', 'root', NOW(), NOW(), 'published');
 

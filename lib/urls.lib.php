@@ -11,4 +11,8 @@ UrlFactory::register('upload.view', '$f_id', '/file/{$f_id}');
 UrlFactory::register('upload.thumb', '$f_id', '/file/{$f_id}/+thumb');
 UrlFactory::register('upload.edit', '$f_id', '/admin/files/{$f_id}/+edit');
 UrlFactory::register('upload.delete', '$f_id', '/admin/files/{$f_id}/+delete');
+UrlFactory::register('user.edit', '$u', '/admin/user/{$u}/+edit');
+UrlFactory::register('user.delete', '$u', '/admin/user/{$u}/+delete');
+UrlFactory::register('user.create', '', '/admin/user/+create');
+UrlFactory::register('user.admin', '', '/admin/users');
 ?>

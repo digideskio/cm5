@@ -396,14 +396,27 @@ class Output_HTML_Form
 				    );
 				}
 			}
-
-			
 			else if ($field['type'] == 'checkbox')
-			{	// Checkboxes
+			{
+			    // Checkboxes
 			    $field['value'] = (isset($_POST[$k]) && ($_POST[$k] == 'on'));
-            }			
+            }
+			else if ($field['type'] == 'checklist')
+			{
+			    // Normalize values of checklist
+			    $field['value'] = array();
+			    if (isset($_POST[$k]))
+			    {
+			        foreach($_POST[$k] as $key => $on)
+			        {
+			            if ( isset($field['optionlist'][$key]) && ($on == 'on'))
+			                $field['value'][$key] = true;
+			        }
+			    }
+			}			
 			else if (isset($_POST[$k]))
-			{   // Store values for classic elements
+			{
+			    // Store values for classic elements
                 $field['value'] = $_POST[$k];
 			}
 			
@@ -608,7 +621,9 @@ class Output_HTML_Form
                 foreach($field['optionlist'] as $opt_key => $opt_text)
                 {	tag('option',
                 		array('value'=>$opt_key),
-                		(($field['usepost']) && isset($field['value']) && ($opt_key == $field['value']))?array('selected'=>'selected'):array(),
+                		(($field['usepost']) &&
+                		    isset($field['value']) &&
+                		    ($opt_key == $field['value']))?array('selected'=>'selected'):array(),
                 		$opt_text
                 	)->appendTo($select);
                 }
@@ -618,6 +633,17 @@ class Output_HTML_Form
             		$field['htmlattribs'],
             		(($field['usepost']) && isset($field['value']) && ($field['value']))?array('checked'=>'checked'):array()
             	);
+                break;
+            case 'checklist':
+                $ul = etag('ul class="ui-form-checklist');
+                foreach($field['optionlist'] as $key => $text)
+                {
+                    $ul->append(
+                        tag('li', $check = tag('input type="checkbox"')->attr('name', $id .'[' . $key .']'), $text)
+                    );
+                    if (($field['usepost']) && isset($field['value'][$key]) && ($field['value'][$key]))
+                        $check->attr('checked', 'checked');
+                }
                 break;
             case 'file':
             	etag('input type="file"', array('name' => $id), $field['htmlattribs']);
@@ -637,7 +663,8 @@ class Output_HTML_Form
         // Render buttons
         etag('div class="buttons"')->push_parent();
         foreach($this->options['buttons'] as $but_id => $but_parm)
-        {	$but_parm['htmlattribs']['name'] = $but_id;
+        {
+            $but_parm['htmlattribs']['name'] = $but_id;
         	$but_parm['htmlattribs']['value'] = $but_parm['display'];
         	        	
         	// Type

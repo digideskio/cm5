@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_Sitemap implements CMS_Module
+class CMS_Module_SEO implements CMS_Module
 {
     //! The name of the module
     public function info()
@@ -53,19 +53,19 @@ class CMS_Module_Sitemap implements CMS_Module
     public function event_page_request($event)
     {
         $response = $event->arguments['response'];
-        if ($event->arguments['url'] == 'sitemap.xml')
+        if ($event->arguments['url'] == '/sitemap.xml')
         {
             $event->filtered_value = true;
             $response->add_header('Content-Type: text/xml');
             $response->document = $this->generate_sitemap();
         }
-        else if ($event->arguments['url'] == 'sitemap.xsl')
+        else if ($event->arguments['url'] == '/sitemap.xsl')
         {
             $event->filtered_value = true;
             $response->add_header('Content-Type: text/xml');
             $response->document = file_get_contents(dirname(__FILE__) . '/sitemap.xsl');
         }
-        else if ($event->arguments['url'] == 'robots.txt')
+        else if ($event->arguments['url'] == '/robots.txt')
         {
             $event->filtered_value = true;
             $response->add_header('Content-Type: text/plain');
@@ -74,5 +74,5 @@ class CMS_Module_Sitemap implements CMS_Module
     }
 }
 
-CMS_Core::get_instance()->register_module(new CMS_Module_Sitemap());
+CMS_Core::get_instance()->register_module(new CMS_Module_SEO());
 ?>

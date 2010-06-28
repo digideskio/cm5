@@ -20,24 +20,14 @@
  */
 
 
-class User extends DB_Record
+class Membership extends DB_Record
 {
-    static public $table = 'users';
+    static public $table = 'memberships';
 
     static public $fields = array(
-        'username' => array('pk' => true),
-        'password',
-        'enabled'
-        );
+        'username' => array('pk' => true, 'fk' => 'User'),
+        'groupname' => array('pk' => true, 'fk' => 'Group')
+    );
 }
 
-User::events()->connect('op.pre.delete', function($e){
-    Membership::raw_query()
-        ->delete()
-        ->where('username = ?')
-        ->execute($e->arguments['record']->username);
-});
-
-User::one_to_many('Page', 'user', 'articles');
-Group::many_to_many('User', 'Membership', 'groups', 'users');
 ?>

@@ -80,9 +80,9 @@ a:hover {
     margin: 2px;
     cursor: pointer;
     font-weight: bold;
-    
     background-color: gray;
     padding: 2px 6px;
+    background-position: 5px center;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
@@ -312,6 +312,16 @@ a:hover {
     font-weight: bold;
 }
 
+.ui-form-checklist{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.ui-form-checklist input{
+    margin-right: 8px;
+}
+
 #page_editor .ui-form{
     width: auto;
 }
@@ -322,7 +332,7 @@ a:hover {
 
 .ui-form.ui-login{
     width: 300px;
-    margin-top: 150px;
+    margin-top: 110px;
 }
 
 .ui-form.ui-login input[type=text], .ui-form.ui-login input[type=password]{
@@ -459,3 +469,7 @@ a:hover {
     padding-left: 24px;
 }
 
+.button.add, .button.delete, .button.edit, .button.download{
+    padding: 5px 10px 5px 24px;
+    background-position: 5px center;
+}

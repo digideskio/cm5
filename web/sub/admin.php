@@ -28,8 +28,8 @@ $auth = new Authn_Backend_DB(array(
 Authn_Realm::set_backend($auth);
 Authn_Realm::set_session(
     new Authn_Session_Cache(
-        new Cache_Apc('0x0lab-sessions'),
-        new Net_HTTP_Cookie('0x0lab-session', null)
+        new Cache_File(Config::get('site.cache_folder'), 'session_'),
+        new Net_HTTP_Cookie('cms-session', null)
     )
 );
 
@@ -53,6 +53,9 @@ Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/pages.p
 );
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/modules.php');    },
     array('type' => 'url_path', 'chunk[2]' => '/^modules?$/')
+);
+Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/users.php');    },
+    array('type' => 'url_path', 'chunk[2]' => '/^users?$/')
 );
 Stupid::add_rule('tool_translit',
     array('type' => 'url_path', 'chunk[2]' => '/tools/', 'chunk[3]' => '/transliterate/'),

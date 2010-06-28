@@ -56,7 +56,7 @@ DB_Conn::events()->connect('stmt.executed',
 date_default_timezone_set(Config::get('site.timezone'));
 
 // Initialize CMS
-$cache_engine = new Cache_File(dirname(__FILE__) . '/cache');
+$cache_engine = new Cache_File(Config::get('site.cache_folder'), 'pages_');
 CMS_Core::init($cache_engine);
 
 ?>
