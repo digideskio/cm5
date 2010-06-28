@@ -13,8 +13,7 @@ class UI_UserEdit extends Output_HTML_Form
         $groupselected = array();
         foreach($u->groups->all() as $g)
             $groupselected[$g->groupname] = true;
-           
-        var_dump($groupselected);
+
         parent::__construct(array(
 			'password' => array('display' => 'Reset password', 'type' => 'password',
 			    'onerror' => 'Password must be at least 3 characters long.'),
@@ -39,7 +38,7 @@ class UI_UserEdit extends Output_HTML_Form
         $pass1 = $this->get_field_value('password');
         $pass2 = $this->get_field_value('password2');
         
-        if ((!empty($pass1)) && (!empty($pass2)))
+        if ((!empty($pass1)) || (!empty($pass2)))
             if ($pass1 != $pass2)
                 $this->invalidate_field('password2', 'Passwords do not match.');
     }
@@ -48,7 +47,7 @@ class UI_UserEdit extends Output_HTML_Form
     {
         $this->user->enabled = $values['enabled'];
         if (!empty($values['password']))
-            $this->user->password = $values['password'];
+            $this->user->password = sha1($values['password']);
         $this->user->save();
         Membership::raw_query()
             ->delete()

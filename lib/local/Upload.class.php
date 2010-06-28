@@ -154,7 +154,7 @@ class Upload extends DB_Record
     }
 }
 
-Upload::$thumb_cache = new Cache_File(Config::get('site.thumbs_folder'));
+Upload::$thumb_cache = new Cache_File(Config::get('site.cache_folder'), 'thumb_');
 Upload::events()->connect('op.pre.delete', function($e){
 
     $r = $e->arguments['record'];

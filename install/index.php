@@ -45,14 +45,6 @@ if (! is_writable(dirname(__FILE__) . '/../uploads'))
     exit;
 }
 
-if (! is_writable(dirname(__FILE__) . '/../uploads/thumbs'))
-{
-    etag('div class="error" nl_escape_on', 'Cannot continue installing ' . Config::get('site.title') .'
-        The thumbnails cache folder "/uploads/thumbs" must be writable, you can change
-        permissions and retry installation.');
-    exit;
-}
-
 if (! is_writable(dirname(__FILE__) . '/../cache'))
 {
     etag('div class="error" nl_escape_on', 'Cannot continue installing ' . Config::get('site.title') .'
