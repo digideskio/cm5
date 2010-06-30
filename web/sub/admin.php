@@ -33,6 +33,9 @@ Authn_Realm::set_session(
     )
 );
 
+// Initialize authorization
+$authz = new Authz_ResourceList();
+
 // Special handling for special urls
 Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
     array('type' => 'url_path', 'chunk[-1]' => '/\+login/')

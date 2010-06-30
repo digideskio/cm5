@@ -20,12 +20,12 @@ function show_pages_tree($current_page_id)
     $draw_tree_entry = function($p) use(&$draw_tree_entry, $current_page_id)
     {   
         if ($p['system'])
-            $li = tag('li',
+            $li = tag('li class="system-page"',
                 $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status'])
             );
         else
         {
-            $li = tag('li id="page_' . $p['id'] . ' ',
+            $li = tag('li class="user-page" id="page_' . $p['id'] . ' ',
                 $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
                 tag('a html_escape_off class="delete"', '&nbsp;', 
                     array(

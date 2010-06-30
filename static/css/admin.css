@@ -221,7 +221,7 @@ a:hover {
     display: block;
 }
 
-#pages_tree.sort-mode .sortable li{
+#pages_tree.sort-mode .sortable li.user-page{
     background: #454545;
     border: 1px dotted #757575;
     -moz-border-radius: 3px;

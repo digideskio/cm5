@@ -8,6 +8,7 @@ $(document).ready(function(){
         function(){
 	        $('#pages_tree .sortable').sortable({
 	            connectWith: '.sortable',
+	            cancel: '.system-page',
                 helper: 'original',
                 tolerance: 'pointer',
                 opacity: 0.2,
