@@ -74,7 +74,8 @@ INSERT INTO `groups` (`groupname`) values
     ('editor');
     
 INSERT INTO `memberships` (`username`, `groupname`) values
-    ('root', 'admin');
+    ('root', 'admin'),
+    ('root', 'editor');
     
 -- System pages
 INSERT INTO `pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)

@@ -11,7 +11,9 @@ class UI_UploadFile extends Output_HTML_Form
         array('title' => 'Upload a new file',
             'css' => array('ui-form'),
 		    'buttons' => array(
-		        'upload' => array('display' =>'Upload')
+		        'upload' => array('display' =>'Upload'),
+	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
+	                'onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
                 )
             )
         );

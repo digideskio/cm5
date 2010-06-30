@@ -119,6 +119,22 @@ class UI_InstallationForm extends Output_HTML_Form
                     DB_Conn::get_link()->error);
         }
         
+        
+        // Clear cache folder
+	    if (($dh = opendir(Config::get('site.cache_folder'))) !== FALSE)
+	    {
+		    while((($entry = readdir($dh)) !== FALSE))
+    		{	
+    		    if (!is_file(Config::get('site.cache_folder') . '/' . $entry))
+    				continue;
+			    
+			    if ($entry[0] == '.')   // Skip hidden files
+			        continue;
+			        
+				unlink(Config::get('site.cache_folder') . '/' . $entry);
+            }
+        }
+        			
         // Show result
         $this->hide();
         

@@ -34,7 +34,44 @@ Authn_Realm::set_session(
 );
 
 // Initialize authorization
-$authz = new Authz_ResourceList();
+$roles = new Authz_Role_FeederDatabase(array(
+    'role_query' => User::open_query()->where('username = ?'),
+    'role_name_field' => 'username',
+    'parents_query' => Membership::open_query()->where('username = ?'),
+    'parent_name_field' => 'groupname',
+    'parent_name_filter_func' => function($name)
+    {
+        return '@' . $name;
+    }
+));
+Authz::set_resource_list($list = new Authz_ResourceList());
+Authz::set_role_feeder($roles);
+//var_dump($roles->get_role('sque')->has_parent('@editor'));
+$list->add_resource('page');
+$list->add_resource('user');
+$list->add_resource('file');
+$list->add_resource('module');
+
+Authz::allow('page', '@editor', 'admin');
+Authz::allow('page', null, 'view');
+Authz::allow('page', '@editor', 'create');
+Authz::allow('page', '@editor', 'edit');
+Authz::allow('page', '@editor', 'delete');
+
+Authz::allow('file', '@editor', 'admin');
+Authz::allow('file', null, 'view');
+Authz::allow('file', '@editor', 'create');
+Authz::allow('file', '@admin', 'edit');
+Authz::allow('file', '@admin', 'delete');
+
+Authz::allow('module', '@admin', 'admin');
+Authz::allow('module', '@admin', 'view');
+Authz::allow('module', '@admin', 'change-status');
+Authz::allow('module', '@admin', 'config');
+
+Authz::allow('user', '@admin', 'admin');
+Authz::allow('user', '@admin', 'view');
+Authz::allow('user', '@admin', 'edit');
 
 // Special handling for special urls
 Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
@@ -49,16 +86,20 @@ Stupid::add_rule(create_function('', "Net_HTTP_Response::redirect(url(\$_SERVER[
 );
 
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/files.php');    },
-    array('type' => 'url_path', 'chunk[2]' => '/^files?$/')
+    array('type' => 'url_path', 'chunk[2]' => '/^files?$/'),
+    array('type' => 'authz', 'resource' => 'file', 'action' => 'admin')
 );
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/pages.php');    },
-    array('type' => 'url_path', 'chunk[2]' => '/^pages?$/')
+    array('type' => 'url_path', 'chunk[2]' => '/^pages?$/'),
+    array('type' => 'authz', 'resource' => 'page', 'action' => 'admin')
 );
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/modules.php');    },
-    array('type' => 'url_path', 'chunk[2]' => '/^modules?$/')
+    array('type' => 'url_path', 'chunk[2]' => '/^modules?$/'),
+    array('type' => 'authz', 'resource' => 'module', 'action' => 'admin')
 );
 Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/users.php');    },
-    array('type' => 'url_path', 'chunk[2]' => '/^users?$/')
+    array('type' => 'url_path', 'chunk[2]' => '/^users?$/'),
+    array('type' => 'authz', 'resource' => 'user', 'action' => 'admin')
 );
 Stupid::add_rule('tool_translit',
     array('type' => 'url_path', 'chunk[2]' => '/tools/', 'chunk[3]' => '/transliterate/'),

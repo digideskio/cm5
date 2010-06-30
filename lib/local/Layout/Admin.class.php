@@ -39,10 +39,14 @@ class Layout_Admin extends Layout
                 ->append($layout->get_mainmenu()->render());
         '));
 
-        $this->mainmenu->create_link('Pages', '/admin/page');
-        $this->mainmenu->create_link('Files', '/admin/files');
-        $this->mainmenu->create_link('Modules', '/admin/modules');
-        $this->mainmenu->create_link('Users', '/admin/user');
+        if (Authz::is_allowed('page', 'admin'))
+            $this->mainmenu->create_link('Pages', '/admin/page');
+        if (Authz::is_allowed('file', 'admin'))
+            $this->mainmenu->create_link('Files', '/admin/files');
+        if (Authz::is_allowed('module', 'admin'))
+            $this->mainmenu->create_link('Modules', '/admin/modules');
+        if (Authz::is_allowed('user', 'admin'))
+            $this->mainmenu->create_link('Users', '/admin/user');
     }
     
     protected function __init_layout()
