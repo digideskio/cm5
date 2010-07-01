@@ -7,7 +7,7 @@
             $this->themes = $themes;
             parent::__construct(
                 array(
-                    'selected' => array('caption' => 'Enabled', 'customdata' => 'true'),
+                    'selected' => array('caption' => 'Selected', 'customdata' => 'true'),
                     'description' => array('caption' => 'Description', 'customdata' => 'true'),
                 ),
                 array(

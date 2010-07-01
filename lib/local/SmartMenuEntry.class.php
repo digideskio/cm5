@@ -46,24 +46,30 @@ class SmartMenuEntry
     //! Extra custom html attributes entry's LI element.
     public $extra_attr = array();
 
+    //! Check if it is selected
+    public function is_selected()
+    {
+        $REQUEST_URL = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
+        if ($this->autoselect_mode === false)
+            return false;
+            
+        if ($this->autoselect_mode === 'prefix')
+            if( $this->link === substr($REQUEST_URL, 0, strlen($this->link)))
+                return true;
+        if ($this->autoselect_mode === 'equal')
+            if ($this->link === $REQUEST_URL)
+                return true;
+        return false;
+    }
+    
     //! Render this entry and all its childs;
     public function render()
-    {   $REQUEST_URL = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
-
+    {
         if ($this->type === 'link')
         {
             $li = tag('li', tag('a', array('href' => url($this->link)), $this->display), $this->extra_attr);
-            if ($this->autoselect_mode !== FALSE)
-            {
-                if ($this->autoselect_mode === 'prefix')
-                {
-                    if( $this->link === substr($REQUEST_URL, 0, strlen($this->link)))
-                        $li->add_class('selected');
-                }
-                else if ($this->autoselect_mode === 'equal')
-                    if( $this->link === $REQUEST_URL)
-                        $li->add_class('selected');
-            }
+            if ($this->is_selected())
+                $li->add_class('selected');
         }
         else if ($this->type === 'custom')
             $li = tag('li html_escape_off', $this->display, $this->extra_attr);
