@@ -62,7 +62,7 @@ class Layout_Admin extends Layout
 
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
-            tag('h1', Config::get('site.title')),
+            tag('h1', Config::get('site.title') . ' ', tag('p', 'admin panel')),
             tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
