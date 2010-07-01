@@ -23,15 +23,7 @@
 // Enable XHTML Mode
 Output_HTMLTag::$default_render_mode = 'xhtml';
 
-// Layout "default"
-Layout::assign('default', 'Layout_Default');
 Layout::assign('admin', 'Layout_Admin');
-//$dl = new Layout_Default('default');
-//$dl->deactivate();
-
-// Layout "admin"
-//$dl = new Layout_Admin('admin');
-//$dl->deactivate();
 
 function not_found()
 {

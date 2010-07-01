@@ -1,13 +1,13 @@
 <?php
 // File generated with /install
 
-Config::set('db.host', 'localhost');
+Config::set('db.host', '127.0.0.1');
 
 Config::set('db.user', 'root');
 
 Config::set('db.pass', 'root');
 
-Config::set('db.schema', '0x0lab');
+Config::set('db.schema', 'cms');
 
 Config::set('site.title', '0x0Lab');
 
@@ -17,8 +17,10 @@ Config::set('site.google_analytics', '');
 
 Config::set('site.deploy_checks', '');
 
-Config::set('site.upload_folder', '/home/sque/workspace/0x0lab/uploads');
+Config::set('site.theme', 'default');
 
-Config::set('site.thumbs_folder', '/home/sque/workspace/0x0lab/uploads/thumbs');
+Config::set('site.cache_folder', '/home/sque/vcs/cms/cache');
+
+Config::set('site.upload_folder', '/home/sque/vcs/cms/uploads');
 
 ?>

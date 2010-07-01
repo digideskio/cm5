@@ -13,6 +13,9 @@ class CMS_Core
     //! An array with all modules
     protected $modules = null;
     
+    //! An array with all themes
+    protected $themes = null;
+    
     //! Cache engine
     protected $cache = null;
     
@@ -33,7 +36,7 @@ class CMS_Core
         // Save caching engine
         $this->cache = $cache;
         
-        // Register page chages to invalidate cache
+        // Register page changes to invalidate cache
         $cb = array($this, 'invalidate_page_cache');
         Page::events()->connect('op.post.save', function($e) use($cb){
             call_user_func($cb, $e->arguments['record']);
@@ -65,16 +68,40 @@ class CMS_Core
         $modules_folder = dirname(__FILE__) . '/../../../modules';
         if ($dh = opendir($modules_folder))
         {
-            while (($folder = readdir($dh)) !== false)
+            while (($file = readdir($dh)) !== false)
             {
-                if (($folder == '.') || ($folder == '..') || (!is_dir($modules_folder . '/' . $folder)))
+                if (($file == '.') || ($file == '..') || (!is_dir($modules_folder . '/' . $file)))
                     continue;
                     
-                if (is_file($modules_folder . '/' . $folder . '/module.php'))
-                    require_once($modules_folder . '/' . $folder . '/module.php');
+                if (is_file($modules_folder . '/' . $file . '/module.php'))
+                    require_once($modules_folder . '/' . $file . '/module.php');
             }
             closedir($dh);
         }
+    }
+    
+    //! Scan modules folder and load them all
+    public function load_themes()
+    {
+        $this->themes = array();
+        
+        // Load themes
+        $themes_folder = dirname(__FILE__) . '/../../../themes';
+        if ($dh = opendir($themes_folder))
+        {
+            while (($file = readdir($dh)) !== false)
+            {
+                if (($file == '.') || ($file == '..') || (!is_dir($themes_folder . '/' . $file)))
+                    continue;
+                    
+                if (is_file($themes_folder . '/' . $file . '/theme.php'))
+                    require_once($themes_folder . '/' . $file . '/theme.php');
+            }
+            closedir($dh);
+        }
+        
+        // Initialize selected theme
+        $this->themes[Config::get('site.theme')]->init();
     }
     
     //! Register a module
@@ -87,6 +114,17 @@ class CMS_Core
         $this->modules[$minfo['nickname']] = $module;
         $module->init();
     }
+
+    //! Register a theme
+    /**
+     * @param $theme The instance of the theme to register
+     */
+    public function register_theme(CMS_Theme $theme)
+    {   
+        $tinfo = $theme->info();
+        $this->themes[$tinfo['nickname']] = $theme;
+    }
+
     
     //! Enumerate modules
     /**
@@ -99,6 +137,17 @@ class CMS_Core
         return $this->modules;
     }
     
+    //! Enumerate themes
+    /**
+     * Get the list with all registred themes
+     */
+    public function themes()
+    {
+        if ($this->themes === null)
+            $this->load_themes();
+        return $this->themes;
+    }
+    
     //! Get the EventDispatcher object
     public function events()
     {
@@ -107,7 +156,6 @@ class CMS_Core
     
     //! Pointer to singleton instance
     static private $instance = null;
-    
     
     //! Initialize the CMS core
     /**
@@ -196,6 +244,9 @@ class CMS_Core
         // Initialize modules
         self::$instance->load_modules();
 
+        // Initialize themes
+        self::$instance->load_themes();
+        
         $response = new CMS_Response();
                 
         // Dispatch page request to modules

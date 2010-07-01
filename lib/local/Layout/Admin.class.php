@@ -40,13 +40,15 @@ class Layout_Admin extends Layout
         '));
 
         if (Authz::is_allowed('page', 'admin'))
-            $this->mainmenu->create_link('Pages', '/admin/page');
+            $this->mainmenu->create_link('Pages', '/admin/pages');
         if (Authz::is_allowed('file', 'admin'))
             $this->mainmenu->create_link('Files', '/admin/files');
         if (Authz::is_allowed('module', 'admin'))
             $this->mainmenu->create_link('Modules', '/admin/modules');
+        if (Authz::is_allowed('theme', 'admin'))
+            $this->mainmenu->create_link('Themes', '/admin/themes');
         if (Authz::is_allowed('user', 'admin'))
-            $this->mainmenu->create_link('Users', '/admin/user');
+            $this->mainmenu->create_link('Users', '/admin/users');
     }
     
     protected function __init_layout()

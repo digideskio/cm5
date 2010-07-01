@@ -51,6 +51,7 @@ $list->add_resource('page');
 $list->add_resource('user');
 $list->add_resource('file');
 $list->add_resource('module');
+$list->add_resource('theme');
 
 Authz::allow('page', '@editor', 'admin');
 Authz::allow('page', null, 'view');
@@ -68,6 +69,8 @@ Authz::allow('module', '@admin', 'admin');
 Authz::allow('module', '@admin', 'view');
 Authz::allow('module', '@admin', 'change-status');
 Authz::allow('module', '@admin', 'config');
+
+Authz::allow('theme', '@admin', 'admin');
 
 Authz::allow('user', '@admin', 'admin');
 Authz::allow('user', '@admin', 'view');
@@ -101,6 +104,11 @@ Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/users.p
     array('type' => 'url_path', 'chunk[2]' => '/^users?$/'),
     array('type' => 'authz', 'resource' => 'user', 'action' => 'admin')
 );
+Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/themes.php');    },
+    array('type' => 'url_path', 'chunk[2]' => '/^themes?$/'),
+    array('type' => 'authz', 'resource' => 'theme', 'action' => 'admin')
+);
+
 Stupid::add_rule('tool_translit',
     array('type' => 'url_path', 'chunk[2]' => '/tools/', 'chunk[3]' => '/transliterate/'),
     array('type' => 'url_params', 'op' => 'isset', 'param' => 'text', 'param_type' => 'both')

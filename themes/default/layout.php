@@ -1,27 +1,6 @@
 <?php
-/*
- *  This file is part of PHPLibs <http://phplibs.kmfa.net/>.
- *  
- *  Copyright (c) 2010 < squarious at gmail dot com > .
- *  
- *  PHPLibs is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *  
- *  PHPLibs is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with PHPLibs.  If not, see <http://www.gnu.org/licenses/>.
- *  
- */
 
-
-class Layout_Default extends Layout
-{
+class DefaultThemeLayout extends Layout{
     private $mainmenu = null;
     
     public function get_mainmenu()
@@ -59,8 +38,7 @@ class Layout_Default extends Layout
         $this->activate();
         $doc = $this->get_document();    
         $this->get_document()->title = Config::get('site.title');
-        $this->get_document()->add_ref_css(surl('/static/css/default.css'));
-        $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
+        $this->get_document()->add_ref_css(surl('/themes/default/css/default.css'));
         
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
@@ -77,9 +55,10 @@ class Layout_Default extends Layout
         );
         $this->set_default_container($def_content);
 
-        // Search widgeet
+        // Search widget
         $this->init_menu();
         $this->deactivate();
     }
 }
+
 ?>
