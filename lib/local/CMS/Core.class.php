@@ -273,7 +273,7 @@ class CMS_Core
             }
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
-            etag('h1', $p->title);
+            etag('h1 class="title"', $p->title);
             etag('div html_escape_off', $p->body);
             Layout::open('default')->deactivate();
             $response->document = Layout::open('default')->get_document()->render();
