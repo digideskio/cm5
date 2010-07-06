@@ -31,12 +31,13 @@ class User extends DB_Record
         );
 }
 
-User::events()->connect('op.pre.delete', function($e){
+User::events()->connect('op.pre.delete', create_function('$e',
+'
     Membership::raw_query()
         ->delete()
-        ->where('username = ?')
-        ->execute($e->arguments['record']->username);
-});
+        ->where("username = ?")
+        ->execute($e->arguments["record"]->username);
+'));
 
 User::one_to_many('Page', 'user', 'articles');
 Group::many_to_many('User', 'Membership', 'groups', 'users');

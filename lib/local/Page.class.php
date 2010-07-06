@@ -46,32 +46,31 @@ class Page extends DB_Record
     }
 }
 
-Page::events()->connect('op.pre.save', function($e)
-{
+Page::events()->connect('op.pre.save', create_function('$e', '
     // Update last modified
-    $r = $e->arguments['record'];
+    $r = $e->arguments["record"];
     $r->lastmodified = new DateTime();
     
     // Update uri
     $r->uri = $r->full_path();
-});
+'));
 
-Page::events()->connect('op.pre.create', function($e){
-    $e->filtered_value['created'] = new DateTime();
-    $e->filtered_value['lastmodified'] = new DateTime();
-});
+Page::events()->connect('op.pre.create', create_function('$e', '
+    $e->filtered_value["created"] = new DateTime();
+    $e->filtered_value["lastmodified"] = new DateTime();
+'));
 
-Page::events()->connect('op.post.create', function($e){
+Page::events()->connect('op.post.create', create_function('$e', '
     // Update uri
-    $r = $e->arguments['record'];
+    $r = $e->arguments["record"];
     $r->uri = $r->full_path();
     $r->save();
-});
+'));
 
-Page::events()->connect('op.pre.delete', function($e){
-    if ($e->arguments['record']->system)
+Page::events()->connect('op.pre.delete', create_function('$e', '
+    if ($e->arguments["record"]->system)
         $e->filtered_value = true;
-});
+'));
 
 Page::one_to_Many('Page', 'parent', 'subpages');
 ?>

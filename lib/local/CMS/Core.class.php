@@ -37,16 +37,12 @@ class CMS_Core
         $this->cache = $cache;
         
         // Register page changes to invalidate cache
-        $cb = array($this, 'invalidate_page_cache');
-        Page::events()->connect('op.post.save', function($e) use($cb){
-            call_user_func($cb, $e->arguments['record']);
-        });
-        Page::events()->connect('op.post.delete', function($e) use($cb){
-            call_user_func($cb, $e->arguments['record']);
-        });
-        Page::events()->connect('op.post.create', function($e) use($cb){
-            call_user_func($cb, $e->arguments['record']);
-        });
+        $invalidate_func = create_function('$e',
+        '   CMS_Core::get_instance()->invalidate_page_cache($e->arguments[\'record\']);   '
+        );
+        Page::events()->connect('op.post.save', $invalidate_func);
+        Page::events()->connect('op.post.delete', $invalidate_func);
+        Page::events()->connect('op.post.create', $invalidate_func);
     }
     
     //! Invalidate page cache
