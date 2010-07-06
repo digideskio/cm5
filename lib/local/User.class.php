@@ -33,7 +33,7 @@ class User extends DB_Record
 
 User::events()->connect('op.pre.delete', create_function('$e',
 '
-    Membership::raw_query()
+    Membership::raw_query("Membership")
         ->delete()
         ->where("username = ?")
         ->execute($e->arguments["record"]->username);
