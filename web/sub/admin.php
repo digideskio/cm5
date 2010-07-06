@@ -87,23 +87,23 @@ Stupid::add_rule(create_function('', "Net_HTTP_Response::redirect(url(\$_SERVER[
     array('type' => 'authn', 'op' => 'isanon')
 );
 
-Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/files.php');    },
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/files.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^files?$/'),
     array('type' => 'authz', 'resource' => 'file', 'action' => 'admin')
 );
-Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/pages.php');    },
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/pages.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^pages?$/'),
     array('type' => 'authz', 'resource' => 'page', 'action' => 'admin')
 );
-Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/modules.php');    },
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/modules.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^modules?$/'),
     array('type' => 'authz', 'resource' => 'module', 'action' => 'admin')
 );
-Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/users.php');    },
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/users.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^users?$/'),
     array('type' => 'authz', 'resource' => 'user', 'action' => 'admin')
 );
-Stupid::add_rule(function(){    require_once(dirname(__FILE__) . '/admin/themes.php');    },
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/themes.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^themes?$/'),
     array('type' => 'authz', 'resource' => 'theme', 'action' => 'admin')
 );
