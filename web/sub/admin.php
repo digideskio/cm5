@@ -39,10 +39,9 @@ $roles = new Authz_Role_FeederDatabase(array(
     'role_name_field' => 'username',
     'parents_query' => Membership::open_query()->where('username = ?'),
     'parent_name_field' => 'groupname',
-    'parent_name_filter_func' => function($name)
-    {
-        return '@' . $name;
-    }
+    'parent_name_filter_func' => create_function('$name',
+        '   return "@" . $name; '
+    )
 ));
 Authz::set_resource_list($list = new Authz_ResourceList());
 Authz::set_role_feeder($roles);
