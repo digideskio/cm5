@@ -34,7 +34,7 @@ $dl->deactivate();
 
 function show_source_slice($file, $line)
 {
-    if  (! ($fh = fopen($file, "r")))
+    if ((!is_file($file)) || (! ($fh = fopen($file, "r"))))
         return;
     while (!feof($fh))
         $lines[] = fgets($fh);
