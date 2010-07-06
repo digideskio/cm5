@@ -22,7 +22,10 @@
 
 class User extends DB_Record
 {
-    static public $table = 'users';
+    static public function get_table()
+    {   
+        return Config::get('db.prefix') . 'users';
+    }
 
     static public $fields = array(
         'username' => array('pk' => true),

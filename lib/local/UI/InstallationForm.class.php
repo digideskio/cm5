@@ -47,6 +47,8 @@ class UI_InstallationForm extends Output_HTML_Form
 				'onerror' => 'This field is mandatory.'),
 			'db-pass2' => array('display' => '', 'type' => 'password', 'regcheck' => '/^.+$/',
 				'onerror' => 'This field is mandatory.'),
+            'db-prefix' => array('display' => 'Tables prefix', 
+				'hint' => 'You can set this to a custom string to avoid naming collision.'),
 			'db-build' => array('display' => 'Execute database creation script', 'type' => 'checkbox'),
             'hr-other' => array('type' => 'custom', 'value' => '<h4>Other Options</h4>'),
             'timezone' => array('display' => 'Default timezone', 'type' => 'dropbox',
@@ -87,6 +89,7 @@ class UI_InstallationForm extends Output_HTML_Form
         Config::set('db.user', $values['db-user']);
         Config::set('db.pass', $values['db-pass']);
         Config::set('db.schema', $values['db-schema']);
+        Config::set('db.prefix', $values['db-prefix']);
         Config::set('site.google_analytics', $values['site-ga']);
         Config::set('site.deploy_checks', $values['deploy-checks']);
         Config::set('site.upload_folder', realpath(dirname(__FILE__) . '/../../../uploads'));
@@ -111,7 +114,8 @@ class UI_InstallationForm extends Output_HTML_Form
 
         if ($values['db-build'])
         {
-            if (DB_Conn::get_link()->multi_query(file_get_contents($this->db_build_file)))
+            $dbprefix = Config::get('db.prefix');
+            if (DB_Conn::get_link()->multi_query(require($this->db_build_file)))
                 while (DB_Conn::get_link()->next_result());
             
             if (DB_Conn::get_link()->errno !== 0)

@@ -2,7 +2,10 @@
 
 class Upload extends DB_Record
 {
-    static public $table = 'uploads';
+    static public function get_table()
+    {   
+        return Config::get('db.prefix') . 'uploads';
+    }
 
     static public $fields = array(
         'id' => array('pk' => true, 'ai' => true),

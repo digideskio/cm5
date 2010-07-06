@@ -54,6 +54,6 @@ if (! is_writable(dirname(__FILE__) . '/../cache'))
 }
 
 require $fn_config;
-$f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build.sql');
+$f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build-script.php');
 etag('div', $f->render());
 ?>

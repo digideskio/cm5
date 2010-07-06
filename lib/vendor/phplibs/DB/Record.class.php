@@ -56,7 +56,8 @@ class DB_Record
 			return $md;
 
 		$fields = get_static_var($model_name, 'fields');
-		$table = get_static_var($model_name, 'table');
+		$table = (property_exists($model_name, 'table')?get_static_var($model_name, 'table'):
+		    call_user_func(array($model_name,'get_table')));
 		$rels = (isset_static_var($model_name, 'relationships')
 			?get_static_var($model_name, 'relationships')
 			:array()

@@ -22,7 +22,10 @@
 
 class Membership extends DB_Record
 {
-    static public $table = 'memberships';
+    static public function get_table()
+    {   
+        return Config::get('db.prefix') . 'memberships';
+    }
 
     static public $fields = array(
         'username' => array('pk' => true, 'fk' => 'User'),
