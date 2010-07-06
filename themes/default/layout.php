@@ -8,25 +8,28 @@ class DefaultThemeLayout extends Layout{
         return $this->mainmenu;
     }
 
+    private function __add_menu_entries($parent_link, $childs, $max_depth)
+    {
+        if ($max_depth <= 0)
+            return;
+            
+        foreach($childs as $p)
+        {
+            if ($p['status'] !== 'published')
+                continue;
+
+            $sublink = $parent_link->create_link($p['title'], $p['uri']);
+            if ($p['uri'] === '/')
+                $sublink->set_autoselect_mode('equal');
+                
+            $this->__add_menu_entries($sublink, $p['childs'], $max_depth - 1);
+        }
+    }
+    
     private function init_menu()
     {
-        $this->mainmenu = new SmartMenu(array('class' => 'menu'));
-        $add_entries = function($parent_link, $childs) use(&$add_entries)
-        {
-            foreach($childs as $p)
-            {
-                if ($p['status'] !== 'published')
-                    continue;
-
-                $sublink = $parent_link->create_link($p['title'], $p['uri']);
-                if ($p['uri'] === '/')
-                    $sublink->set_autoselect_mode('equal');
-                    
-                $add_entries($sublink, $p['childs']);
-            }
-        };
-        
-        $add_entries($this->mainmenu, CMS_Core::get_instance()->get_tree());
+        $this->mainmenu = new SmartMenu(array('class' => 'menu'));        
+        $this->__add_menu_entries($this->mainmenu, CMS_Core::get_instance()->get_tree(), 2);
         
         // Append menu
         $this->get_document()->get_body()->getElementById("main-menu")

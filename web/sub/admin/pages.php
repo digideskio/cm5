@@ -15,44 +15,43 @@ Stupid::add_rule('create_page',
 Stupid::set_default_action('pages_default');
 Stupid::chain_reaction();
 
+function __draw_tree_entry($p, $current_page_id)
+{
+    if ($p['system'])
+        $li = tag('li class="system-page"',
+            $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status'])
+        );
+    else
+    {
+        $li = tag('li class="user-page" id="page_' . $p['id'] . ' ',
+            $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
+            tag('a html_escape_off class="delete"', '&nbsp;', 
+                array(
+                    'href' => UrlFactory::craft('page.delete', $p['id']),
+                    'title' => 'Delete this page'
+                )
+            ),
+            tag('a html_escape_off class="add"', '&nbsp;', 
+                array(
+                    'href' => UrlFactory::craft('page.create', $p['id']),
+                    'title' => 'Add subpage'
+                )
+            ),
+            $ul = tag('ul class="sortable"')
+        );
+    }
+            
+    if ($current_page_id == $p['id'])
+        $pg->add_class('selected');
+
+    foreach($p['childs'] as $sp)
+        $ul->append(__draw_tree_entry($sp, $current_page_id));
+
+    return $li;
+}
+
 function show_pages_tree($current_page_id)
 {
-    $draw_tree_entry = function($p) use(&$draw_tree_entry, $current_page_id)
-    {   
-        if ($p['system'])
-            $li = tag('li class="system-page"',
-                $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status'])
-            );
-        else
-        {
-            $li = tag('li class="user-page" id="page_' . $p['id'] . ' ',
-                $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
-                tag('a html_escape_off class="delete"', '&nbsp;', 
-                    array(
-                        'href' => UrlFactory::craft('page.delete', $p['id']),
-                        'title' => 'Delete this page'
-                    )
-                ),
-                tag('a html_escape_off class="add"', '&nbsp;', 
-                    array(
-                        'href' => UrlFactory::craft('page.create', $p['id']),
-                        'title' => 'Add subpage'
-                    )
-                ),
-                $ul = tag('ul class="sortable"')
-            );
-        }
-                
-        if ($current_page_id == $p['id'])
-            $pg->add_class('selected');
-
-        foreach($p['childs'] as $sp)
-            $ul->append($draw_tree_entry($sp));
-
-        return $li;
-    };
-    
-    
     // Create page tree
     etag('div id="pages_tree"', 
         tag('span class="title"', 'Pages tree'),
@@ -63,7 +62,7 @@ function show_pages_tree($current_page_id)
 
     foreach(CMS_Core::get_instance()->get_tree() as $p)
     {
-        $ul->append($draw_tree_entry($p));
+        $ul->append(__draw_tree_entry($p, $current_page_id));
     }
 
 }
