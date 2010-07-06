@@ -213,12 +213,12 @@ class CMS_Core
             {
                 $parent = & $indexed_pages[$p['parent_id']];
                 if (!isset($parent['childs']))
-                    $parent['childs'] = array($p);
+                    $parent['childs'] = array( & $p);
                 else
                     $parent['childs'][] = & $p;
             }
         }
-
+        
         // Save to cache
         $this->cache->set('pages-tree', $pages);
         return $pages;
