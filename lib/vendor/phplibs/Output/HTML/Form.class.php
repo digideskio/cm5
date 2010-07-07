@@ -387,7 +387,7 @@ class Output_HTML_Form
 			    else
 			    {
 				    // Get file data
-				    $fdata = file_get_contents($_FILES[$k]['tmp_name'], FILE_BINARY);
+				    $fdata = file_get_contents($_FILES[$k]['tmp_name']);
 				
 				    $field['value'] = array(
 					    'orig_name' => $_FILES[$k]['name'],

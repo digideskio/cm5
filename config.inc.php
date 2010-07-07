@@ -9,8 +9,6 @@ Config::set('db.pass', 'root');
 
 Config::set('db.schema', '0x0lab');
 
-Config::set('site.title', 'Αντισπισιστική Δράση');
-
 Config::set('site.title', '0x0lab');
 
 Config::set('site.timezone', 'Europe/Athens');
@@ -21,8 +19,8 @@ Config::set('site.deploy_checks', '');
 
 Config::set('site.theme', 'default');
 
-Config::set('site.cache_folder', '/home/sque/vcs/cms/cache');
+Config::set('site.cache_folder', dirname(__FILE__) . '/cache');
 
-Config::set('site.upload_folder', '/home/sque/vcs/cms/uploads');
+Config::set('site.upload_folder', dirname(__FILE__) .  '/uploads');
 
 ?>
