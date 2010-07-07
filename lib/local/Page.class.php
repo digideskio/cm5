@@ -72,5 +72,5 @@ Page::events()->connect('op.pre.delete', create_function('$e', '
         $e->filtered_value = true;
 '));
 
-Page::one_to_Many('Page', 'parent', 'subpages');
+Page::one_to_many('Page', 'parent', 'subpages');
 ?>

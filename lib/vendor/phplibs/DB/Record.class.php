@@ -171,8 +171,8 @@ class DB_Record
 
 	//! Declare 1-to-many relationship
 	static public function one_to_many($many_model_name, $one_rel_name, $many_rel_name)
-	{	$model_name = get_called_class();
-
+	{
+	    $model_name = get_called_class();
 	    self::$dynamic_relationships[$model_name][$many_rel_name] = 
 	        array('type' => 'many', 'foreign_model' => $many_model_name);
 
@@ -183,8 +183,8 @@ class DB_Record
 
 	//! Declare 1-to-many relationship
 	static public function many_to_many($foreign_model_name, $bridge_model_name, $foreign_rel_name, $local_rel_name)
-	{	$model_name = get_called_class();
-
+	{
+	    $model_name = get_called_class();
 	    self::$dynamic_relationships[$model_name][$local_rel_name] = array(
 	        'type' => 'bridge',
 	        'foreign_model' => $foreign_model_name,

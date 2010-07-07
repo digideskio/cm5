@@ -32,6 +32,23 @@ $dl->get_document()->title = 'Error';
 $dl->get_document()->add_ref_css(surl('/static/css/debug.css'));
 $dl->deactivate();
 
+function show_var($var)
+{
+    $tspan = tag('span class="variable"');
+    
+    if ($var === NULL)
+        $tspan->append('NULL')->add_class('null');
+        
+    else if (is_string($var))
+        $tspan->append("\"$var\"")->add_class('string');
+
+    else if (is_numeric($var))
+        $tspan->append("$var")->add_class('numeric');
+    else
+        $tspan->append((string)$var); 
+    return $tspan;
+}
+
 function show_source_slice($file, $line)
 {
     if ((!is_file($file)) || (! ($fh = fopen($file, "r"))))
@@ -79,7 +96,19 @@ function show_backtrace_interface($exception = null)
     {   
         etag('li')->push_parent();
 
-        etag('span class="function', $entry['function']);
+        $fspan = etag('span class="function', $entry['function'] . ' (',
+            $vars = tag('span class="arguments"'), ')');
+
+        $first = true;
+        foreach(array_map('show_var', $entry['args']) as $v)
+        {
+            if ($first)
+                $first = false;
+            else
+                $vars->append(', ');
+            $vars->append($v);
+        }
+        
         if (isset($entry['file']))
         {
             etag('span class="file"', $entry['file']);

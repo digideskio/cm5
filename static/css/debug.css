@@ -74,6 +74,13 @@ ul.backtrace>li .function {
 	font-weight: bold;
 }
 
+.variable{
+    color: #000088;
+}
+.variable.string{
+    color: #880000;
+}
+
 ul.backtrace>li .file {
 	color: #3467d4;
 	font-weight: bold;
