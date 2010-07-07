@@ -50,8 +50,8 @@ DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
     create_function('$e', ' error_log( $e->arguments["message"]); '));
-DB_Conn::events()->connect('stmt.executed',
-    create_function('$e', ' error_log( $e->arguments[0]); '));
+//DB_Conn::events()->connect('stmt.executed',
+//    create_function('$e', ' error_log( $e->arguments[0]); '));
 // PHP TimeZone
 date_default_timezone_set(Config::get('site.timezone'));
 
