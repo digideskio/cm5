@@ -164,6 +164,6 @@ Upload::events()->connect('op.pre.delete', create_function('$e', '
         Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
-    unlink(Config::get("site.upload_folder") . '/' . $r->store_file);
+    unlink(Config::get("site.upload_folder") . "/" . $r->store_file);
 '));
 ?>

@@ -95,7 +95,13 @@ class Cache_File extends Cache
 	
 	public function get($key, & $succeded)
 	{
-	    if (($fh = @fopen(($fname = $this->filename_by_key($key)),'r')) === false)
+	    if (! is_file($fname = $this->filename_by_key($key)))
+		{
+		    $succeded = false;
+			return false;
+		}
+
+	    if (($fh = @fopen($fname,'r')) === false)
 		{
 		    $succeded = false;
 			return false;
