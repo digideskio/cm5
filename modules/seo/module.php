@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_SEO implements CMS_Module
+class CMS_Module_SEO extends CMS_Module
 {
     //! The name of the module
     public function info()
@@ -74,5 +74,5 @@ class CMS_Module_SEO implements CMS_Module
     }
 }
 
-CMS_Core::get_instance()->register_module(new CMS_Module_SEO());
+CMS_Module_SEO::register();
 ?>

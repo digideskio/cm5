@@ -30,6 +30,8 @@ $dl = new Layout('debug');
 $dl->activate();
 $dl->get_document()->title = 'Error';
 $dl->get_document()->add_ref_css(surl('/static/css/debug.css'));
+$dl->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
+$dl->get_document()->add_ref_js(surl('/static/js/debug.js'));
 $dl->deactivate();
 
 function show_var($var)
@@ -44,6 +46,8 @@ function show_var($var)
 
     else if (is_numeric($var))
         $tspan->append("$var")->add_class('numeric');
+    else if (is_object($var))
+        $tspan->append( get_class($var))->add_class('object');
     else
         $tspan->append((string)$var); 
     return $tspan;
@@ -110,12 +114,13 @@ function show_backtrace_interface($exception = null)
         }
         
         if (isset($entry['file']))
-        {
-            etag('span class="file"', $entry['file']);
-            etag('span class="line"', (string)$entry['line']);
-    
+        {    
             // Code snapshot
-            etag('div class="source"', show_source_slice($entry['file'], $entry['line']));
+            etag('div class="source"', 
+                tag('span class="file"', $entry['file']),
+                tag('span class="line"', (string)$entry['line']),
+                show_source_slice($entry['file'], $entry['line'])
+            );
         }
         Output_HTMLTag::pop_parent();
     }
@@ -132,7 +137,7 @@ function manager_error($code, $message, $file, $line, $context)
     Layout::open('debug')->get_document()->title = 'Error: ' . $message;
 
     etag('div class="error"', "Error",
-        tag('span class="code"', (string)$code),
+        tag('span class="error-code"', (string)$code),
         tag('span class="message"', $message)
     );
     show_backtrace_interface();

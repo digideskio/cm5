@@ -26,6 +26,9 @@
                 $minfo = $module->info();
                 $res = tag('span class="title"', $minfo['title']);
                 $res .= tag('p class="description"', $minfo['description']);
+                
+                foreach($module->get_actions() as $a)
+                    $res.= UrlFactory::craft($minfo['name'], $a['name'])->anchor($a['display']);
                 return $res;
             }
         }

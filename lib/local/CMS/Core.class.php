@@ -30,7 +30,7 @@ class CMS_Core
             'page.pre-render',
             'page.post-render',
             'page.cache-delete',
-            'page.request',
+            'page.request'
         ));
         
         // Save caching engine

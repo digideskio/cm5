@@ -18,5 +18,5 @@ class DefaultTheme extends CMS_Theme
     }
 }
 
-CMS_Core::get_instance()->register_theme(new DefaultTheme());
+DefaultTheme::register();
 ?>

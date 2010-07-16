@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_Contents implements CMS_Module
+class CMS_Module_Contents extends CMS_Module
 {
     //! The name of the module
     public function info()
@@ -68,5 +68,5 @@ class CMS_Module_Contents implements CMS_Module
     }
 }
 
-CMS_Core::get_instance()->register_module(new CMS_Module_Contents());
+CMS_Module_Contents::register();
 ?>

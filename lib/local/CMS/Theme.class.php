@@ -14,6 +14,13 @@ abstract class CMS_Theme
     {
         Layout::assign('default', $this->get_layout_class());
     }
+    
+    //! Register this theme to core
+    public static function register()
+    {
+        $theme_class = get_called_class();
+        CMS_Core::get_instance()->register_theme( new $theme_class);
+    }
 }
 
 ?>

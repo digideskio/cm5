@@ -30,16 +30,16 @@ div.exception .message:before,div.exception .message:after {
 	content: '"';
 }
 
-div.error span.code {
+div.error span.error-code {
 	padding: 0px 4pt;
 	color: green;
 }
 
-div.error span.code:before {
+div.error span.error-code:before {
 	content: '[';
 }
 
-div.error span.code:after {
+div.error span.error-code:after {
 	content: ']';
 }
 
@@ -60,10 +60,6 @@ ul.backtrace>li {
 	background-color: #efefef;
 }
 
-ul.backtrace>li:hover .code {
-	display: block;
-}
-
 ul.backtrace>li:hover {
 	border: 1px solid #78a395;
 	background-color: #def2de;
@@ -72,6 +68,14 @@ ul.backtrace>li:hover {
 ul.backtrace>li .function {
 	display: block;
 	font-weight: bold;
+}
+
+ul.backtrace>li .source .file {
+    cursor: pointer;
+}
+
+ul.backtrace>li .source .code {
+    display: none;
 }
 
 .variable{
@@ -114,7 +118,6 @@ ul.backtrace>li .line:after {
 
 ul.code {
 	list-style-type: none;
-	display: none;
 	padding: 5px;
 	margin: 3px;
 }

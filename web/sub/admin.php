@@ -75,6 +75,9 @@ Authz::allow('user', '@admin', 'admin');
 Authz::allow('user', '@admin', 'view');
 Authz::allow('user', '@admin', 'edit');
 
+// Load modules
+CMS_Core::get_instance()->modules();
+
 // Special handling for special urls
 Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
     array('type' => 'url_path', 'chunk[-1]' => '/\+login/')
