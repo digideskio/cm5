@@ -47,14 +47,108 @@ div.error span.message {
 	color: red;
 }
 
+/* vardump */
+.vardump{
+    display: none;
+    position: fixed;
+    width: 20%;
+    right: 15px;
+    top: 20px;
+    bottom: 20px;
+    overflow: auto;
+    padding: 4px;   
+	border: 1px solid #78a395;
+	background-color: #efefef;
+/*	font-family: "Courier New";
+	font-weight: bold;
+	font-size: 10pt;*/
+}
+
+.vardump .title{
+    font-weight: bold;
+}
+
+.vardump table{
+    width: 100%;
+    border-spacing: 0px;
+}
+
+.vardump table tr.expander{
+    font-size: 0.8em;
+}
+
+.vardump table tr.expander td{
+    cursor: pointer;
+}
+
+.vardump table  > tbody > tr.expander td:before{
+    content: '[+] ';
+}
+.vardump table tr.entries{
+    visibility:collapse;
+}
+
+.vardump table.expanded > tbody > tr.entries{
+    visibility: visible;
+}
+
+.vardump table.expanded  > tbody > tr.expander td:before{
+    content: '[-] ';
+}
+
+.vardump table td{
+    vertical-align: top;
+    border: 1px dotted #dddddd;
+}
+
+.vardump table td.variable{
+    color: #000033;
+    padding-left: 11px;
+    font-size: 0.9em;
+}
+
+.vardump table td.static{
+    padding-left: 0px;
+}
+
+.dump{
+    position:relative;
+}
+.vardump ul.meta{
+
+    padding: 3px;
+    margin: 0px;
+    right: 0px;
+    top: -15px;
+    background-color: #dedede;
+    color: #545454;
+    font-size: 0.6em;
+    list-style-type: none;
+    display: none;
+
+}
+.dump:hovers > ul.meta{
+    display: block;
+}
+
+.vardump ul.meta li{
+    display: inline;
+    margin-right: 0.6em;
+}
+
+
 /* Backtrace */
 ul.backtrace {
 	list-style-type: decimal;
 	padding: 0px;
 }
 
+ul.backtrace.two-columns {
+    width: 78%;
+}
+
 ul.backtrace>li {
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 	border: 1px solid #ededed;
 	padding: 5px;
 	background-color: #efefef;
@@ -78,6 +172,14 @@ ul.backtrace>li .source .code {
     display: none;
 }
 
+.arguments .variable{
+    cursor: pointer;
+}
+
+.arguments .variable:hover{
+    color: #78a395;
+}
+
 .variable{
     color: #000088;
 }
@@ -86,7 +188,7 @@ ul.backtrace>li .source .code {
 }
 
 ul.backtrace>li .file {
-	color: #3467d4;
+	color: #3467a4;
 	font-weight: bold;
 }
 
@@ -103,6 +205,8 @@ ul.backtrace>li span.line:before {
 ul.backtrace>li .line:after {
 	content: ')';
 }
+
+
 
 /* Code */
 

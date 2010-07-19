@@ -25,13 +25,15 @@
  * This file is here to act as a router with extra debug information.
  */
 require_once 'bootstrap.php';
+require_once 'testclass.php';
 
 $dl = new Layout('debug');
 $dl->activate();
 $dl->get_document()->title = 'Error';
-$dl->get_document()->add_ref_css(surl('/static/css/debug.css'));
-$dl->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
-$dl->get_document()->add_ref_js(surl('/static/js/debug.js'));
+$dl->get_document()->add_ref_css(surl('/static/debug/debug.css'));
+$dl->get_document()->add_ref_js(surl('/static/debug/jquery-1.4.2.min.js'));
+$dl->get_document()->add_ref_js(surl('/static/debug/debug.js'));
+
 $dl->deactivate();
 
 function show_var($var)
@@ -40,7 +42,8 @@ function show_var($var)
     
     if ($var === NULL)
         $tspan->append('NULL')->add_class('null');
-        
+    else if (is_array($var))
+        $tspan->append('Array(' . count($var) . ')')->add_class('array');        
     else if (is_string($var))
         $tspan->append("\"$var\"")->add_class('string');
 
@@ -51,6 +54,83 @@ function show_var($var)
     else
         $tspan->append((string)$var); 
     return $tspan;
+}
+
+function dump_extended_object($object, $class = null)
+{   $class = ($class?$class:get_class($object));
+    $tdiv = tag('div class="dump"',
+        tag('span class="title"', $class)
+    )->add_class('object');
+
+    $props = array();
+    $parent_class = $class;
+    while ($parent_class = get_parent_class($parent_class))
+    {
+        $reflect = new ReflectionClass($parent_class);
+        $props = array_merge($props, $reflect->getProperties());
+    }
+    $reflect = new ReflectionObject($object);
+    $props = array_merge($props, $reflect->getProperties());
+
+    if (count($props))
+        $tprops = tag('table class="properties"')->appendTo($tdiv);
+
+    foreach($props as $p)
+    {
+        $p->setAccessible(true);
+        $tprops->append(
+            $tr = tag('tr',
+                $tname = tag('td class="variable"', '$' . $p->getName()),
+                tag('td', dump_extended_variable($p->getValue($object)))
+            )
+        );
+        if ($p->isStatic())
+            $tname->add_class('static')->prepend('::');
+    }
+    return $tdiv;
+}
+
+function dump_extended_variable(& $var)
+{
+    $tdiv = tag('div class="dump"');
+    if (is_object($var))
+        return dump_extended_object(new Child());
+    else if (is_array($var))
+    {
+        $tdiv->add_class('array');
+        $tdiv->append($meta = tag('ul class="meta"'));
+        $meta->append(tag('li', 'Type: ' . gettype($var)));
+        $meta->append(tag('li', 'Length: ' . count($var)));
+        if (count($var))
+        {
+            $tvalues = tag('table class="values"')->appendTo($tdiv);
+            tag('tr class="expander"', tag('td colspan="2"', 'Array (' . count($var) . ')'))->appendTo($tvalues);
+        }
+        foreach($var as $key => $value)
+        {
+            if (is_scalar($value) || is_array($value))
+                $value = dump_extended_variable($value);
+            else
+                $value = show_var($value);
+                
+            $tvalues->append(
+                $tr = tag('tr class="entries"',
+                    tag('td', (string)$key),
+                    tag('td', $value)
+                )
+            );
+        }
+        return $tdiv;
+    }
+    else
+    {
+        $tdiv->append($meta = tag('ul class="meta"'));
+        $meta->append(tag('li', 'Type: ' . gettype($var)));
+        if (is_string($var))
+            $meta->append(tag('li', 'Length: ' . strlen($var) ));
+        $tdiv->append(show_var($var));
+        return $tdiv;
+    }
 }
 
 function show_source_slice($file, $line)
@@ -98,21 +178,28 @@ function show_backtrace_interface($exception = null)
     etag('ul class="backtrace"')->push_parent();
     foreach($db as $entry)
     {   
-        etag('li')->push_parent();
+        $li = etag('li')->push_parent();
 
         $fspan = etag('span class="function', $entry['function'] . ' (',
             $vars = tag('span class="arguments"'), ')');
-
-        $first = true;
-        foreach(array_map('show_var', $entry['args']) as $v)
-        {
-            if ($first)
-                $first = false;
-            else
-                $vars->append(', ');
-            $vars->append($v);
-        }
         
+        // Arguments
+        $count = 1;
+        foreach(array_map('show_var', $entry['args']) as $idx => $v)
+        {
+            if ($count != 1)
+                $vars->append(', ');
+            $vars->append($v->attr('var', $count));
+            
+            // Add var dump
+            $li->append(
+                tag('div class="vardump"', dump_extended_variable($entry['args'][$idx]))
+                ->attr('var', $count)
+            );
+            
+            $count += 1;
+        }
+                
         if (isset($entry['file']))
         {    
             // Code snapshot
@@ -138,6 +225,7 @@ function manager_error($code, $message, $file, $line, $context)
 
     etag('div class="error"', "Error",
         tag('span class="error-code"', (string)$code),
+        ': ',
         tag('span class="message"', $message)
     );
     show_backtrace_interface();
