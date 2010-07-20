@@ -77,11 +77,21 @@ function dump_extended_object($object, $class = null)
 
     foreach($props as $p)
     {
-        $p->setAccessible(true);
+        if (version_compare(PHP_VERSION, '5.3.0', '>='))
+        {
+            $p->setAccessible(true);
+            $tvalue = dump_extended_variable($p->getValue($object));
+        }
+        else
+        {
+            if (!$p->isPublic())
+                $tvalue = 'inaccessible';
+        }
+
         $tprops->append(
             $tr = tag('tr',
                 $tname = tag('td class="variable"', '$' . $p->getName()),
-                tag('td', dump_extended_variable($p->getValue($object)))
+                tag('td', $tvalue)
             )
         );
         if ($p->isStatic())
@@ -94,7 +104,7 @@ function dump_extended_variable(& $var)
 {
     $tdiv = tag('div class="dump"');
     if (is_object($var))
-        return dump_extended_object(new Child());
+        return dump_extended_object($var);
     else if (is_array($var))
     {
         $tdiv->add_class('array');
