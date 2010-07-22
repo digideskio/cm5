@@ -25,7 +25,6 @@
  * This file is here to act as a router with extra debug information.
  */
 require_once 'bootstrap.php';
-require_once 'testclass.php';
 
 $dl = new Layout('debug');
 $dl->activate();

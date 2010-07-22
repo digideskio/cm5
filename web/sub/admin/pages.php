@@ -1,16 +1,16 @@
 <?
 
 Stupid::add_rule('move_page',
-    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+move/')
+    array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+move/')
 );
 Stupid::add_rule('delete_page',
-    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+delete/')
+    array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+delete/')
 );
 Stupid::add_rule('edit_page',
-    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/([\d]+)/')
+    array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/')
 );
 Stupid::add_rule('create_page',
-    array('type' => 'url_path', 'chunk[2]' => '/page/', 'chunk[3]' => '/\+create/')
+    array('type' => 'url_path', 'chunk[3]' => '/\+create/')
 );
 Stupid::set_default_action('pages_default');
 Stupid::chain_reaction();

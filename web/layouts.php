@@ -24,7 +24,6 @@
 Output_HTMLTag::$default_render_mode = 'xhtml';
 
 Layout::assign('admin', 'Layout_Admin');
-Layout::assign('default', 'Layout');
 
 function not_found()
 {

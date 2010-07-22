@@ -80,6 +80,10 @@ a:hover {
     float: right;
 }
 
+#page_editor input[name="title"]{
+    font-size: 1.2em;
+}
+
 .button{
     font-size: 8pt;
     margin: 2px;

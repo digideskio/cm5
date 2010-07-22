@@ -18,7 +18,7 @@ class DefaultThemeLayout extends Layout{
             if ($p['status'] !== 'published')
                 continue;
 
-            $sublink = $parent_link->create_link($p['title'], $p['uri']);
+            $sublink = $parent_link->create_link($p['title'], url($p['uri']));
             if ($p['uri'] === '/')
                 $sublink->set_autoselect_mode('equal');
                 
