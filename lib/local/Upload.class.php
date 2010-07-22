@@ -26,6 +26,7 @@ class Upload extends DB_Record
         $this->image_width = null;
         $this->image_height = null;
         $this->save();
+        
         // Clear thumb image cache
         if (self::$thumb_cache)
             self::$thumb_cache->delete($this->id);
@@ -37,7 +38,6 @@ class Upload extends DB_Record
         if (! in_array($info[2], array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)))
             return;
 
-
         // Add image record
         $this->is_image = true;
         $this->image_width = $info[0];
@@ -45,19 +45,33 @@ class Upload extends DB_Record
         $this->save();
     }
     
-    static function from_file($data, $filename)
-    {   
-        $upload_folder = Config::get('site.upload_folder');
+    private static function data_mime($data)
+    {
+        $fname = tempnam(sys_get_temp_dir(), 'dd');
+        file_put_contents($fname, $data);
         
-        // Get mime type
+        $mime_type = mime_content_type($fname);
+        unlink($fname);
+        return $mime_type;
+        /*
         $finfo = new finfo(FILEINFO_MIME);
         $mime = $finfo->buffer($data);
+        
                 
         if (preg_match_all('/^\s*(?P<mime_type>[^;\s]+)/', $mime, $matches))
             $mime_type = $matches['mime_type'][0];
         else
             $mime_type = $mime;
+        return $mime_type;*/
+    }
+    
+    static function from_file($data, $filename)
+    {   
+        $upload_folder = Config::get('site.upload_folder');
 
+        // Get mime type
+        $mime_type = self::data_mime($data);
+        
         // Calculate save_path
         $path_count = 0;
         $store_file =  md5($data) . '.dat';
@@ -88,13 +102,7 @@ class Upload extends DB_Record
         $upload_folder = Config::get('site.upload_folder');
         
         // Get mime type
-        $finfo = new finfo(FILEINFO_MIME);
-        $mime = $finfo->buffer($data);
-                
-        if (preg_match_all('/^\s*(?P<mime_type>[^;\s]+)/', $mime, $matches))
-            $mime_type = $matches['mime_type'][0];
-        else
-            $mime_type = $mime;
+        $mime_type = self::data_mime($data);
             
         // Overwrite old file
         file_put_contents($upload_folder . '/' . $this->store_file, $data);
