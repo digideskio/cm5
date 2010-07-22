@@ -1,11 +1,13 @@
-DROP TABLE IF EXISTS `uploads`;
-DROP TABLE IF EXISTS `pages`;
-DROP TABLE IF EXISTS `memberships`;
-DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `groups`;
+<?php
+return <<< EOF
+DROP TABLE IF EXISTS `{$dbprefix}uploads`;
+DROP TABLE IF EXISTS `{$dbprefix}pages`;
+DROP TABLE IF EXISTS `{$dbprefix}memberships`;
+DROP TABLE IF EXISTS `{$dbprefix}users`;
+DROP TABLE IF EXISTS `{$dbprefix}groups`;
 
 -- Create users
-create table `users` (
+create table `{$dbprefix}users` (
     `username` varchar(50) not null,
     `password` varchar(40) not null,
     `enabled` int(1) not null,
@@ -15,7 +17,7 @@ DEFAULT CHARSET='UTF8';
 
 
 -- Create memberships
-create table `memberships` (
+create table `{$dbprefix}memberships` (
     `username` varchar(50) not null,
     `groupname` varchar(50) not null,
     PRIMARY KEY(`username`, `groupname`)
@@ -23,14 +25,14 @@ create table `memberships` (
 DEFAULT CHARSET='UTF8';
 
 -- Create groups
-create table `groups` (
+create table `{$dbprefix}groups` (
     `groupname` varchar(50) not null,
     PRIMARY KEY(`groupname`)
 ) ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 
 -- Create pages
-create table `pages` (
+create table `{$dbprefix}pages` (
     `id` integer auto_increment not null,
     `slug` varchar(255) not null,
     `uri` varchar(512) not null,
@@ -49,7 +51,7 @@ create table `pages` (
 DEFAULT CHARSET='UTF8';
 
 -- Upload files
-CREATE TABLE `uploads` (
+CREATE TABLE `{$dbprefix}uploads` (
     `id` integer auto_increment not null,
     `filename` varchar(255) not null,
     `filesize` integer not null,
@@ -66,18 +68,19 @@ CREATE TABLE `uploads` (
 DEFAULT CHARSET='UTF8';
 
 -- Default user
-INSERT INTO `users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
+INSERT INTO `{$dbprefix}users` (`username`, `password`, `enabled`) values ('root', sha1('root'), 1);
 
 -- Default groups
-INSERT INTO `groups` (`groupname`) values
+INSERT INTO `{$dbprefix}groups` (`groupname`) values
     ('admin'),
     ('editor');
     
-INSERT INTO `memberships` (`username`, `groupname`) values
+INSERT INTO `{$dbprefix}memberships` (`username`, `groupname`) values
     ('root', 'admin'),
     ('root', 'editor');
     
 -- System pages
-INSERT INTO `pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)
+INSERT INTO `{$dbprefix}pages` (`system`, `title`, `slug`, `uri`, `body`, `author`, `created`, `lastmodified`, `status`)
     VALUES(true, 'Home', '', '/', '', 'root', NOW(), NOW(), 'published');
-
+EOF;
+?>

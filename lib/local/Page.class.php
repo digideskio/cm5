@@ -2,7 +2,10 @@
 
 class Page extends DB_Record
 {
-    static public $table = 'pages';
+    static public function get_table()
+    {   
+        return Config::get('db.prefix') . 'pages';
+    }
 
     static public $fields = array(
         'id' => array('pk' => true, 'ai' => true),
