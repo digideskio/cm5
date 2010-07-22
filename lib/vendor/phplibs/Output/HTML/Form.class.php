@@ -436,8 +436,9 @@ class Output_HTML_Form
                 (($field['type'] == 'dropbox') || ($field['type'] == 'radio'))
                 && ($field['mustselect']))
             {
-                if (empty($field['value']))
-                {   $field['valid'] = false;
+                if ((!isset($field['value'])) || ($field['value'] == ''))
+                {   
+                    $field['valid'] = false;
                     if (isset($field['onerror']))
                         $field['error'] = $field['onerror'];
                 }
@@ -478,7 +479,7 @@ class Output_HTML_Form
     public function field_values()
     {	$values = array();
 		foreach($this->fields as $fname => $field)
-			$values[$fname] = $field['value'];
+			$values[$fname] = (isset($field['value'])?$field['value']:null);
 		return $values;
     }
     
@@ -605,26 +606,27 @@ class Output_HTML_Form
             case 'radio':
                 foreach($field['optionlist'] as $opt_key => $opt_text)
                 {
-                    etag('span',
+                    etag('span html_escape_off',
                         tag('input type="radio"', $field['htmlattribs'],
                     		array('name'=>$id, 'value'=>$opt_key),
                 		    (($field['usepost']) && isset($field['value']) && ($opt_key == $field['value']))
                 		        ?array('checked'=>'checked')
                 		        :array()
                 	    ),
-                		(string)$opt_text
+                		esc_sp(esc_html((string)$opt_text))
                 	);
                 }
                 break;
             case 'dropbox':
             	$select = etag('select', array('name' => $id), $field['htmlattribs']);
                 foreach($field['optionlist'] as $opt_key => $opt_text)
-                {	tag('option',
+                {   
+                    tag('option html_escape_off',
                 		array('value'=>$opt_key),
                 		(($field['usepost']) &&
                 		    isset($field['value']) &&
                 		    ($opt_key == $field['value']))?array('selected'=>'selected'):array(),
-                		$opt_text
+                		esc_sp(esc_html((string)$opt_text))
                 	)->appendTo($select);
                 }
                 break;

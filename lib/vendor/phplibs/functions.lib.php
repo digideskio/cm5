@@ -99,6 +99,19 @@ if ( !function_exists('sys_get_temp_dir')) {
 		return null;
 	}
 }
+
+if ( !function_exists('gzdecode')) {
+    function gzdecode($data)
+    {
+        $temp_fname = tempnam(sys_get_temp_dir(), 'ff');
+        @file_put_contents($temp_fname, $data);
+        ob_start();
+        readgzfile($temp_fname);
+        $data = ob_get_clean();
+        unlink($temp_fname);
+        return $data;
+    }
+}
  
 function get_static_var($class_name, $var_name)
 {

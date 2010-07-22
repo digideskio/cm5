@@ -28,7 +28,6 @@ a:hover {
 	color: #eaea22;
 }
 
-
 #main-menu{
     background-color: #d20000;
     border-bottom: 1px solid #454545;
@@ -143,6 +142,33 @@ a:hover {
 
 .menu li:hover ul{
     display: block;
+}
+
+/* submenu */
+.submenu{
+    margin: 0px;
+    padding: 4px 0px;
+    border-bottom: 1px solid #656565;
+    background-color: #EAEA22;
+    font-size: 0.8em;
+    color: #232323;
+}
+
+.submenu a{
+    color: #232323;
+    border: 1px solid transparent;
+}
+
+.submenu li.selected a{
+    color: white;
+    background-color: #565656;
+    -moz-border-radius: 3px;
+}
+
+.submenu li:hover a{
+    background-color: #565656;
+    -moz-border-radius: 3px;
+    color: #EAEA22;
 }
 
 /** Pages tree **/
@@ -486,11 +512,31 @@ a:hover {
     display: inline-block;
 }
 
-
 .light-on {
     background: url('images/led-green.gif') no-repeat left center;
 }
 
 .light-off {
     background: url('images/led-gray.gif') no-repeat left center;
+}
+
+.monospace{
+    font-family: monospace;
+}
+
+/** Message **/
+.message{
+    margin: 5px auto;
+    background-color: #656565;
+    padding: 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #898989;
+    width: 500px;
+    font-size: 1.2em;
+}
+
+.message a{
+    color: #f1f1f1;
 }

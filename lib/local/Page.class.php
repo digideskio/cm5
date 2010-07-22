@@ -56,8 +56,13 @@ Page::events()->connect('op.pre.save', create_function('$e', '
 '));
 
 Page::events()->connect('op.pre.create', create_function('$e', '
-    $e->filtered_value["created"] = new DateTime();
-    $e->filtered_value["lastmodified"] = new DateTime();
+    if (!isset($e->filtered_value["created"]))
+        $e->filtered_value["created"] = new DateTime();
+    if (!isset($e->filtered_value["lastmodified"]))
+        $e->filtered_value["lastmodified"] = new DateTime();
+    
+    if (!isset($e->filtered_value["author"]))
+        $e->filtered_value["author"] = Authn_Realm::get_identity()->id();
 '));
 
 Page::events()->connect('op.post.create', create_function('$e', '

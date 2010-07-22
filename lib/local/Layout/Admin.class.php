@@ -23,6 +23,8 @@
 class Layout_Admin extends Layout
 {
     private $mainmenu = null;
+
+    private $submenu = null;
     
     public function get_mainmenu()
     {
@@ -40,15 +42,31 @@ class Layout_Admin extends Layout
         '));
 
         if (Authz::is_allowed('page', 'admin'))
-            $this->mainmenu->create_link('Pages', '/admin/pages');
+            $this->mainmenu->create_link('Pages', url('/admin/pages'));
         if (Authz::is_allowed('file', 'admin'))
-            $this->mainmenu->create_link('Files', '/admin/files');
+            $this->mainmenu->create_link('Files', url('/admin/files'));
         if (Authz::is_allowed('module', 'admin'))
-            $this->mainmenu->create_link('Modules', '/admin/modules');
+            $this->mainmenu->create_link('Modules', url('/admin/modules'));
         if (Authz::is_allowed('theme', 'admin'))
-            $this->mainmenu->create_link('Themes', '/admin/themes');
+            $this->mainmenu->create_link('Themes', url('/admin/themes'));
         if (Authz::is_allowed('user', 'admin'))
-            $this->mainmenu->create_link('Users', '/admin/users');
+            $this->mainmenu->create_link('Users', url('/admin/users'));
+    }
+    
+    public function get_submenu()
+    {
+        if ($this->submenu !== null)
+            return $this->submenu;
+
+        $this->submenu = new SmartMenu(array('class' => 'menu submenu'));
+        $this->events()->connect('pre-flush', create_function('$event',
+        '
+            $layout = $event->arguments["layout"];
+            $layout->get_document()->get_body()->getElementById("content")
+                ->prepend($layout->get_submenu()->render());
+        '));
+        
+        return $this->submenu;
     }
     
     protected function __init_layout()
@@ -70,7 +88,6 @@ class Layout_Admin extends Layout
             $def_content = 
             tag('div id="content"')
         );
-        
         
         $version = CMS_Core::get_instance()->get_version();
         etag('div id="footer"', 

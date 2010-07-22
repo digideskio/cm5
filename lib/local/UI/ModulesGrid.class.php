@@ -28,10 +28,9 @@
                 $res .= tag('p class="description"', $minfo['description']);
                 
                 foreach($module->get_actions() as $a)
-                    $res.= UrlFactory::craft($minfo['name'], $a['name'])->anchor($a['display']);
+                    $res.= UrlFactory::craft('module.action', $minfo['nickname'], $a['name'])->anchor($a['display'])->add_class('button');
                 return $res;
             }
         }
     }
-
 ?>

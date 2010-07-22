@@ -9,6 +9,16 @@ abstract class CMS_Module
     //! Initialize this module
     abstract public function init();
     
+    //! Get a specific module info
+    public function info_property($name)
+    {
+        $minfo = $this->info();
+        if (!isset($minfo[$name]))
+            return null;
+        return $minfo[$name];
+    }
+    
+    //! Repository of all user actions
     private $user_actions = array();
     
     //! Declare a new user action of this module
@@ -28,6 +38,14 @@ abstract class CMS_Module
     public function get_actions()
     {
         return $this->user_actions;
+    }
+    
+    //! Get an action
+    public function get_action($name)
+    {
+        if (!isset($this->user_actions[$name]))
+            return null;
+        return $this->user_actions[$name];
     }
     
     //! Register this module to core

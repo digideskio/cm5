@@ -133,6 +133,16 @@ class CMS_Core
         return $this->modules;
     }
     
+    //! Get a module info
+    public function get_module($nickname)
+    {
+        if ($this->modules === null)
+            $this->load_modules();
+        if (!isset($this->modules[$nickname]))
+            return null;
+        return $this->modules[$nickname];
+    }
+    
     //! Enumerate themes
     /**
      * Get the list with all registred themes
@@ -200,6 +210,7 @@ class CMS_Core
         $pages = array();
         foreach($indexed_pages as $idx => & $p)
         {
+
             if (!isset($p['childs']))
                 $p['childs'] = array();
 

@@ -152,7 +152,10 @@ class Cache_File extends Cache
 	
 	public function delete($key)
 	{
-	    return @unlink($this->filename_by_key($key));
+	    $fname = $this->filename_by_key($key);
+	    if (!is_file($fname))
+	        return false;
+	    return @unlink($fname);
 	}
 	
 	public function delete_all()

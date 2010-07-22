@@ -19,6 +19,7 @@ class Upload extends DB_Record
         );
     
     static public $thumb_cache = null;
+    
     private function update_image_info()
     {
         $this->is_image = false;
@@ -124,7 +125,12 @@ class Upload extends DB_Record
             $dispo = 'attachment';
             
         header("Content-Disposition: {$dispo}; filename={$this->filename}");
-        echo file_get_contents(Config::get('site.upload_folder') . '/' . $this->store_file);
+        echo $this->get_data();
+    }
+    
+    function get_data()
+    {
+        return file_get_contents(Config::get('site.upload_folder') . '/' . $this->store_file);
     }
     
     function dump_thumb()
@@ -165,5 +171,10 @@ Upload::events()->connect('op.pre.delete', create_function('$e', '
     
     // delete file from file system
     unlink(Config::get("site.upload_folder") . "/" . $r->store_file);
+'));
+
+Upload::events()->connect('op.pre.create', create_function('$e', '
+    if (!isset($e->filtered_value["uploader"]))
+        $e->filtered_value["uploader"] = Authn_Realm::get_identity()->id();
 '));
 ?>

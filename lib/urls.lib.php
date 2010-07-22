@@ -15,5 +15,5 @@ UrlFactory::register('user.edit', '$u', '/admin/user/{$u}/+edit');
 UrlFactory::register('user.delete', '$u', '/admin/user/{$u}/+delete');
 UrlFactory::register('user.create', '', '/admin/user/+create');
 UrlFactory::register('user.admin', '', '/admin/users');
-UrlFactory::register('module.action', '$module, $action', '/admin/module/@{$module}/{$action}');
+UrlFactory::register('module.action', '$module, $action', '/admin/modules/@{$module}/{$action}');
 ?>

@@ -49,7 +49,7 @@ class SmartMenuEntry
     //! Check if it is selected
     public function is_selected()
     {
-        $REQUEST_URL = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
+        $REQUEST_URL = $_SERVER['REQUEST_URI'];
         if ($this->autoselect_mode === false)
             return false;
             
@@ -67,7 +67,7 @@ class SmartMenuEntry
     {
         if ($this->type === 'link')
         {
-            $li = tag('li', tag('a', array('href' => url($this->link)), $this->display), $this->extra_attr);
+            $li = tag('li', tag('a', array('href' => $this->link), $this->display), $this->extra_attr);
             if ($this->is_selected())
                 $li->add_class('selected');
         }
@@ -151,7 +151,7 @@ class SmartMenuEntry
     //! Set the link of this entry
     public function & set_link($link)
     {
-        $this->link = $link;
+        $this->link = (string)$link;
         return $this;
     }
 
