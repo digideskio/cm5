@@ -8,8 +8,8 @@ class UI_EditPage extends Output_HTML_Form
         
         $title = 'Edit page';
         $fields = array(
-			'title' => array('display' => 'Title', 'value' => $page->title),
-			'slug' => array('display' => 'Slug', 'value' => $page->slug, 'regcheck' => '/^[\w\-]{1,}$/',
+			'title' => array('display' => '', 'value' => $page->title),
+			'slug' => array('display' => '', 'value' => $page->slug, 'regcheck' => '/^[\w\-]{1,}$/',
 			    'onerror' => 'You must setup a slug for this article'),
 			'status' => array('display' => 'Status', 'type' => 'dropbox',
 			    'optionlist' => array(
@@ -36,6 +36,15 @@ class UI_EditPage extends Output_HTML_Form
                 )
             )
         );
+    }
+    
+    public function on_postrender($div)
+    {
+        $url = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));
+        $url = implode('/', array_slice($url, 0, -1)) . '/';
+        $dt = $div->childs[0]->childs[3];
+        $dt->childs[2] = $dt->childs[1];
+        $dt->childs[1] = $url;
     }
 
     public function on_valid($values)

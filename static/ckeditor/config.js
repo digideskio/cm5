@@ -7,8 +7,9 @@ CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here. For example:
 	config.language = 'en';
-//	config.uiColor = '#AADC6E';
-//    config.height = '30em';
+//	config.uiColor = '#DCAA6E';
+    config.height = '300px';
+    config.width = '98%';
     config.toolbar = [
     ['Source',],
     ['Preview', 'Maximize', 'ShowBlocks'],

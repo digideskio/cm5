@@ -71,8 +71,11 @@ $(document).ready(function(){
 
 	    function reposition_suggest_btn()
 	    {
+	        var title = $('.ui-page-form input[name=title]');
     	    var input = $('.ui-page-form input[name=slug]');
+    	        input.width(title.offset().left + title.innerWidth() - input.offset().left);
 	        var suggest = $(".suggest.button");
+	        suggest.css({'position' : 'absolute'});
             var io = input.offset();
             var new_off = {
                 left: io.left + input.innerWidth() - suggest.outerWidth() - 1,
@@ -80,14 +83,14 @@ $(document).ready(function(){
             };
             suggest.offset(new_off);
         }
-        $(window).bind('resize', reposition_suggest_btn);
-        reposition_suggest_btn();
+        $('#page_editor').bind('resize', reposition_suggest_btn);
+
 	}
 	
 	// Page editor ckeditor
 	if ($('#page_editor textarea').length)
     	editor = CKEDITOR.replace($('#page_editor textarea')[0]);
-
+        
 	//--- PAGE GUARD ---//
     var dirty = false;
 

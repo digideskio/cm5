@@ -78,10 +78,36 @@ a:hover {
 {
     width: 77%;
     float: right;
+    position: relative;
 }
 
 #page_editor input[name="title"]{
-    font-size: 1.2em;
+    font-size: 1.4em;
+    height: auto;
+}
+
+#page_editor dt.type-dropbox{
+    display: block;
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+#page_editor dt.type-dropbox label{
+    display: none;
+}
+
+#page_editor dt{
+    margin-bottom: 10px;
+}
+
+#page_editor input[name="slug"]{
+    width: auto;
+}
+
+#page_editor label{
+    font-size: 0.8em;
+    color: #b2b2b2;
 }
 
 .button{
@@ -167,11 +193,16 @@ a:hover {
     color: white;
     background-color: #565656;
     -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 
 .submenu li:hover a{
     background-color: #565656;
     -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+
     color: #EAEA22;
 }
 

@@ -77,10 +77,12 @@ class Layout_Admin extends Layout
         $this->get_document()->add_ref_css(surl('/static/css/admin.css'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
+        $this->get_document()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
 
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
-            tag('h1', Config::get('site.title') . ' ', tag('p', 'admin panel')),
+            tag('h1', 
+                tag('a target="_blank"', Config::get('site.title') . ' ')->attr('href', url('/')), tag('p', 'admin panel')),
             tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
