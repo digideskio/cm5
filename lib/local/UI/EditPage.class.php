@@ -40,6 +40,8 @@ class UI_EditPage extends Output_HTML_Form
     
     public function on_postrender($div)
     {
+        if ($this->page->system)
+            return;
         $url = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));
         $url = implode('/', array_slice($url, 0, -1)) . '/';
         $dt = $div->childs[0]->childs[3];

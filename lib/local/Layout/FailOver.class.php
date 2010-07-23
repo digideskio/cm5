@@ -20,14 +20,21 @@
  */
 
 
-// Enable XHTML Mode
-Output_HTMLTag::$default_render_mode = 'xhtml';
-
-Layout::assign('admin', 'Layout_Admin');
-Layout::assign('failover', 'Layout_FailOver');
-
-function not_found()
+class Layout_FailOver extends Layout
 {
-    require_once dirname(__FILE__) . '/not_found.php';
+
+    protected function __init_layout()
+    {   
+        $this->activate();
+        $doc = $this->get_document();    
+        $this->get_document()->title = Config::get('site.title');
+
+        etag('div id="main"',
+            $def_content = 
+            tag('div id="content"')
+        );                
+
+        $this->deactivate();
+    }
 }
 ?>

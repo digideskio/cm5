@@ -123,7 +123,7 @@ class Layout_Admin extends Layout
         if (Authn_Realm::has_identity())
         {
             $loginfo->append(
-                tag('span class="user"', Authn_Realm::get_identity()->id()), ' ',
+                tag('a class="user"', Authn_Realm::get_identity()->id())->attr('href', (string)UrlFactory::craft('user.me')), ' ',
                 tag('a', 'logout', array('href' => $_SERVER['REQUEST_URI'] . "/+logout"))
             );
         }

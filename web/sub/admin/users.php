@@ -1,5 +1,8 @@
 <?php
 
+Stupid::add_rule('user_myprofile',
+    array('type' => 'url_path', 'chunk[3]' => '/^\+myprofile$/')
+);
 Stupid::add_rule('edit_user',
     array('type' => 'url_path', 'chunk[3]' => '/^([\w]+)$/', 'chunk[4]' => '/^\+edit$/')
 );
@@ -13,6 +16,16 @@ Stupid::add_rule('create_user',
 Stupid::set_default_action('show_users');
 Stupid::chain_reaction();
 
+
+function user_myprofile()
+{
+    $user = User::open(Authn_Realm::get_identity()->id());
+        
+    Layout::open('admin')->activate();
+
+    $frm = new UI_UserEditMyProfile($user);
+    etag('div', $frm->render());
+}
 
 function edit_user($username)
 {

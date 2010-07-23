@@ -19,7 +19,7 @@ Config::set('site.google_analytics', '');
 
 Config::set('site.deploy_checks', '1');
 
-Config::set('site.theme', 'antispe');
+Config::set('site.theme', 'default');
 
 Config::set('site.cache_folder', '/home/sque/vcs/cms/cache');
 

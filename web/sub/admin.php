@@ -29,7 +29,7 @@ Authn_Realm::set_backend($auth);
 Authn_Realm::set_session(
     new Authn_Session_Cache(
         new Cache_File(Config::get('site.cache_folder'), 'session_'),
-        new Net_HTTP_Cookie('cms-session', null)
+        new Net_HTTP_Cookie('cms-session', null, time()+(86400 * 15), surl('/'))
     )
 );
 
