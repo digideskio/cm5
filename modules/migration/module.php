@@ -27,6 +27,15 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($archive = $dom->createElement("cms_archive"));
         $archive->setAttribute("version", '1');
+        
+        // Meta
+        $archive->appendChild($meta = $dom->createElement('meta'));
+        $meta->appendChild($title = $dom->createElement('title'));
+        $title->appendChild(new DomText(Config::get('site.title')));
+        $meta->appendChild($base_url = $dom->createElement('base_url'));
+        $base_url->appendChild(new DomText((empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . surl('/')));
+        
+        // Pages
         $archive->appendChild($pages = $dom->createElement('pages'));
         foreach(Page::open_all() as $p)
         {
@@ -44,6 +53,7 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
             $page->appendChild(new DOMText($p->body));
         }
         
+        // Files
         if ($values['files'])
         {
             $archive->appendChild($files = $dom->createElement('files'));
@@ -57,9 +67,10 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
                 $file->appendChild(new DOMText(base64_encode($f->get_data())));
             }
         }
-
+    
+        $filename = Config::get('site.title') . '-backup-' . date_create()->format('Y-m-d_H-i');
         header('Content-Type: application/x-gzip');
-        header("Content-Disposition: attachment; filename=backup.xml.gz");
+        header("Content-Disposition: attachment; filename=$filename.xml.gz");
         echo gzencode($dom->saveXML()); 
         exit;
     }
@@ -101,7 +112,6 @@ class CMS_Module_Migration_UploadForm extends Output_HTML_Form
     
     public function on_post()
     {
-//        var_dump($this->get_field('uploaded'));
         $newarchive = $this->get_field('new-archive');
         if (($newarchive == null) || (empty($newarchive['value'])))
             return;

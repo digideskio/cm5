@@ -231,6 +231,34 @@ class CMS_Core
         return $pages;
     }
     
+    private function find_page_in_tree($page_id, & $root)
+    {
+        if ($root['id'] == $page_id)
+            return $root;
+        foreach($root['childs'] as $subpage)
+        {
+            $ret = $this->find_page_in_tree($page_id, $subpage);
+            if ($ret !== null)
+                return $ret;
+        }
+        return null;
+            
+    }
+    
+    //! Get a page sub tree
+    public function get_subtree($page_id)
+    {
+        $tree = $this->get_tree();
+        foreach($tree as $page)
+        {
+            $ret = $this->find_page_in_tree($page_id, $page);
+            if ($ret !== null)
+                return $ret;
+        }
+        return null;
+        
+        
+    }
     //! Serve a url request to CMS
     /**
      * @param $url Force a custom url to server, or null if it is auto detected.

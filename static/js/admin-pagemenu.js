@@ -74,6 +74,7 @@ $(document).ready(function(){
 	        var title = $('.ui-page-form input[name=title]');
     	    var input = $('.ui-page-form input[name=slug]');
     	        input.width(title.offset().left + title.innerWidth() - input.offset().left);
+    	        
 	        var suggest = $(".suggest.button");
 	        suggest.css({'position' : 'absolute'});
             var io = input.offset();
