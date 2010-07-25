@@ -9,7 +9,7 @@ class UI_UploadFile extends Output_HTML_Form
 			'description' => array('display' => 'Description', 'hint' => 'Optional description for file', 'type' => 'textarea')
         ),
         array('title' => 'Upload a new file',
-            'css' => array('ui-form'),
+            'css' => array('ui-form', 'ui-form-upload'),
 		    'buttons' => array(
 		        'upload' => array('display' =>'Upload'),
 	            'cancel' => array('display' =>'Cancel', 'type' => 'button',

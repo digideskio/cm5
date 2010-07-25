@@ -12,6 +12,7 @@ class Upload extends DB_Record
         'filename',
         'filesize',
         'store_file',
+        'sha1_sum',
         'mime',
         'uploader',
         'lastmodified' => array('type' => 'datetime'),
@@ -77,10 +78,11 @@ class Upload extends DB_Record
         
         // Calculate save_path
         $path_count = 0;
-        $store_file =  md5($data) . '.dat';
+        $datasum = sha1($data);
+        $store_file = $datasum . '.dat';
 
         while(file_exists($upload_folder . '/' . $store_file))
-            $store_file = '/' . md5($data) . '.' . ($path_count += 1) . '.dat';
+            $store_file = '/' . $datasum . '.' . ($path_count += 1) . '.dat';
 
         // Save data
         file_put_contents($upload_folder . '/' . $store_file, $data);
@@ -90,6 +92,7 @@ class Upload extends DB_Record
             'filename' => $filename,
             'filesize' => strlen($data),
             'store_file' => $store_file,
+            'sha1_sum' => $datasum,
             'mime' => $mime_type,
             'lastmodified' => new DateTime()
         ));
@@ -112,7 +115,7 @@ class Upload extends DB_Record
         
         // Save to database
         $this->filesize = strlen($data);
-        $this->filename = $filename;
+        $this->sha1_sum = sha1($data);
         $this->lastmodified = new DateTime();
         $this->mime = $mime_type;
         $this->save();

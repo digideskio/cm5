@@ -63,7 +63,9 @@ CREATE TABLE `{$dbprefix}uploads` (
     `is_image` BOOL not null,
     `image_height` integer,
     `image_width` integer,
-    PRIMARY KEY(`id`)
+    `sha1_sum` CHAR(40),
+    PRIMARY KEY(`id`),
+    UNIQUE KEY(`filename`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 

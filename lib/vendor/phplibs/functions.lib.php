@@ -112,7 +112,25 @@ if ( !function_exists('gzdecode')) {
         return $data;
     }
 }
- 
+
+function get_upload_maxsize()
+{
+    $val = trim(ini_get('upload_max_filesize'));
+    $last = strtolower($val[strlen($val)-1]);
+    switch($last)
+    {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+
+    return $val;
+}
+
 function get_static_var($class_name, $var_name)
 {
     /*  Too much noise

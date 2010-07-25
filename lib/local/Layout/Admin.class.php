@@ -82,7 +82,7 @@ class Layout_Admin extends Layout
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', 
-                tag('a target="_blank"', Config::get('site.title') . ' ')->attr('href', url('/')), tag('p', 'admin panel')),
+                tag('a target="_blank"', Config::get('site.title') . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
             tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
@@ -105,6 +105,8 @@ class Layout_Admin extends Layout
             )
         );
         
+/*     
+        No analytics on admin
         if (Config::get('site.google_analytics'))
             etag('script type="text/javascript" html_escape_off',
             " var _gaq = _gaq || [];
@@ -115,7 +117,7 @@ class Layout_Admin extends Layout
                 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-              })();");
+              })();");*/
         $this->set_default_container($def_content);
 
         // Initialize login info

@@ -7,8 +7,8 @@ UrlFactory::register('page.create', '$page_id', '/admin/page/+create?parent={$pa
 UrlFactory::register('page.admin', '', '/admin/page');
 UrlFactory::register('upload.admin', '', '/admin/files');
 UrlFactory::register('upload.create', '', '/admin/files/+upload');
-UrlFactory::register('upload.view', '$f_id', '/file/{$f_id}');
-UrlFactory::register('upload.thumb', '$f_id', '/file/{$f_id}/+thumb');
+UrlFactory::register('upload.view', '$f', '/file/{$f->filename}');
+UrlFactory::register('upload.thumb', '$f', '/file/+thumb/{$f->filename}');
 UrlFactory::register('upload.edit', '$f_id', '/admin/files/{$f_id}/+edit');
 UrlFactory::register('upload.delete', '$f_id', '/admin/files/{$f_id}/+delete');
 UrlFactory::register('user.edit', '$u', '/admin/user/{$u}/+edit');

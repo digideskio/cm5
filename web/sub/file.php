@@ -1,31 +1,44 @@
 <?php
 
-Stupid::add_rule('image_thumbnail',
-    array('type' => 'url_path', 'chunk[2]' => '/(\d+)/', 'chunk[3]' => '/^\+thumb$/')
+Stupid::add_rule('image_thumbnail_by_id',
+    array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/@(\d+)/')
 );
-Stupid::add_rule('dump_file',
-    array('type' => 'url_path', 'chunk[2]' => '/(\d+)/')
+Stupid::add_rule('dump_file_by_id',
+    array('type' => 'url_path', 'chunk[2]' => '/@(\d+)/')
 );
+Stupid::add_rule('image_thumbnail_by_name',
+    array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/([\w\-\(\)\.]+)/')
+);
+Stupid::add_rule('dump_file_by_name',
+    array('type' => 'url_path', 'chunk[2]' => '/([\w\-\(\)\.]+)/')
+);
+
 Stupid::set_default_action('not_found');
 Stupid::chain_reaction();
 
-function dump_file($id)
+function check_client_cache($lastmodified)
 {
-    if (!($f = Upload::open($id)))
-        not_found();
-
     // Check cache control
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
     {
         $if_modified_since = date_create($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 
-        if ($if_modified_since->format('U') >= $f->lastmodified->format('U'))
+        if ($if_modified_since->format('U') >= $lastmodified->format('U'))
         {
             // Client has latest version
             header( "HTTP/1.1 304 Not Modified" );
             exit;
         }
     }
+}
+
+function dump_file_by_id($id)
+{
+    if (!($f = Upload::open($id)))
+        not_found();
+
+    // Check cache control
+    check_client_cache($f->lastmodified);
 
     // Add expire header
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
@@ -33,27 +46,35 @@ function dump_file($id)
     $f->dump_file();
 }
 
-function image_thumbnail($id)
+function dump_file_by_name($name)
+{
+    $files = Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($name);
+    if (count($files) !== 1)
+        not_found();
+    
+    dump_file_by_id($files[0]['id']);
+}
+
+function image_thumbnail_by_id($id)
 {
     if (!($f = Upload::open($id)))
         not_found();
 
     // Check cache control
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
-    {
-        $if_modified_since = date_create($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-
-        if ($if_modified_since->format('U') >= $f->lastmodified->format('U'))
-        {
-            // Client has latest version
-            header( "HTTP/1.1 304 Not Modified" );
-            exit;
-        }
-    }
+    check_client_cache($f->lastmodified);
 
     // Add expire header
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
     
     $f->dump_thumb();
+}
+
+function image_thumbnail_by_name($name)
+{
+    $files = Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($name);
+    if (count($files) !== 1)
+        not_found();
+    
+    image_thumbnail_by_id($files[0]['id']);
 }
 ?>

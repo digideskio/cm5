@@ -16,7 +16,7 @@ class UI_UploadEdit extends Output_HTML_Form
 			    'value' => $u->description)
         ),
         array('title' => 'Edit upload',
-            'css' => array('ui-form'),
+            'css' => array('ui-form', 'ui-form-upload-edit'),
 		    'buttons' => array(
 		        'upload' => array('display' =>'Save'),
 	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
