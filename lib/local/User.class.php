@@ -34,12 +34,30 @@ class User extends DB_Record
         );
 }
 
+User::events()->connect('op.post.create', create_function('$e', '
+    $u = $e->arguments["record"];
+
+    // Log event
+    CMS_Logger::get_instance()->notice("User \"{$u->username}\" was created.");
+'));
+
 User::events()->connect('op.pre.delete', create_function('$e',
 '
+    $u = $e->arguments["record"];
     Membership::raw_query("Membership")
         ->delete()
         ->where("username = ?")
-        ->execute($e->arguments["record"]->username);
+        ->execute($u->username);
+        
+    CMS_Logger::get_instance()->notice("User \"{$u->username}\" was deleted.");
+'));
+
+User::events()->connect('op.post.save', create_function('$e', '
+    // Update last modified
+    $u = $e->arguments["record"];
+   
+    // Log event
+    CMS_Logger::get_instance()->notice("User \"{$u->username}\" was changed.");
 '));
 
 User::one_to_many('Page', 'user', 'articles');

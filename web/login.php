@@ -37,8 +37,13 @@ function reference_url()
 
 
 // Logout user if there is someone logged on
-Stupid::add_rule(create_function('', 'Authn_Realm::clear_identity(); Net_HTTP_Response::redirect(reference_url());'),
-array('type' => 'url_path', 'chunk[-1]' => '/\+logout/'));
+Stupid::add_rule(
+    create_function('', 
+        '
+        $user = Authn_Realm::get_identity()->id();
+        CMS_Logger::get_instance()->info("User \"{$user}\" logged off.");
+        Authn_Realm::clear_identity(); Net_HTTP_Response::redirect(reference_url());'),
+    array('type' => 'url_path', 'chunk[-1]' => '/\+logout/'));
 Stupid::chain_reaction();
 
 // Login form

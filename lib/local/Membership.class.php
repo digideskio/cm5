@@ -33,4 +33,19 @@ class Membership extends DB_Record
     );
 }
 
+Membership::events()->connect('op.post.create', create_function('$e', '
+    // Update last modified
+    $m = $e->arguments["record"];
+   
+    // Log event
+    CMS_Logger::get_instance()->notice("User \"{$m->username}\" joined group \"{$m->groupname}\".");
+'));
+
+Membership::events()->connect('op.pre.delete', create_function('$e', '
+    // Update last modified
+    $m = $e->arguments["record"];
+   
+    // Log event
+    CMS_Logger::get_instance()->notice("User \"{$m->username}\" parted group \"{$m->groupname}\".");
+'));
 ?>

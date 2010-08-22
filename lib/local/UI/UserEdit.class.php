@@ -49,10 +49,8 @@ class UI_UserEdit extends Output_HTML_Form
         if (!empty($values['password']))
             $this->user->password = sha1($values['password']);
         $this->user->save();
-        Membership::raw_query()
-            ->delete()
-            ->where('username = ?')
-            ->execute($this->user->username);
+        foreach(Membership::open_query()->where('username = ?')->execute($this->user->username) as $m)
+            $m->delete();
 
         // Create memberships
         foreach($values['groups'] as $group => $enabled)

@@ -35,6 +35,11 @@ $phplibs_loader = new ClassLoader(
 $phplibs_loader->set_file_extension('.class.php');
 $phplibs_loader->register();
 
+// Zend
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/lib/vendor');
+$zend_loader = new ClassLoader(array(dirname(__FILE__) . '/lib/vendor'));
+$zend_loader->register();
+
 // Load static library for HTML
 require_once dirname(__FILE__) . '/lib/vendor/phplibs/Output/html.lib.php';
 
@@ -49,14 +54,17 @@ DB_Conn::connect(Config::get('db.host'), Config::get('db.user'), Config::get('db
 DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
-    create_function('$e', ' error_log( $e->arguments["message"]); '));
+    create_function('$e', ' error_log( $e->arguments["message"]); 
+    CMS_Logger::get_instance()->crit($e->arguments["message"]);'));
 //DB_Conn::events()->connect('stmt.executed',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
+
 // PHP TimeZone
 date_default_timezone_set(Config::get('site.timezone'));
 
 // Initialize CMS
 $cache_engine = new Cache_File(Config::get('site.cache_folder'), 'pages_');
+$cache_engine->delete_all();
 CMS_Core::init($cache_engine);
 
 ?>

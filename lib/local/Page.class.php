@@ -56,6 +56,9 @@ Page::events()->connect('op.pre.save', create_function('$e', '
     
     // Update uri
     $r->uri = $r->full_path();
+    
+    // Log event
+    CMS_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
 '));
 
 Page::events()->connect('op.pre.create', create_function('$e', '
@@ -66,11 +69,16 @@ Page::events()->connect('op.pre.create', create_function('$e', '
     
     if (!isset($e->filtered_value["author"]))
         $e->filtered_value["author"] = Authn_Realm::get_identity()->id();
+
 '));
 
 Page::events()->connect('op.post.create', create_function('$e', '
-    // Update uri
     $r = $e->arguments["record"];
+
+    // Log event
+    CMS_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
+
+    // Update uri
     $r->uri = $r->full_path();
     $r->save();
 '));
@@ -78,6 +86,10 @@ Page::events()->connect('op.post.create', create_function('$e', '
 Page::events()->connect('op.pre.delete', create_function('$e', '
     if ($e->arguments["record"]->system)
         $e->filtered_value = true;
+
+    $r = $e->arguments["record"];
+        
+    CMS_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
 '));
 
 Page::one_to_many('Page', 'parent', 'subpages');

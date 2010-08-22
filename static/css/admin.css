@@ -440,6 +440,9 @@ a:hover {
 .ui-grid table{
     width: 100%;
     border-spacing: 0px;
+}
+
+.ui-grid table.ui-grid-list{
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -461,30 +464,30 @@ a:hover {
     border-right: 0px;
 }
 
-.ui-grid tbody{
+.ui-grid table.ui-grid-list tbody{
     background-color: #696969;
     font-size: 9pt;
 }
 
-.ui-grid tbody tr.ui-even{
+.ui-grid table.ui-grid-list tbody tr.ui-even{
     background-color: #757575;
 }
 
-.ui-grid tbody tr:hover{
+.ui-grid table.ui-grid-list tbody tr:hover{
     background-color: #858585;
     color: #343434;
 }
 
-.ui-grid tbody tr td{
+.ui-grid table.ui-grid-list tbody tr td{
     border-bottom: 1px solid #555555;
 }
 
-.ui-grid tbody td{
+.ui-grid table.ui-grid-list tbody td{
     border-right: 1px solid #555555;
     padding: 3px 8px;
 }
 
-.ui-grid tbody td:last-child{
+.ui-grid table.ui-grid-list tbody td:last-child{
     border-right: 0px;
 }
 
@@ -523,6 +526,18 @@ a:hover {
     color: #D3D3D3;
 }
 
+.ui-grid .ui-grid-page-controls td{
+    font-size: 9pt;
+}
+
+.ui-grid .ui-grid-page-controls .ui-grid-active {
+    cursor: pointer;
+}
+
+.ui-grid .ui-grid-page-controls .ui-grid-inactive {
+    color: gray;
+}
+
 .ui-grid-uploads img{
     float: right;
     margin: 0px 5px;
@@ -536,6 +551,25 @@ a:hover {
     display: inline-block;
 }
 
+/** Log grid **/
+.ui-grid-log .priority{
+    display: block;
+}
+
+.ui-grid-log .priority.notice{
+    background-color: #2a2470 !important;
+    color: white !important;
+}
+
+.ui-grid-log .priority.warn{
+    background-color: #e58f36 !important;
+    color: black !important;
+}
+
+.ui-grid-log .priority.err, .ui-grid-log .priority.crit, .ui-grid-log .priority.alert, .ui-grid-log .priority.emerg{
+    background-color: #f51919 !important;
+    color: white !important;
+}
 
 /** Icons **/
 .add {

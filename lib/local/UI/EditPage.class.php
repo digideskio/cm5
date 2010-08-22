@@ -57,7 +57,11 @@ class UI_EditPage extends Output_HTML_Form
     public function on_valid($values)
     {
         foreach($values as $name => $v)
+        {
+            if (in_array($name, array('preview')))
+                continue;
             $this->page->{$name} = $v;
+        }
         $this->page->save();
     }
 };

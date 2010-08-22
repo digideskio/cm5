@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `{$dbprefix}pages`;
 DROP TABLE IF EXISTS `{$dbprefix}memberships`;
 DROP TABLE IF EXISTS `{$dbprefix}users`;
 DROP TABLE IF EXISTS `{$dbprefix}groups`;
+DROP TABLE IF EXISTS `{$dbprefix}log`;
 
 -- Create users
 create table `{$dbprefix}users` (
@@ -66,6 +67,19 @@ CREATE TABLE `{$dbprefix}uploads` (
     `sha1_sum` CHAR(40),
     PRIMARY KEY(`id`),
     UNIQUE KEY(`filename`)
+)ENGINE=InnoDB
+DEFAULT CHARSET='UTF8';
+
+-- Log
+CREATE TABLE `{$dbprefix}log` (
+    `id` integer auto_increment not null,
+    `message` varchar(2048) not null,
+    `timestamp` DATETIME not null,
+    `priority` integer not null,
+    `priorityName` varchar(20) not null,
+    `user` varchar(50) not null,
+    `ip` varchar(45) not null,
+    PRIMARY KEY(`id`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';
 

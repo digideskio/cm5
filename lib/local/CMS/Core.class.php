@@ -267,7 +267,8 @@ class CMS_Core
     {
         if ($url === null)
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
-
+        CMS_Logger::get_instance()->info('Serving web page ' . $url);
+        
         // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);
         if ($succ)
