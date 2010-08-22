@@ -18,6 +18,8 @@ class UI_EditPage extends Output_HTML_Form
 			    ),
 			    'value' => $this->page->status
 			 ),
+			'preview' => array('display' => '', 'type' => 'custom',
+			    'value' => ''),
 			'body' => array('display' => '', 'type'=> 'textarea', 'value' => $page->body,
 			    'htmlattribs' => array('id' => 'bodyeditor'))
         );
@@ -36,14 +38,17 @@ class UI_EditPage extends Output_HTML_Form
                 )
             )
         );
+        
+        $this->fields['preview']['value'] =  '<a class="view button" href="' . (string)UrlFactory::craft_fqn('page.view', $this->page)
+            . '" target="_blank"><span class="download">View</span></a>';
     }
     
     public function on_postrender($div)
     {
         if ($this->page->system)
             return;
-        $url = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));
-        $url = implode('/', array_slice($url, 0, -1)) . '/';
+        $fullurl = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));
+        $url = implode('/', array_slice($fullurl, 0, -1)) . '/';
         $dt = $div->childs[0]->childs[3];
         $dt->childs[2] = $dt->childs[1];
         $dt->childs[1] = $url;

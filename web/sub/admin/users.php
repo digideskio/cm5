@@ -1,5 +1,6 @@
 <?php
 
+Layout::open('admin')->get_document()->title = Config::get('site.title') . " | Users panel";
 Stupid::add_rule('user_myprofile',
     array('type' => 'url_path', 'chunk[3]' => '/^\+myprofile$/')
 );
@@ -32,6 +33,7 @@ function edit_user($username)
     if (!($u = User::open($username)))
         not_found();
         
+    Layout::open('admin')->get_document()->title = Config::get('site.title') . " | User: {$u->username}";
     Layout::open('admin')->activate();
 
     $frm = new UI_UserEdit($u);

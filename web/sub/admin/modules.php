@@ -1,5 +1,6 @@
 <?php
 
+Layout::open('admin')->get_document()->title = Config::get('site.title') . " | Modules panel";
 Stupid::add_rule('module_action',
     array('type' => 'url_path', 'chunk[3]' => '/@([\w\-]+)/', 'chunk[4]' => '/([\w\-]+)/')
 );

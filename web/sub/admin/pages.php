@@ -75,7 +75,8 @@ function edit_page($id)
     
     if (!$p = Page::open($id))
         not_found();
-
+    Layout::open('admin')->get_document()->title = Config::get('site.title') . " | Edit: {$p->title}";
+    
     $frm = new UI_EditPage($p);
     
     show_pages_tree($id);

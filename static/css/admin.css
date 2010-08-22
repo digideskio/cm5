@@ -93,6 +93,13 @@ a:hover {
     right: 25px;
 }
 
+#page_editor dt a.view{
+    position: absolute;
+    top: 25px;
+    right: 120px;
+}
+
+
 #page_editor dt.type-dropbox label{
     display: none;
 }
