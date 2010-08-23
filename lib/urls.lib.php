@@ -17,4 +17,7 @@ UrlFactory::register('user.create', '', '/admin/user/+create');
 UrlFactory::register('user.admin', '', '/admin/users');
 UrlFactory::register('user.me', '', '/admin/user/+myprofile');
 UrlFactory::register('module.action', '$module, $action', '/admin/modules/@{$module}/{$action}');
+UrlFactory::register('log.view', '', '/admin/log');
+UrlFactory::register('log.view_filtered', '$priorites', '/admin/log?priorites={$priorites}');
+UrlFactory::register('log.clear', '', '/admin/log/+clear');
 ?>

@@ -50,14 +50,25 @@ class CMS_Logger
     {
         if (self::$logger !== null)
             return self::$logger;
-            
-        $format = '%timestamp% %priorityName% (%priority%): [%ip%][%user%] %message%' . PHP_EOL;
-        $formatter = new Zend_Log_Formatter_Simple($format);
+
+        // Simple writer
+        $db_writer = new CMS_Log_Writer();
+        $db_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::INFO));
         
-        $writer = new CMS_Log_Writer();
-//        $writer->setFormatter($formatter);
-        
-        $logger = new Zend_Log($writer);
+        // Mail writer
+        $mail = new Zend_Mail();
+        $mail->setFrom(Config::get('email.from'))
+             ->addTo(Config::get('email.administrator'));
+ 
+        $mail_writer = new Zend_Log_Writer_Mail($mail);
+        $mail_writer->setSubjectPrependText(Config::get('site.title') . ' | Needs your attention.');
+        $mail_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::WARN));
+
+ 
+        // Logger
+        $logger = new Zend_Log();
+        $logger->addwriter($db_writer);
+        $logger->addwriter($mail_writer);
         $logger->setEventItem('user', (Authn_Realm::get_identity()?Authn_Realm::get_identity()->id():null));
         $logger->setEventItem('ip', $_SERVER['REMOTE_ADDR']);
         
