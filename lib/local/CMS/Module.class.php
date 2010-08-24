@@ -1,8 +1,13 @@
 <?php
 
 //! Interface to implement modules
-abstract class CMS_Module
+abstract class CMS_Module extends CMS_Configurable
 {
+    public function config_nickname()
+    {
+        return $this->info_property('nickname');
+    }
+    
     //! Array with module info
     abstract public function info();
     
@@ -17,7 +22,7 @@ abstract class CMS_Module
             return null;
         return $minfo[$name];
     }
-    
+        
     //! Repository of all user actions
     private $user_actions = array();
     

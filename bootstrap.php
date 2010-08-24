@@ -22,6 +22,7 @@
 
 require_once dirname(__FILE__) . '/lib/vendor/phplibs/ClassLoader.class.php';
 require_once dirname(__FILE__) . '/lib/tools.lib.php';
+
 /**
  * Here you can write code that will be executed at the begining of each page instance
  */
@@ -47,10 +48,16 @@ require_once dirname(__FILE__) . '/lib/vendor/phplibs/Output/html.lib.php';
 require_once dirname(__FILE__) . '/lib/urls.lib.php';
 
 // Load configuration file
-require_once dirname(__FILE__) . '/config.inc.php';
+GConfig::$default_config = array(
+    'module' => array(),
+    'enabled_modules' => '',
+);
+GConfig::$config_file = dirname(__FILE__) . '/config.inc.php';
+GConfig::load_config();
+$config = GConfig::get_instance();
 
 // Database connection
-DB_Conn::connect(Config::get('db.host'), Config::get('db.user'), Config::get('db.pass'), Config::get('db.schema'), true);
+DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema, true);
 DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
@@ -60,10 +67,10 @@ DB_Conn::events()->connect('error',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
 
 // PHP TimeZone
-date_default_timezone_set(Config::get('site.timezone'));
+date_default_timezone_set($config->site->timezone);
 
 // Initialize CMS
-$cache_engine = new Cache_File(Config::get('site.cache_folder'), 'pages_');
+$cache_engine = new Cache_File($config->site->cache_folder, 'pages_');
 $cache_engine->delete_all();
 CMS_Core::init($cache_engine);
 

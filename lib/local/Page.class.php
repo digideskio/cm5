@@ -4,7 +4,7 @@ class Page extends DB_Record
 {
     static public function get_table()
     {   
-        return Config::get('db.prefix') . 'pages';
+        return GConfig::get_instance()->db->prefix . 'pages';
     }
 
     static public $fields = array(

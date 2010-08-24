@@ -97,7 +97,7 @@ class CMS_Core
         }
         
         // Initialize selected theme
-        $this->themes[Config::get('site.theme')]->init();
+        $this->themes[GConfig::get_instance()->site->theme]->init();
     }
     
     //! Register a module
@@ -309,7 +309,7 @@ class CMS_Core
             }
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
-            Layout::open('default')->get_document()->title = $p->title . ' | ' . Config::get('site.title');
+            Layout::open('default')->get_document()->title = $p->title . ' | ' . GConfig::get_instance()->site->title;
             etag('div class="article"',
                 tag('h1 class="title"', $p->title),
                 tag('div html_escape_off', $p->body)

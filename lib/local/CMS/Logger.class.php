@@ -57,13 +57,12 @@ class CMS_Logger
         
         // Mail writer
         $mail = new Zend_Mail();
-        $mail->setFrom(Config::get('email.from'))
-             ->addTo(Config::get('email.administrator'));
+        $mail->setFrom(Registry::get('config')->email->sender)
+             ->addTo(Registry::get('config')->email->administrator);
  
         $mail_writer = new Zend_Log_Writer_Mail($mail);
-        $mail_writer->setSubjectPrependText(Config::get('site.title') . ' | Needs your attention.');
+        $mail_writer->setSubjectPrependText(Registry::get('config')->site->title . ' | Needs your attention.');
         $mail_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::WARN));
-
  
         // Logger
         $logger = new Zend_Log();

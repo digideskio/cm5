@@ -28,7 +28,14 @@
                 $res .= tag('p class="description"', $minfo['description']);
                 
                 foreach($module->get_actions() as $a)
-                    $res.= UrlFactory::craft('module.action', $minfo['nickname'], $a['name'])->anchor($a['display'])->add_class('button');
+                    $res.= UrlFactory::craft('module.action', $minfo['nickname'], $a['name'])
+                        ->anchor($a['display'])->add_class('button');
+
+                if (count($module->config_options()))
+                {
+                    $res .= UrlFactory::craft('module.config', $minfo['nickname'])
+                        ->anchor('Configure')->add_class('button');
+                }
                 return $res;
             }
         }

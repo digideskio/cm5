@@ -4,7 +4,7 @@ class Upload extends DB_Record
 {
     static public function get_table()
     {   
-        return Config::get('db.prefix') . 'uploads';
+        return GConfig::get_instance()->db->prefix . 'uploads';
     }
 
     static public $fields = array(
@@ -36,7 +36,7 @@ class Upload extends DB_Record
             self::$thumb_cache->delete($this->id);
             
         // Check if it is image
-        if (($info = getimagesize(Config::get('site.upload_folder') .'/' . $this->store_file)) === false)
+        if (($info = getimagesize(GConfig::get_instance()->site->upload_folder .'/' . $this->store_file)) === false)
             return;
             
         if (! in_array($info[2], array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)))
@@ -71,7 +71,7 @@ class Upload extends DB_Record
     
     static function from_file($data, $filename)
     {   
-        $upload_folder = Config::get('site.upload_folder');
+        $upload_folder = GConfig::get_instance()->site->upload_folder;
 
         // Get mime type
         $mime_type = self::data_mime($data);
@@ -105,7 +105,7 @@ class Upload extends DB_Record
     
     public function update_file($data, $filename)
     {
-        $upload_folder = Config::get('site.upload_folder');
+        $upload_folder = GConfig::get_instance()->site->upload_folder;
         
         // Get mime type
         $mime_type = self::data_mime($data);
@@ -144,7 +144,7 @@ class Upload extends DB_Record
     
     function get_data()
     {
-        return file_get_contents(Config::get('site.upload_folder') . '/' . $this->store_file);
+        return file_get_contents(GConfig::get_instance()->site->upload_folder . '/' . $this->store_file);
     }
     
     function dump_thumb()
@@ -163,7 +163,7 @@ class Upload extends DB_Record
                 exit;
             }
         }
-        $img = new Image(Config::get('site.upload_folder') . '/' . $this->store_file);
+        $img = new Image(GConfig::get_instance()->site->upload_folder . '/' . $this->store_file);
         $thumb = $img->resize(80,80)->data(array('quality' => '91', 'format' => IMAGETYPE_PNG));
         
         if (self::$thumb_cache)
@@ -174,7 +174,7 @@ class Upload extends DB_Record
     }
 }
 
-Upload::$thumb_cache = new Cache_File(Config::get('site.cache_folder'), 'thumb_');
+Upload::$thumb_cache = new Cache_File(GConfig::get_instance()->site->cache_folder, 'thumb_');
 Upload::events()->connect('op.pre.delete', create_function('$e', '
 
     $r = $e->arguments["record"];
@@ -184,7 +184,7 @@ Upload::events()->connect('op.pre.delete', create_function('$e', '
         Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
-    unlink(Config::get("site.upload_folder") . "/" . $r->store_file);
+    unlink(GConfig::get_instance()->site->upload_folder . "/" . $r->store_file);
 '));
 
 Upload::events()->connect('op.pre.create', create_function('$e', '

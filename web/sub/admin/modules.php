@@ -1,8 +1,11 @@
 <?php
 
-Layout::open('admin')->get_document()->title = Config::get('site.title') . " | Modules panel";
+Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Modules panel";
 Stupid::add_rule('module_action',
     array('type' => 'url_path', 'chunk[3]' => '/@([\w\-]+)/', 'chunk[4]' => '/([\w\-]+)/')
+);
+Stupid::add_rule('module_configure',
+    array('type' => 'url_path', 'chunk[3]' => '/([\w\-]+)/', 'chunk[4]' => '/\+configure/')
 );
     
 Stupid::set_default_action('show_modules');
@@ -42,5 +45,15 @@ function module_action($module_name, $action)
     call_user_func($action['callback']);
     Output_HTMLTag::pop_parent();
 
+}
+
+function module_configure($module_name)
+{
+    Layout::open('admin')->activate();
+    
+    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+        not_found();
+    $frm = new UI_ModuleConfigure($module);
+    etag('div',  $frm->render());
 }
 ?>

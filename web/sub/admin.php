@@ -1,7 +1,7 @@
 <?php
 
 // Deploy checks
-if (Config::get('site.deploy_checks'))
+if (GConfig::get_instance()->site->deploy_checks)
 {
     if (is_writable(dirname(__FILE__) . '/config.inc.php'))
     {
@@ -28,7 +28,7 @@ $auth = new Authn_Backend_DB(array(
 Authn_Realm::set_backend($auth);
 Authn_Realm::set_session(
     new Authn_Session_Cache(
-        new Cache_File(Config::get('site.cache_folder'), 'session_'),
+        new Cache_File(GConfig::get_instance()->site->cache_folder, 'session_'),
         new Net_HTTP_Cookie('cms-session', null, time()+(86400 * 15), surl('/'))
     )
 );

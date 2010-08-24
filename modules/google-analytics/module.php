@@ -12,11 +12,34 @@ class CMS_Module_GoogleAnalytics extends CMS_Module
         );
     }
     
+    //! Configuration options of this module
+    public function config_options()
+    {
+        return array(
+            'property_id' => array('display' => 'Site property id as defined by google analytics.'),
+            'inform_admin' => array('display' => 'Monitor admin activity.', 'type' => 'checkbox'),
+        );
+    }
+    
+    //! Get default configuration
+    public function default_config()
+    {
+        return array(
+            'inform_admin' => false
+        );
+    }
+    
+    //! On configuration update we must invalidate cache
+    public function on_save_config()
+    {
+        CMS_Core::get_instance()->invalidate_page_cache(null);
+    }
+    
     //! Initialize module
     public function init()
     {
         $c = CMS_Core::get_instance();
-        if (Config::get('site.google_analytics'))
+        if ($this->get_config()->property_id)
             $c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
     }
     
@@ -24,9 +47,8 @@ class CMS_Module_GoogleAnalytics extends CMS_Module
     public function event_pre_render($event)
     {
         $p = $event->filtered_value;
-        $p->body .= html_ga_code(Config::get('site.google_analytics'), true);
+        $p->body .= html_ga_code($this->get_config()->property_id, true);
     }
-
 }
 
 CMS_Module_GoogleAnalytics::register();

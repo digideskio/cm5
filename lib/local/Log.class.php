@@ -4,7 +4,7 @@ class Log extends DB_Record
 {
     static public function get_table()
     {   
-        return Config::get('db.prefix') . 'log';
+        return GConfig::get_instance()->db->prefix . 'log';
     }
 
     static public $fields = array(

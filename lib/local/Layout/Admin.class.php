@@ -75,7 +75,7 @@ class Layout_Admin extends Layout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = Config::get('site.title') . ' | Admin panel';
+        $this->get_document()->title = GConfig::get_instance()->site->title . ' | Admin panel';
         $this->get_document()->add_ref_css(surl('/static/css/admin.css'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
@@ -84,7 +84,7 @@ class Layout_Admin extends Layout
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', 
-                tag('a target="_blank"', Config::get('site.title') . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
+                tag('a target="_blank"', GConfig::get_instance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
             tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
@@ -107,19 +107,6 @@ class Layout_Admin extends Layout
             )
         );
         
-/*     
-        No analytics on admin
-        if (Config::get('site.google_analytics'))
-            etag('script type="text/javascript" html_escape_off',
-            " var _gaq = _gaq || [];
-              _gaq.push(['_setAccount', '" . Config::get('site.google_analytics') ."']);
-              _gaq.push(['_trackPageview']);
-
-              (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-              })();");*/
         $this->set_default_container($def_content);
 
         // Initialize login info

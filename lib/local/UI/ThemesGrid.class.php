@@ -22,7 +22,7 @@
             {
                 $on = tag('span class="icon" html_escape_off', '&nbsp;');
                 $tinfo = $theme->info();
-                if (Config::get('site.theme') == $tinfo['nickname'])
+                if (GConfig::get_instance()->site->theme == $tinfo['nickname'])
                     $on->add_class('light-on');
                 else
                     $on->add_class('light-off');

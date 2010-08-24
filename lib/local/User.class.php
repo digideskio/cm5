@@ -24,7 +24,7 @@ class User extends DB_Record
 {
     static public function get_table()
     {   
-        return Config::get('db.prefix') . 'users';
+        return GConfig::get_instance()->db->prefix . 'users';
     }
 
     static public $fields = array(

@@ -1,8 +1,13 @@
 <?php
 
 //! Interface to implement themes
-abstract class CMS_Theme
+abstract class CMS_Theme extends CMS_Configurable
 {
+    public function config_nickname()
+    {
+        return $this->info_property('nickname');
+    }
+    
     //! Array with theme info
     abstract public function info();
     

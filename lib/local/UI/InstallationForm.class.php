@@ -85,36 +85,32 @@ class UI_InstallationForm extends Output_HTML_Form
     
     public function on_valid($values)
     {
-        Config::set('db.host', $values['db-host']);
-        Config::set('db.user', $values['db-user']);
-        Config::set('db.pass', $values['db-pass']);
-        Config::set('db.schema', $values['db-schema']);
-        Config::set('db.prefix', $values['db-prefix']);
-        Config::set('site.google_analytics', $values['site-ga']);
-        Config::set('site.deploy_checks', $values['deploy-checks']);
-        Config::set('site.upload_folder', realpath(dirname(__FILE__) . '/../../../uploads'));
-        Config::set('site.cache_folder', realpath(dirname(__FILE__) . '/../../../cache'));
+        $config = Registry::get('config');
+        $config->db->host = $values['db-host'];
+        $config->db->user = $values['db-user'];
+        $config->db->pass = $values['db-pass'];
+        $config->db->schema = $values['db-schema'];
+        $config->db->prefix = $values['db-prefix'];
+        $config->site->google_analytics = $values['site-ga'];
+        $config->site->deploy_checks = $values['deploy-checks'];
+        $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
+        $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');
         
         // Timezone
         if (isset($this->tzones[$values['timezone']]))
-            Config::set('site.timezone', $this->tzones[$values['timezone']]);
-            
-        $data = "<?php\n// File generated with /install\n";
-        	
-        foreach(Config::get_all() as $name => $value)
-            $data .= sprintf("\nConfig::set('%s', '%s');\n",
-                addslashes($name),
-                addslashes($value));
-        $data .= "\n?>";
-        file_put_contents($this->config_file, $data);
-
-        // Reload configuration
-        require $this->config_file;
-        DB_Conn::connect(Config::get('db.host'), Config::get('db.user'), Config::get('db.pass'), Config::get('db.schema'));
+            $config->site->timezone = $this->tzones[$values['timezone']];
+        
+        // Write data
+        $conf_writer = new Zend_Config_Writer_Array(array('config' => $config,
+            'filename' => $this->config_file));
+        $conf_writer->write();
+        
+        // Reset database
+        DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema);
 
         if ($values['db-build'])
         {
-            $dbprefix = Config::get('db.prefix');
+            $dbprefix = $config->db->prefix;
             if (DB_Conn::get_link()->multi_query(require($this->db_build_file)))
                 while (DB_Conn::get_link()->next_result());
             
@@ -125,17 +121,17 @@ class UI_InstallationForm extends Output_HTML_Form
         
         
         // Clear cache folder
-	    if (($dh = opendir(Config::get('site.cache_folder'))) !== FALSE)
+	    if (($dh = opendir($config->site->cache_folder)) !== FALSE)
 	    {
 		    while((($entry = readdir($dh)) !== FALSE))
     		{	
-    		    if (!is_file(Config::get('site.cache_folder') . '/' . $entry))
+    		    if (!is_file($config->site->cache_folder . '/' . $entry))
     				continue;
 			    
 			    if ($entry[0] == '.')   // Skip hidden files
 			        continue;
 			        
-				unlink(Config::get('site.cache_folder') . '/' . $entry);
+				unlink($config->site->cache_folder . '/' . $entry);
             }
         }
         			

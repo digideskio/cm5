@@ -90,13 +90,13 @@ a:hover {
     display: block;
     position: absolute;
     top: 25px;
-    right: 25px;
+    right: 90px;
 }
 
 #page_editor dt a.view{
     position: absolute;
     top: 25px;
-    right: 120px;
+    right: 25px;
 }
 
 
@@ -139,7 +139,7 @@ a:hover {
 }
 
 .button.pressed{
-    color: #d22222;
+    color: #f2a122;
     background-color: #454545;
 }
 
