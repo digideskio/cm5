@@ -1,31 +1,34 @@
 <?php
-// File generated with /install
-
-Config::set('db.host', 'localhost');
-
-Config::set('db.user', 'root');
-
-Config::set('db.pass', 'root');
-
-Config::set('db.schema', 'cms');
-
-Config::set('db.prefix', '0x0lab_');
-
-Config::set('site.title', '0x0lab');
-
-Config::set('site.timezone', 'Europe/Athens');
-
-Config::set('site.google_analytics', '');
-
-Config::set('site.deploy_checks', '');
-
-Config::set('site.theme', 'antispe');
-
-Config::set('site.cache_folder', '/home/sque/vcs/cms/cache');
-
-Config::set('site.upload_folder', '/home/sque/vcs/cms/uploads');
-
-Config::set('email.administrator', 'sque@localhost');
-
-Config::set('email.from', 'sque@localhost');
-?>
+return array (
+  'module' => 
+  array (
+    'google-analytics' => 
+    array (
+      'inform_admin' => false,
+      'property_id' => '',
+    ),
+  ),
+  'enabled_modules' => '',
+  'db' => 
+  array (
+    'host' => 'localhost',
+    'user' => 'root',
+    'pass' => 'root',
+    'schema' => 'cms',
+    'prefix' => '0x0lab_',
+  ),
+  'site' => 
+  array (
+    'title' => '0x0lab',
+    'timezone' => 'Europe/Athens',
+    'deploy_checks' => false,
+    'theme' => 'default',
+    'cache_folder' => '/home/sque/vcs/cms/cache',
+    'upload_folder' => '/home/sque/vcs/cms/uploads',
+  ),
+  'email' => 
+  array (
+    'sender' => 'sque@localhost',
+    'administrator' => 'sque@localhost',
+  ),
+);

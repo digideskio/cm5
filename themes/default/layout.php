@@ -1,6 +1,7 @@
 <?php
 
-class DefaultThemeLayout extends Layout{
+class DefaultThemeLayout extends Layout
+{
     private $mainmenu = null;
     
     public function get_mainmenu()

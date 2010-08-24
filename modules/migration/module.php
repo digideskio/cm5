@@ -31,7 +31,7 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
         // Meta
         $archive->appendChild($meta = $dom->createElement('meta'));
         $meta->appendChild($title = $dom->createElement('title'));
-        $title->appendChild(new DomText(Config::get('site.title')));
+        $title->appendChild(new DomText(GConfig::get_instance()->site->title));
         $meta->appendChild($base_url = $dom->createElement('base_url'));
         $base_url->appendChild(new DomText((empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . surl('/')));
         
@@ -68,7 +68,7 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
             }
         }
     
-        $filename = Config::get('site.title') . '-backup-' . date_create()->format('Y-m-d_H-i');
+        $filename = GConfig::get_instance()->site->title . '-backup-' . date_create()->format('Y-m-d_H-i');
         header('Content-Type: application/x-gzip');
         header("Content-Disposition: attachment; filename=$filename.xml.gz");
         echo gzencode($dom->saveXML()); 
