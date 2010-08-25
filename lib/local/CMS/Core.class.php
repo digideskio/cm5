@@ -11,10 +11,13 @@ class CMS_Core
     protected $events = null;
     
     //! An array with all modules
-    protected $modules = null;
-    
-    //! An array with all themes
-    protected $themes = null;
+    protected $modules = array();
+
+    //! A flag if themes have been loaded
+    protected $modules_loaded = false;
+        
+    //! A flag if themes have been loaded
+    protected $themes_loaded = false;
     
     //! Cache engine
     protected $cache = null;
@@ -58,7 +61,7 @@ class CMS_Core
     //! Scan modules folder and load them all
     public function load_modules()
     {
-        $this->modules = array();
+        $this->modules_loaded = true;
         
         // Load modules
         $modules_folder = dirname(__FILE__) . '/../../../modules';
@@ -79,7 +82,7 @@ class CMS_Core
     //! Scan modules folder and load them all
     public function load_themes()
     {
-        $this->themes = array();
+        $this->themes_loaded = true;
         
         // Load themes
         $themes_folder = dirname(__FILE__) . '/../../../themes';
@@ -97,7 +100,7 @@ class CMS_Core
         }
         
         // Initialize selected theme
-        $this->themes[GConfig::get_instance()->site->theme]->init();
+        $this->modules[GConfig::get_instance()->site->theme]->init();
     }
     
     //! Register a module
@@ -108,50 +111,80 @@ class CMS_Core
     {   
         $minfo = $module->info();
         $this->modules[$minfo['nickname']] = $module;
-        $module->init();
+        if ($module->is_enabled())
+            $module->init();
     }
-
-    //! Register a theme
-    /**
-     * @param $theme The instance of the theme to register
-     */
-    public function register_theme(CMS_Theme $theme)
-    {   
-        $tinfo = $theme->info();
-        $this->themes[$tinfo['nickname']] = $theme;
-    }
-
-    
+   
     //! Enumerate modules
     /**
      * Get the list with all registered modules
      */
     public function modules()
     {
-        if ($this->modules === null)
+        if (!$this->modules_loaded)
             $this->load_modules();
         return $this->modules;
-    }
-    
-    //! Get a module info
-    public function get_module($nickname)
-    {
-        if ($this->modules === null)
-            $this->load_modules();
-        if (!isset($this->modules[$nickname]))
-            return null;
-        return $this->modules[$nickname];
     }
     
     //! Enumerate themes
     /**
      * Get the list with all registred themes
      */
-    public function themes()
+    public function theme_modules()
     {
-        if ($this->themes === null)
+        if (!$this->themes_loaded)
             $this->load_themes();
-        return $this->themes;
+        return array_filter($this->modules, create_function('$e', ' return ($e->module_type() == "theme"); '));
+    }
+    
+    //! Get a module info
+    public function get_module($nickname)
+    {
+        if (!$this->modules_loaded)
+            $this->load_modules();
+        if (!isset($this->modules[$nickname]))
+            return null;
+        return $this->modules[$nickname];
+    }
+
+    //! Enable module
+    public function enable_module($nickname)
+    {
+        if (($m = $this->get_module($nickname)) == null)
+            return false;
+        
+        $conf = GConfig::get_writable_copy();
+        $conf->enabled_modules = implode(',',
+            array_merge(
+                array($nickname),
+                explode(',', $conf->enabled_modules)
+            )
+        );
+        GConfig::update($conf);
+        CMS_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
+        
+        // Reset cache as a module may leave trash
+        $this->invalidate_page_cache(null);
+    }
+    
+    //! Disable module
+    public function disable_module($nickname)
+    {
+        if (($m = $this->get_module($nickname)) == null)
+            return false;
+        
+        $conf = GConfig::get_writable_copy();
+        $conf->enabled_modules = implode(',',
+            array_diff(
+                explode(',', $conf->enabled_modules),
+                array($nickname)
+            )
+        );
+        GConfig::update($conf);
+        CMS_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
+        
+        // Reset cache as a module may leave trash
+        $this->invalidate_page_cache(null);
     }
     
     //! Get the EventDispatcher object

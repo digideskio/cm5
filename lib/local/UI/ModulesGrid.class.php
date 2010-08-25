@@ -7,7 +7,7 @@
             $this->modules = $modules;
             parent::__construct(
                 array(
-                    'enabled' => array('caption' => 'Enabled', 'customdata' => 'true'),
+                    'enabled' => array('caption' => 'Status', 'customdata' => 'true'),
                     'description' => array('caption' => 'Description', 'customdata' => 'true'),
                 ),
                 array(
@@ -19,7 +19,20 @@
         public function on_custom_data($col_id, $row_id, $module)
         {
             if ($col_id == 'enabled')
-                return tag('input type="checkbox" checked="true" disabled="disabled"');
+            {
+                $inp = '';
+                if ($module->is_enabled())
+                {
+                    $inp .= UrlFactory::craft('module.disable', $module->config_nickname())
+                        ->anchor('Enabled')->add_class('button light-on');
+                }
+                else
+                {
+                    $inp .= UrlFactory::craft('module.enable', $module->config_nickname())
+                        ->anchor('Disabled')->add_class('button light-off');
+                }
+                return $inp;
+            }
            
             if ($col_id == 'description')
             {
@@ -34,7 +47,7 @@
                 if (count($module->config_options()))
                 {
                     $res .= UrlFactory::craft('module.config', $minfo['nickname'])
-                        ->anchor('Configure')->add_class('button');
+                        ->anchor('Configure')->add_class('button edit');
                 }
                 return $res;
             }

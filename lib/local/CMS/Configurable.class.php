@@ -39,7 +39,7 @@ abstract class CMS_Configurable
             return $this->config;
 
         // Read configuration from global config
-        $gconfig = Registry::get('config');
+        $gconfig = GConfig::get_instance();
         $nickname = $this->config_nickname();
         if (isset($gconfig->module->$nickname))
             $this->config = new Zend_Config($gconfig->module->$nickname->toArray(), true);

@@ -9,7 +9,7 @@ function show_themes()
 {
     Layout::open('admin')->activate();
 
-    $grid = new UI_ThemesGrid(CMS_Core::get_instance()->themes());
+    $grid = new UI_ModulesGrid(CMS_Core::get_instance()->theme_modules());
     etag('div',
         $grid->render()
     );

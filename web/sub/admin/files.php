@@ -38,7 +38,17 @@ function delete_file($id)
     if (!($u = Upload::open($id)))
         not_found();
         
-    $frm = new UI_UploadDelete($u);
+    $frm = new UI_ConfirmForm(
+        "Delete \"{$u->filename}\"",
+        'Are you sure? This action is inreversible!',
+        'Delete',
+        create_function('$u','
+            $u->delete();
+            UrlFactory::craft("upload.admin")->redirect();
+        '),
+        array($u),
+        UrlFactory::craft("upload.admin")
+    );
     
     etag('div', $frm->render());
 }

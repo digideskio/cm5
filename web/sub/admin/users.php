@@ -53,7 +53,17 @@ function delete_user($username)
         exit;
     }
     
-    $frm = new UI_UserDelete($u);
+    $frm = new UI_ConfirmForm(
+        "Delete user \"{$u->username}\"",
+        "Are you sure? This action is inreversible!",
+        'Delete',
+        create_function('$u','
+            $u->delete();
+            UrlFactory::craft("user.admin")->redirect();
+        '),
+        array($u),
+        UrlFactory::craft("user.admin")
+    );
     etag('div', $frm->render());
 }
 

@@ -131,6 +131,7 @@ a:hover {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
+    display: inline-block;
 }
 
 .button:hover{
@@ -590,7 +591,6 @@ a:hover {
     background-image: url('images/edit-16.png');
     background-repeat: no-repeat;
     background-position: left center;
-
     padding-left: 16px;
 }
 
@@ -598,7 +598,6 @@ a:hover {
     background-image: url('images/download-16.png');
     background-repeat: no-repeat;
     background-position: left center;
-
     padding-left: 16px;
 }
 
@@ -606,11 +605,24 @@ a:hover {
     background-image: url('images/edit-16.png');
     background-repeat: no-repeat;
     background-position: 5px center;
-
     padding-left: 24px;
 }
 
-.button.add, .button.delete, .button.edit, .button.download{
+.light-on {
+    background-image: url('images/led-green.gif');
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 16px;
+}
+
+.light-off {
+    background-image: url('images/led-gray.gif');
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 16px;
+}
+
+.button.add, .button.delete, .button.edit, .button.download, .button.light-on, .button.light-off{
     padding: 5px 10px 5px 24px;
     background-position: 5px center;
 }
@@ -621,13 +633,7 @@ a:hover {
     display: inline-block;
 }
 
-.light-on {
-    background: url('images/led-green.gif') no-repeat left center;
-}
 
-.light-off {
-    background: url('images/led-gray.gif') no-repeat left center;
-}
 
 .monospace{
     font-family: monospace;

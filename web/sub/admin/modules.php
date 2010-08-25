@@ -7,7 +7,12 @@ Stupid::add_rule('module_action',
 Stupid::add_rule('module_configure',
     array('type' => 'url_path', 'chunk[3]' => '/([\w\-]+)/', 'chunk[4]' => '/\+configure/')
 );
-    
+Stupid::add_rule('module_enable',
+    array('type' => 'url_path', 'chunk[3]' => '/([\w\-]+)/', 'chunk[4]' => '/\+enable/')
+);
+Stupid::add_rule('module_disable',
+    array('type' => 'url_path', 'chunk[3]' => '/([\w\-]+)/', 'chunk[4]' => '/\+disable/')
+);
 Stupid::set_default_action('show_modules');
 Stupid::chain_reaction();
 
@@ -54,6 +59,48 @@ function module_configure($module_name)
     if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
         not_found();
     $frm = new UI_ModuleConfigure($module);
+    etag('div',  $frm->render());
+}
+
+function module_enable($module_name)
+{
+
+    Layout::open('admin')->activate();
+    
+    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+        not_found();
+    $frm = new UI_ConfirmForm(
+        'Module: ' . $module->info_property('title'),
+        'Are you sure you want to enable this module?',
+        'Enable',
+        create_function('$m', '
+            CMS_Core::get_instance()->enable_module($m->config_nickname());
+            UrlFactory::craft("module.admin")->redirect();
+        '),
+        array($module),
+        UrlFactory::craft("module.admin")
+    );
+    etag('div',  $frm->render());
+}
+
+function module_disable($module_name)
+{
+
+    Layout::open('admin')->activate();
+    
+    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+        not_found();
+    $frm = new UI_ConfirmForm(
+        'Module: ' . $module->info_property('title'),
+        'Are you sure you want to disable this module?',
+        'Disable',
+        create_function('$m', '
+            CMS_Core::get_instance()->disable_module($m->config_nickname());
+            UrlFactory::craft("module.admin")->redirect();
+        '),
+        array($module),
+        UrlFactory::craft("module.admin")
+    );
     etag('div',  $frm->render());
 }
 ?>

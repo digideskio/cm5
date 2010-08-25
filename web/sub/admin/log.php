@@ -69,7 +69,17 @@ function show_log()
 function clear_log()
 {
     Layout::open('admin')->activate();
-    $frm = new UI_LogClear($u);
+    $frm = new UI_ConfirmForm(
+        'Clear system log',
+        'Are you sure? This action is inreversible!',
+        'Clear',
+        create_function('','
+            Log::reset();        
+            UrlFactory::craft("log.view")->redirect();'
+        ),
+        array(),
+        UrlFactory::craft("log.view")
+    );
     etag('div', $frm->render());
 }
 ?>

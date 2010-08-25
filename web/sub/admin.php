@@ -52,6 +52,7 @@ $list->add_resource('file');
 $list->add_resource('module');
 $list->add_resource('theme');
 $list->add_resource('log');
+$list->add_resource('system.settings');
 
 Authz::allow('page', '@editor', 'admin');
 Authz::allow('page', null, 'view');
@@ -77,6 +78,8 @@ Authz::allow('user', '@admin', 'view');
 Authz::allow('user', '@admin', 'edit');
 
 Authz::allow('log', '@admin', 'view');
+
+Authz::allow('system.settings', '@admin', 'admin');
 
 // Load modules
 CMS_Core::get_instance()->modules();
@@ -117,6 +120,11 @@ Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/t
 Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/log.php');"),
     array('type' => 'url_path', 'chunk[2]' => '/^log$/'),
     array('type' => 'authz', 'resource' => 'log', 'action' => 'view')
+);
+
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/settings.php');"),
+    array('type' => 'url_path', 'chunk[2]' => '/^settings$/'),
+    array('type' => 'authz', 'resource' => 'system.settings', 'action' => 'admin')
 );
 
 Stupid::add_rule('tool_translit',

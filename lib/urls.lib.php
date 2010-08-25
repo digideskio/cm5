@@ -19,7 +19,10 @@ UrlFactory::register('user.me', '', '/admin/user/+myprofile');
 UrlFactory::register('module.admin', '', '/admin/modules');
 UrlFactory::register('module.action', '$module, $action', '/admin/modules/@{$module}/{$action}');
 UrlFactory::register('module.config', '$module', '/admin/modules/{$module}/+configure');
+UrlFactory::register('module.enable', '$module', '/admin/modules/{$module}/+enable');
+UrlFactory::register('module.disable', '$module', '/admin/modules/{$module}/+disable');
 UrlFactory::register('log.view', '', '/admin/log');
 UrlFactory::register('log.view_filtered', '$priorites', '/admin/log?priorites={$priorites}');
 UrlFactory::register('log.clear', '', '/admin/log/+clear');
+UrlFactory::register('system.settings', '', '/admin/settings');
 ?>

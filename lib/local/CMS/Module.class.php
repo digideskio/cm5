@@ -7,7 +7,18 @@ abstract class CMS_Module extends CMS_Configurable
     {
         return $this->info_property('nickname');
     }
+
+    //! Type of module
+    public function module_type()
+    {
+        return 'generic';
+    }
     
+    //! Check if this module is enabled
+    public function is_enabled()
+    {
+        return in_array($this->config_nickname(), explode(',', GConfig::get_instance()->enabled_modules));
+    }
     //! Array with module info
     abstract public function info();
     

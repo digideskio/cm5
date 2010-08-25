@@ -53,6 +53,8 @@ class Layout_Admin extends Layout
             $this->mainmenu->create_link('Users', url('/admin/users'));
         if (Authz::is_allowed('log', 'view'))
             $this->mainmenu->create_link('Log', url('/admin/log'));
+        if (Authz::is_allowed('system.settings', 'admin'))
+            $this->mainmenu->create_link('Settings', url('/admin/settings'));
     }
     
     public function get_submenu()

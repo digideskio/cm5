@@ -5,10 +5,10 @@ return array (
     'google-analytics' => 
     array (
       'inform_admin' => false,
-      'property_id' => '',
+      'property_id' => 'kkoka',
     ),
   ),
-  'enabled_modules' => '',
+  'enabled_modules' => 'seo,content-magic,migration,google-analytics,',
   'db' => 
   array (
     'host' => 'localhost',
@@ -22,7 +22,7 @@ return array (
     'title' => '0x0lab',
     'timezone' => 'Europe/Athens',
     'deploy_checks' => false,
-    'theme' => 'default',
+    'theme' => 'antispe',
     'cache_folder' => '/home/sque/vcs/cms/cache',
     'upload_folder' => '/home/sque/vcs/cms/uploads',
   ),
