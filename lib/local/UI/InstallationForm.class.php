@@ -56,10 +56,7 @@ class UI_InstallationForm extends Output_HTML_Form
                 'onerror' => 'Select a valid time zone'),
             'deploy-checks' => array('display' => 'Check for remaining development files.',
                 'type' => 'checkbox', 'hint' => 'It warn if /install folder exists or if configuration files are writable',
-                'value' => true),
-			'site-ga' => array('display' => 'Google Analytics Web Property ID',
-			    'hint' => 'If you want to track this site with google analytics add your id here.'),
-        ),
+                'value' => true)        ),
         array('title' => '', 'css' => array('ui-form', 'ui-installation'),
 		    'buttons' => array(
 		        'Save' => array('display' =>'Install'),
@@ -85,13 +82,13 @@ class UI_InstallationForm extends Output_HTML_Form
     
     public function on_valid($values)
     {
-        $config = Registry::get('config');
+        $config = new Zend_Config(array(
+            'db' => array(), 'site' => array()), true);
         $config->db->host = $values['db-host'];
         $config->db->user = $values['db-user'];
         $config->db->pass = $values['db-pass'];
         $config->db->schema = $values['db-schema'];
         $config->db->prefix = $values['db-prefix'];
-        $config->site->google_analytics = $values['site-ga'];
         $config->site->deploy_checks = $values['deploy-checks'];
         $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
         $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');

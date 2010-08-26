@@ -15,13 +15,13 @@ class GConfig
         $config = new Zend_Config(self::$default_config, true);
         $config->merge(new Zend_Config(require self::$config_file));
         $config->setReadOnly();
-        Registry::set('config2', $config);
+        Registry::set('config', $config);
     }
     
     //! Get the instance of global config
     public static function get_instance()
     {
-        return Registry::get('config2');
+        return Registry::get('config');
     }
     
     //! Get a writable copy of the configuration

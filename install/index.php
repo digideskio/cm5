@@ -58,7 +58,6 @@ if (! is_writable(dirname(__FILE__) . '/../cache'))
     exit;
 }
 
-Registry::set('config', new Zend_Config(require $fn_config, true));
 $f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build-script.php');
 etag('div', $f->render());
 ?>
