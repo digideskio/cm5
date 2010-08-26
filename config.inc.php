@@ -15,6 +15,21 @@ return array (
       'bottom-column4' => '-1',
       'bottom-column5' => '12',
     ),
+    'default' => 
+    array (
+      'page-background-color' => '4B484F',
+      'article-background-color' => 'F6F5FF',
+      'article-text-color' => '292929',
+      'menu-background-color' => 'F0F0F0',
+      'menu-text-color' => '0A0A0A',
+      'menu-selected-background-color' => 'D20000',
+      'menu-selected-text-color' => 'FFFFFF',
+      'footer' => '<a href="http://www.google.com">KmFa</a>
+',
+      'favicon-url' => 'http://framework.zend.com/favicon.ico',
+      'extra-css' => '',
+      'color-background' => '394BA3',
+    ),
   ),
   'enabled_modules' => 'migration,seo,content-magic,google-analytics,',
   'db' => 

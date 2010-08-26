@@ -82,6 +82,7 @@ class Layout_Admin extends Layout
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
+        $this->get_document()->add_ref_js(surl('/static/js/jscolor.js.php'));
 
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',

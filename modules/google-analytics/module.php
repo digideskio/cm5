@@ -17,7 +17,7 @@ class CMS_Module_GoogleAnalytics extends CMS_Module
     {
         return array(
             'property_id' => array('display' => 'Site property id as defined by google analytics.'),
-            'inform_admin' => array('display' => 'Monitor admin activity.', 'type' => 'checkbox'),
+//            'inform_admin' => array('display' => 'Monitor admin activity.', 'type' => 'checkbox'),
         );
     }
     

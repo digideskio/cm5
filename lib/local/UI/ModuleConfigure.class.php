@@ -21,6 +21,10 @@ class UI_ModuleConfigure extends Output_HTML_Form
                     $f['type'] = 'dropbox';
                     $f['optionlist'] = $opt['options'];
                 }
+                if ($opt['type'] === 'textarea')
+                    $f['type'] = 'textarea';
+                if ($opt['type'] === 'color')
+                    $f['htmlattribs'] = array('class' => 'color');
 
             }
             $f['value'] = $this->mconfig->{$id};
@@ -28,7 +32,7 @@ class UI_ModuleConfigure extends Output_HTML_Form
         parent::__construct(
             $fields,
         array('title' => 'Configure: ' . $this->module->info_property('title'),
-            'css' => array('ui-form'),
+            'css' => array('ui-form', 'ui-form-moduleconfig'),
 		    'buttons' => array(
 		        'upload' => array('display' =>'Save'),
 	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
@@ -44,7 +48,8 @@ class UI_ModuleConfigure extends Output_HTML_Form
             $this->mconfig->{$id} = $value;
 
         $this->module->save_config();
-        
+
+        return; // Omit redirect not very usefull        
         if ($this->module->module_type() === 'theme')
             UrlFactory::craft('theme.admin')->redirect();
             

@@ -21,7 +21,7 @@ a:active {
 
 }
 #content{
-    background: #e2e2e2;
+    background-color: #e2e2e2;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
     border-radius: 7px;
@@ -38,6 +38,7 @@ a:active {
 #footer{
     clear: both;
     text-align: right;
+    margin: 5px 15px;
 }
 #footer a{
     color: white;

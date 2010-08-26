@@ -369,6 +369,9 @@ a:hover {
     border: 1px solid #d20000;
 }
 
+.ui-form input.color{
+    width: 6em;
+}
 
 .ui-form .buttons{
     text-align: right;
@@ -427,6 +430,9 @@ a:hover {
     margin-left: 1em;
 }
 
+.ui-form-moduleconfig{
+    width: 800px ;
+}
 /** ui-grid **/
 .ui-grid{
     margin: 5px auto;

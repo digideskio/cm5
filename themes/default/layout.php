@@ -46,6 +46,9 @@ class DefaultThemeLayout extends CMS_ThemeLayout
         $this->get_document()->title = GConfig::get_instance()->site->title;
         $this->get_document()->add_ref_css(surl('/themes/default/css/default.css'));
         
+        if ($this->get_config()->{"favicon-url"})
+            $this->get_document()->add_favicon($this->get_config()->{"favicon-url"});
+        
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', GConfig::get_instance()->site->title),
@@ -56,11 +59,41 @@ class DefaultThemeLayout extends CMS_ThemeLayout
             tag('div id="content"'),
             tag('div id="spacer"')
         );
-        etag('div id="footer"', 
-            tag('a', 'PHPlibs', array('href' => 'http://phplibs.kmfa.net')),' skeleton'
+        etag('div id="footer" html_escape_off', 
+            $this->get_config()->footer
         );
         $this->set_default_container($def_content);
+        
+        // Customized style
+        $this->get_document()->get_head()->append(tag('style type="text/css" html_escape_off',"
+            body{
+                background-color: #{$this->get_config()->{"page-background-color"}};
+            }
+            #content{
+                background-color: #{$this->get_config()->{"article-background-color"}};
+                color: #{$this->get_config()->{"article-text-color"}};
+            }
+            .menu >li{
+                background-color: #{$this->get_config()->{"menu-background-color"}};
+            }
+            .menu > li a{
+                color: #{$this->get_config()->{"menu-text-color"}};
+            }
+            .menu li.selected a{
+                color: #{$this->get_config()->{"menu-selected-text-color"}};
+            }
+            .menu{
+                border-bottom-color: #{$this->get_config()->{"menu-selected-background-color"}};
+             }
+             
+            .menu > li.selected, .menu > li.selected ul{
+                background-color: #{$this->get_config()->{"menu-selected-background-color"}};
+            }
+            "));
 
+        if ($this->get_config()->{"extra-css"})
+            $this->get_document()->get_head()->append(tag('style type="text/css"',$this->get_config()->{"extra-css"}));
+            
         // Search widget
         $this->init_menu();
         $this->deactivate();
