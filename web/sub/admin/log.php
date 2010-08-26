@@ -47,9 +47,10 @@ function show_log()
         }
         return (string)UrlFactory::craft('log.view_filtered', implode(',', $current_filter));
     }
-    $panel = etag('div class="log-panel"', 
+    $panel = etag('div', 
         $controls = tag('ul class="filters'),
-        UrlFactory::craft('log.clear')->anchor('Clear')->add_class('button delete clear-log'));
+        UrlFactory::craft('log.clear')->anchor('Clear')->add_class('button delete clear-log')
+    )->add_class('panel log');
     foreach($priorities as $id => $name)
     {
         tag('li', $anchor = tag('a class="button"', $name))->appendto($controls);

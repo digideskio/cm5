@@ -116,9 +116,13 @@ class Layout_Admin extends Layout
         $loginfo = $this->get_document()->get_body()->getElementById('login-info');
         if (Authn_Realm::has_identity())
         {
+            if ($_SERVER['QUERY_STRING'] == '')
+                $logout_url = $_SERVER['REQUEST_URI'] . "/+logout";
+            else
+                $logout_url = url($_SERVER['PATH_INFO'] . "/+logout");
             $loginfo->append(
                 tag('a class="user"', Authn_Realm::get_identity()->id())->attr('href', (string)UrlFactory::craft('user.me')), ' ',
-                tag('a', 'logout', array('href' => $_SERVER['REQUEST_URI'] . "/+logout"))
+                tag('a', 'logout', array('href' => $logout_url))
             );
         }
         // Search widgeet

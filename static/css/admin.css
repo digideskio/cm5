@@ -662,26 +662,30 @@ a:hover {
     color: #f1f1f1;
 }
 
+/** Uploads panel **/
+.panel.uploads{
+    padding: 5px 5px;
+}
 /** Log filters **/
-.log-panel{
+.panel{
     position: relative;
 }
 
-.log-panel .filters{
+.panel .filters{
     list-style-type: none;
     padding: 0px;
     margin: 0px;
 }
 
-.log-panel .filters li {
+.panel .filters li {
     display: inline-block;
     margin: 10px 4px;
 }
-.log-panel .filters li a{
+.panel .filters li a{
     font-size: 9pt;
 }
 
-.log-panel .clear-log{
+.panel.log .clear-log{
     position: absolute;
     right: 10px;
     top: 5px;

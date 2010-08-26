@@ -21,8 +21,11 @@ class UI_UploadFile extends Output_HTML_Form
 
     public function on_post()
     {
-        if (!$this->get_field_value('file'))
+        if (!($file = $this->get_field_value('file')))
             $this->invalidate_field('file', 'You must select a file to upload');
+        
+        if (count(Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($file['orig_name'])))
+            $this->invalidate_field('file', 'There is already an upload with the same filename.');
     }
     
     public function on_valid($values)

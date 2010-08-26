@@ -57,12 +57,12 @@ function show_files()
 {
     Layout::open('admin')->activate();
 
-    $tab = new UI_UploadsGrid(Upload::open_all());
     etag('div',
-        $tab->render(),
         UrlFactory::craft('upload.create')->anchor('Upload a new file')
             ->add_class('button')
             ->add_class('download')
-    );
+    )->add_class('panel uploads');
+    $tab = new UI_UploadsGrid(Upload::open_query()->order_by('id', 'DESC')->execute());
+    etag('div',  $tab->render());
 }
 ?>

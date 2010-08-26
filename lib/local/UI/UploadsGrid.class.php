@@ -13,7 +13,8 @@
                     'tools' => array('caption' => 'Actions', 'customdata' => 'true')
                 ),
                 array(
-                    'css' => array('ui-grid', 'ui-grid-uploads')
+                    'css' => array('ui-grid', 'ui-grid-uploads'),
+                    'maxperpage' => '10'
                 ), 
                 $this->files
             );
