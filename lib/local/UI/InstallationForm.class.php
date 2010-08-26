@@ -36,6 +36,8 @@ class UI_InstallationForm extends Output_HTML_Form
         foreach($zone_identifiers as $zone)
             $this->tzones[$zone] = $zone;
         parent::__construct(array(
+            'site-title' => array('display' => 'Title', 'regcheck' => '/^.+$/',
+				'onerror' => 'This field is mandatory.'),
             'db' => array('type' => 'custom', 'value' => '<h4>Database Options</h4>'),
 			'db-host' => array('display' => 'Host', 'regcheck' => '/^.+$/',
 				'onerror' => 'This field is mandatory.'),
@@ -83,7 +85,11 @@ class UI_InstallationForm extends Output_HTML_Form
     public function on_valid($values)
     {
         $config = new Zend_Config(array(
-            'db' => array(), 'site' => array()), true);
+            'db' => array(),
+            'site' => array(),
+            'module' => array(),
+            'email' => array()
+        ), true);
         $config->db->host = $values['db-host'];
         $config->db->user = $values['db-user'];
         $config->db->pass = $values['db-pass'];
@@ -92,6 +98,8 @@ class UI_InstallationForm extends Output_HTML_Form
         $config->site->deploy_checks = $values['deploy-checks'];
         $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
         $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');
+        $config->site->theme = 'default';
+        $config->site->title = $values['site-title'];
         
         // Timezone
         if (isset($this->tzones[$values['timezone']]))

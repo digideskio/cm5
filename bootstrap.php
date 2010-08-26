@@ -71,7 +71,6 @@ date_default_timezone_set($config->site->timezone);
 
 // Initialize CMS
 $cache_engine = new Cache_File($config->site->cache_folder, 'pages_');
-$cache_engine->delete_all();
 CMS_Core::init($cache_engine);
 
 ?>
