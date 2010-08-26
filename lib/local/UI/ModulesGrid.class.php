@@ -2,9 +2,11 @@
 
     class UI_ModulesGrid extends Output_HTML_Grid
     {
-        public function __construct($modules)
+        public function __construct($modules, $themes_mode = false)
         {
             $this->modules = $modules;
+            $this->themes_mode = $themes_mode;
+            
             parent::__construct(
                 array(
                     'enabled' => array('caption' => 'Status', 'customdata' => 'true'),
@@ -21,15 +23,23 @@
             if ($col_id == 'enabled')
             {
                 $inp = '';
-                if ($module->is_enabled())
+                if ($this->themes_mode)
                 {
-                    $inp .= UrlFactory::craft('module.disable', $module->config_nickname())
-                        ->anchor('Enabled')->add_class('button light-on');
+                    if ($module->config_nickname() === GConfig::get_instance()->site->theme)
+                        $inp .= tag('span', 'Active')->add_class('button disabled light-on');
+                    else
+                        $inp .= UrlFactory::craft('theme.switch', $module->config_nickname())
+                            ->anchor('Switch')->add_class('button light-off');
                 }
                 else
                 {
-                    $inp .= UrlFactory::craft('module.enable', $module->config_nickname())
-                        ->anchor('Disabled')->add_class('button light-off');
+                    // Module
+                    if ($module->is_enabled())
+                        $inp .= UrlFactory::craft('module.disable', $module->config_nickname())
+                            ->anchor('Enabled')->add_class('button light-on');
+                    else
+                        $inp .= UrlFactory::craft('module.enable', $module->config_nickname())
+                            ->anchor('Disabled')->add_class('button light-off');
                 }
                 return $inp;
             }

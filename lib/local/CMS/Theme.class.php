@@ -15,7 +15,10 @@ abstract class CMS_Theme extends CMS_Module
     //! Initialize theme
     public function init()
     {
-        Layout::assign('default', $this->get_layout_class());
+        $theme_class = $this->get_layout_class();
+        if (!eval("return isset($theme_class::\$theme_nickname);"))
+            throw new RuntimeException('Theme Layout class must have static property "theme_nickname"!');
+        Layout::assign('default', $theme_class);
     }
 }
 

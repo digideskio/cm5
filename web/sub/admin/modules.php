@@ -56,6 +56,7 @@ function module_configure($module_name)
 {
     Layout::open('admin')->activate();
     
+    CMS_Core::get_instance()->load_themes();
     if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
         not_found();
     $frm = new UI_ModuleConfigure($module);

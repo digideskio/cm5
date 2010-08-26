@@ -1,8 +1,10 @@
 <?php
 
-class DefaultThemeLayout extends Layout
+class DefaultThemeLayout extends CMS_ThemeLayout
 {
     private $mainmenu = null;
+    
+    public static $theme_nickname = 'default';
     
     public function get_mainmenu()
     {
@@ -41,12 +43,12 @@ class DefaultThemeLayout extends Layout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = Config::get('site.title');
+        $this->get_document()->title = GConfig::get_instance()->site->title;
         $this->get_document()->add_ref_css(surl('/themes/default/css/default.css'));
         
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
-            tag('h1', Config::get('site.title')),
+            tag('h1', GConfig::get_instance()->site->title),
             tag('div id="main-menu"')
         );
         etag('div id="main"',

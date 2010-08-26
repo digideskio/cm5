@@ -42,7 +42,8 @@ abstract class CMS_Configurable
         $gconfig = GConfig::get_instance();
         $nickname = $this->config_nickname();
         if (isset($gconfig->module->$nickname))
-            $this->config = new Zend_Config($gconfig->module->$nickname->toArray(), true);
+            $this->config = new Zend_Config(
+                array_merge($this->default_config(), $gconfig->module->$nickname->toArray()), true);
         else
             $this->config = new Zend_Config($this->default_config(), true);
 

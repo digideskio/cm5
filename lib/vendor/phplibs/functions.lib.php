@@ -23,11 +23,11 @@
 // Sample a part of the text and return the result with three dots at the end (if needed)
 function text_sample($text, $length)
 {	
-    $text_length = strlen($text);
+    $text_length = mb_strlen($text, 'UTF-8');
 	if ($text_length < $length)
 		return $text;
 		
-	return substr($text, 0, $length - 3) . '...';
+	return mb_substr($text, 0, $length - 3, 'UTF-8') . '...';
 }
 
 //! Search the matched array of a preg_match and remove duplicated named-unamed entries

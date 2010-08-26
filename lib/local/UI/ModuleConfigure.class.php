@@ -6,6 +6,7 @@ class UI_ModuleConfigure extends Output_HTML_Form
     {
         $this->module = $module;
         $this->mconfig = $module->get_config();
+
         $fields = array();
         foreach($module->config_options() as $id => $opt)
         {
@@ -43,6 +44,10 @@ class UI_ModuleConfigure extends Output_HTML_Form
             $this->mconfig->{$id} = $value;
 
         $this->module->save_config();
+        
+        if ($this->module->module_type() === 'theme')
+            UrlFactory::craft('theme.admin')->redirect();
+            
         UrlFactory::craft('module.admin')->redirect();
     }
 };
