@@ -28,7 +28,7 @@ class CMS_Module_Contents extends CMS_Module
         // Create contents index
         $subpages = Page::open_query()->where('status = ?')->where('parent_id = ?')->execute('published', $p->id);
         
-        $contents_el = tag('div class="contents"', $ul = tag('ul'));
+        $contents_el = tag('div class="subpages-index"', $ul = tag('ul'));
         foreach($subpages as $sp)
             $ul->append(tag('li', UrlFactory::craft('page.view', $sp)->anchor($sp->title)));
             
