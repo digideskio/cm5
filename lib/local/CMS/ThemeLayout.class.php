@@ -3,7 +3,6 @@
 //! Base class to implement theme layout
 class CMS_ThemeLayout extends Layout
 {
-    
     //! The configuration of the module/theme
     private $module_config = null;
     

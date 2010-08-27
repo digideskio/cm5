@@ -9,7 +9,9 @@ Stupid::chain_reaction();
 function show_log()
 {
     Layout::open('admin')->activate();
-
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | System log";
+        
     // Filter control panel
     $priorities = array(
         'INFO' => 'Info',
@@ -70,6 +72,10 @@ function show_log()
 function clear_log()
 {
     Layout::open('admin')->activate();
+
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | Clear log";
+        
     $frm = new UI_ConfirmForm(
         'Clear system log',
         'Are you sure? This action is inreversible!',

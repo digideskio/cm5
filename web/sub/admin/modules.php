@@ -37,6 +37,8 @@ function module_action($module_name, $action)
     if (($action = $module->get_action($action)) === null)
         not_found();
 
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | Module: {$module->info_property('title')} > {$action['display']}";
     Layout::open('admin')->get_submenu()->create_entry($module->info_property('title'));
     foreach($module->get_actions() as $a)
     {
@@ -56,9 +58,12 @@ function module_configure($module_name)
 {
     Layout::open('admin')->activate();
     
-    CMS_Core::get_instance()->load_themes();
     if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
         not_found();
+
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | Module: {$module->info_property('title')} > Configure";
+        
     $frm = new UI_ModuleConfigure($module);
     etag('div',  $frm->render());
 }
@@ -70,6 +75,10 @@ function module_enable($module_name)
     
     if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
         not_found();
+        
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | Module: {$module->info_property('title')} > Enable";
+        
     $frm = new UI_ConfirmForm(
         'Module: ' . $module->info_property('title'),
         'Are you sure you want to enable this module?',
@@ -91,6 +100,10 @@ function module_disable($module_name)
     
     if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
         not_found();
+        
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | Module: {$module->info_property('title')} > Disable";
+        
     $frm = new UI_ConfirmForm(
         'Module: ' . $module->info_property('title'),
         'Are you sure you want to disable this module?',

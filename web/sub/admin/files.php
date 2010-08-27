@@ -26,6 +26,8 @@ function edit_file($id)
     Layout::open('admin')->activate();
     if (!($u = Upload::open($id)))
         not_found();
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | File: {$u->filename} > Edit";
         
     $frm = new UI_UploadEdit($u);
     
@@ -37,7 +39,8 @@ function delete_file($id)
     Layout::open('admin')->activate();
     if (!($u = Upload::open($id)))
         not_found();
-        
+    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+        " | File: {$u->filename} > Delete";
     $frm = new UI_ConfirmForm(
         "Delete \"{$u->filename}\"",
         'Are you sure? This action is inreversible!',

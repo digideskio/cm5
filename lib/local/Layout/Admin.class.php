@@ -100,8 +100,8 @@ class Layout_Admin extends Layout
         etag('div id="footer"', 
             tag('ul',
                 tag('li',
-                    tag('a', "CMS v{$version[0]}.{$version[1]}.{$version[2]}",
-                        array('href' => 'http://cms.kmfa.net', 'target' => '_blank'))
+                    tag('a', "CM5 v{$version[0]}.{$version[1]}.{$version[2]}",
+                        array('href' => 'http://cm5.kmfa.net', 'target' => '_blank'))
                 ),
                 tag('li',
                     'made with ', tag('a', 'PHPlibs',

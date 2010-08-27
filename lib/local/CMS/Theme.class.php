@@ -20,6 +20,12 @@ abstract class CMS_Theme extends CMS_Module
             throw new RuntimeException('Theme Layout class must have static property "theme_nickname"!');
         Layout::assign('default', $theme_class);
     }
+    
+    public function on_save_config()
+    {
+        if (GConfig::get_instance()->site->theme == $this->config_nickname())
+            CMS_Core::get_instance()->invalidate_page_cache();
+    }
 }
 
 ?>

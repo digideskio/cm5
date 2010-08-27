@@ -59,9 +59,13 @@ class CMS_Logger
         $mail = new Zend_Mail();
         $mail->setFrom(GConfig::get_instance()->email->sender)
              ->addTo(GConfig::get_instance()->email->administrator);
- 
+
+        $mail_format = "User: %user%\nIp: %ip%\nTime: %timestamp%\nType: %priorityName% (%priority%)\n\nMessage: %message%" . PHP_EOL;
+        $mail_formatter = new Zend_Log_Formatter_Simple($mail_format);
+      
         $mail_writer = new Zend_Log_Writer_Mail($mail);
         $mail_writer->setSubjectPrependText(GConfig::get_instance()->site->title . ' | Needs your attention.');
+        $mail_writer->setFormatter($mail_formatter);
         $mail_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::WARN));
  
         // Logger

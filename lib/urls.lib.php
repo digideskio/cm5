@@ -18,6 +18,7 @@ UrlFactory::register('user.admin', '', '/admin/users');
 UrlFactory::register('user.me', '', '/admin/user/+myprofile');
 UrlFactory::register('theme.admin', '', '/admin/themes');
 UrlFactory::register('theme.switch', '$module', '/admin/themes/{$module}/+switch');
+UrlFactory::register('theme.config', '$module', '/admin/themes/{$module}/+configure');
 UrlFactory::register('module.admin', '', '/admin/modules');
 UrlFactory::register('module.action', '$module, $action', '/admin/modules/@{$module}/{$action}');
 UrlFactory::register('module.config', '$module', '/admin/modules/{$module}/+configure');

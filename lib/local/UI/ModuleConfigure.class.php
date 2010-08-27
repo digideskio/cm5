@@ -31,7 +31,7 @@ class UI_ModuleConfigure extends Output_HTML_Form
         }   
         parent::__construct(
             $fields,
-        array('title' => 'Configure: ' . $this->module->info_property('title'),
+        array('title' => 'Configure ' . ($this->module->module_type() == 'theme'?'theme':'module') . ': ' . $this->module->info_property('title'),
             'css' => array('ui-form', 'ui-form-moduleconfig'),
 		    'buttons' => array(
 		        'upload' => array('display' =>'Save'),

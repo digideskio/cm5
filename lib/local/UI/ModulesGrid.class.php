@@ -56,7 +56,7 @@
 
                 if (count($module->config_options()))
                 {
-                    $res .= UrlFactory::craft('module.config', $minfo['nickname'])
+                    $res .= UrlFactory::craft(($this->themes_mode?'theme.config':'module.config'), $minfo['nickname'])
                         ->anchor('Configure')->add_class('button edit');
                 }
                 return $res;
