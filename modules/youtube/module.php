@@ -66,7 +66,7 @@ class CMS_Module_YouTube extends CMS_Module
         if (strstr($p->body, 'www.youtube.com/watch') === false)
             return;
 
-        $p->body = preg_replace_callback('#\bhttp://www.youtube.com/watch\?v=(?P<vid>[\w]+)[&\w=\-;]+#',
+        $p->body = preg_replace_callback('#\bhttp://www.youtube.com/watch\?v=(?P<vid>[\w\-]+)[&\w=\-;]+#',
             array($this, 'create_embed_code'),
             $p->body);
     }
