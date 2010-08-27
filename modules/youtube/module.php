@@ -46,7 +46,7 @@ class CMS_Module_YouTube extends CMS_Module
     
     public function create_embed_code($matches)
     {
-        $vid = $matches['vid'];
+        $vid = $matches[1];
         $host = ($this->get_config()->{'privacy-enchanced'}?'www.youtube-nocookie.com':'www.youtube.com');
         $color1 = $this->get_config()->{'controls-color-1'};
         $color2 = $this->get_config()->{'controls-color-2'};
@@ -66,7 +66,7 @@ class CMS_Module_YouTube extends CMS_Module
         if (strstr($p->body, 'www.youtube.com/watch') === false)
             return;
 
-        $p->body = preg_replace_callback('#\bhttp://www.youtube.com/watch\?v=(?P<vid>[\w\-]+)[&\w=\-;]+#',
+        $p->body = preg_replace_callback('#\bhttp://www.youtube.com/watch\?v=(?P<vid>[\w\-]+)[&\w=\-;]*#m',
             array($this, 'create_embed_code'),
             $p->body);
     }
