@@ -31,6 +31,11 @@ class CMS_Module_YouTube extends CMS_Module
         );
     }
     
+    public function on_save_config()
+    {
+        CMS_Core::get_instance()->invalidate_page_cache(null);
+    }
+    
     public function config_options()
     {
         return array(

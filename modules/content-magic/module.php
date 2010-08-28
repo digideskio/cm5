@@ -26,7 +26,11 @@ class CMS_Module_Contents extends CMS_Module
             return;
         
         // Create contents index
-        $subpages = Page::open_query()->where('status = ?')->where('parent_id = ?')->execute('published', $p->id);
+        $subpages = Page::open_query()
+            ->where('status = ?')
+            ->where('parent_id = ?')
+            ->order_by('order', 'ASC')
+            ->execute('published', $p->id);
         
         $contents_el = tag('div class="subpages-index"', $ul = tag('ul'));
         foreach($subpages as $sp)
