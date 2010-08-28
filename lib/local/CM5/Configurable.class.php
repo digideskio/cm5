@@ -1,7 +1,7 @@
 <?php
 
 //! Interface to implement configurable modules
-abstract class CMS_Configurable
+abstract class CM5_Configurable
 {
     //! Implement with objects configuration nickname
     abstract public function config_nickname();

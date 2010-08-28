@@ -96,7 +96,7 @@ class Layout_Admin extends Layout
             tag('div id="content"')
         );
         
-        $version = CMS_Core::get_instance()->get_version();
+        $version = CM5_Core::get_instance()->get_version();
         etag('div id="footer"', 
             tag('ul',
                 tag('li',

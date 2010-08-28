@@ -1,7 +1,7 @@
 <?php
 
 //! Class to hold CMS responses
-class CMS_Response
+class CM5_Response
 {
     //! Extra headers to be set with response
     protected $headers = array();

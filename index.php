@@ -46,7 +46,7 @@ Stupid::add_rule('include_sub',
     array('type' => 'func', 'func' => 'is_valid_sub')
 );
 
-Stupid::set_default_action(array(CMS_Core::get_instance(), 'serve'));
+Stupid::set_default_action(array(CM5_Core::get_instance(), 'serve'));
 Stupid::chain_reaction();
 
 ?>

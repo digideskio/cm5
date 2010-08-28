@@ -20,7 +20,7 @@ class Log extends DB_Record
     static public function reset()
     {
         Log::raw_query()->delete()->execute();
-        CMS_Logger::get_instance()->warn("Log was reseted.");
+        CM5_Logger::get_instance()->warn("Log was reseted.");
     }
 }
 

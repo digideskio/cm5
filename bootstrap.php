@@ -62,7 +62,7 @@ DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
     create_function('$e', ' error_log( $e->arguments["message"]); 
-    CMS_Logger::get_instance()->crit($e->arguments["message"]);'));
+    CM5_Logger::get_instance()->crit($e->arguments["message"]);'));
 //DB_Conn::events()->connect('stmt.executed',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
 
@@ -71,6 +71,6 @@ date_default_timezone_set($config->site->timezone);
 
 // Initialize CMS
 $cache_engine = new Cache_File($config->site->cache_folder, 'pages_');
-CMS_Core::init($cache_engine);
+CM5_Core::init($cache_engine);
 
 ?>

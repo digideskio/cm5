@@ -2,7 +2,7 @@
 
 require_once 'Zend/Log/Writer/Abstract.php';
 
-class CMS_Log_Writer extends Zend_Log_Writer_Abstract
+class CM5_Log_Writer extends Zend_Log_Writer_Abstract
 {
     /**
      * Create a new instance of Zend_Log_Writer_Db
@@ -40,7 +40,7 @@ class CMS_Log_Writer extends Zend_Log_Writer_Abstract
 
 
 //! CMS Core componment
-class CMS_Logger
+class CM5_Logger
 {
     //! Instance of the logger object
     static $logger = null;
@@ -52,7 +52,7 @@ class CMS_Logger
             return self::$logger;
 
         // Simple writer
-        $db_writer = new CMS_Log_Writer();
+        $db_writer = new CM5_Log_Writer();
         $db_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::INFO));
         
         // Mail writer

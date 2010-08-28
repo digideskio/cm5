@@ -38,7 +38,7 @@ class UI_SystemSettings extends Output_HTML_Form
         $config->email->sender = $values['email-sender'];
         
         GConfig::update($config);
-        CMS_Logger::get_instance()->notice("System settings have been changed.");
+        CM5_Logger::get_instance()->notice("System settings have been changed.");
         UrlFactory::craft('system.settings')->redirect();
     }
 };

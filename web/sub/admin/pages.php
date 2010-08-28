@@ -60,7 +60,7 @@ function show_pages_tree($current_page_id)
         UrlFactory::craft('page.create', '')->anchor('add page')->add_class('add')
     );
 
-    foreach(CMS_Core::get_instance()->get_tree() as $p)
+    foreach(CM5_Core::get_instance()->get_tree() as $p)
     {
         $ul->append(__draw_tree_entry($p, $current_page_id));
     }

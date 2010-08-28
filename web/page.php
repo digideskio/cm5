@@ -1,5 +1,5 @@
 <?php
 // Show a web page
 
-CMS_Core::get_instance()->serve();
+CM5_Core::get_instance()->serve();
 ?>

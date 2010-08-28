@@ -1,6 +1,6 @@
 <?php
 
-class DefaultThemeLayout extends CMS_ThemeLayout
+class DefaultThemeLayout extends CM5_ThemeLayout
 {
     private $mainmenu = null;
     
@@ -32,7 +32,7 @@ class DefaultThemeLayout extends CMS_ThemeLayout
     private function init_menu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));        
-        $this->__add_menu_entries($this->mainmenu, CMS_Core::get_instance()->get_tree(), 2);
+        $this->__add_menu_entries($this->mainmenu, CM5_Core::get_instance()->get_tree(), 2);
         
         // Append menu
         $this->get_document()->get_body()->getElementById("main-menu")

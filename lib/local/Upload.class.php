@@ -196,20 +196,20 @@ Upload::events()->connect('op.post.create', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
-    CMS_Logger::get_instance()->info("File \"{$u->filename}\" was uploaded.");
+    CM5_Logger::get_instance()->info("File \"{$u->filename}\" was uploaded.");
 '));
 
 Upload::events()->connect('op.pre.delete', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
-    CMS_Logger::get_instance()->notice("File \"{$u->filename}\" was deleted.");
+    CM5_Logger::get_instance()->notice("File \"{$u->filename}\" was deleted.");
 '));
 
 Upload::events()->connect('op.post.save', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
-    CMS_Logger::get_instance()->info("File \"{$u->filename}\" was changed.");
+    CM5_Logger::get_instance()->info("File \"{$u->filename}\" was changed.");
 '));
 ?>

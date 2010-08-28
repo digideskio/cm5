@@ -21,7 +21,7 @@ function show_modules()
 {
     Layout::open('admin')->activate();
 
-    $grid = new UI_ModulesGrid(CMS_Core::get_instance()->modules());
+    $grid = new UI_ModulesGrid(CM5_Core::get_instance()->modules());
     etag('div',
         $grid->render()
     );
@@ -31,7 +31,7 @@ function module_action($module_name, $action)
 {
     Layout::open('admin')->activate();
     
-    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+    if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
 
     if (($action = $module->get_action($action)) === null)
@@ -58,7 +58,7 @@ function module_configure($module_name)
 {
     Layout::open('admin')->activate();
     
-    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+    if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
 
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
@@ -73,7 +73,7 @@ function module_enable($module_name)
 
     Layout::open('admin')->activate();
     
-    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+    if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
         
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
@@ -84,7 +84,7 @@ function module_enable($module_name)
         'Are you sure you want to enable this module?',
         'Enable',
         create_function('$m', '
-            CMS_Core::get_instance()->enable_module($m->config_nickname());
+            CM5_Core::get_instance()->enable_module($m->config_nickname());
             UrlFactory::craft("module.admin")->redirect();
         '),
         array($module),
@@ -98,7 +98,7 @@ function module_disable($module_name)
 
     Layout::open('admin')->activate();
     
-    if (($module = CMS_Core::get_instance()->get_module($module_name)) === null)
+    if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
         
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
@@ -109,7 +109,7 @@ function module_disable($module_name)
         'Are you sure you want to disable this module?',
         'Disable',
         create_function('$m', '
-            CMS_Core::get_instance()->disable_module($m->config_nickname());
+            CM5_Core::get_instance()->disable_module($m->config_nickname());
             UrlFactory::craft("module.admin")->redirect();
         '),
         array($module),

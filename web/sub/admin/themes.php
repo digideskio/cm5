@@ -14,7 +14,7 @@ Stupid::chain_reaction();
 function show_themes()
 {
     Layout::open('admin')->activate();
-    $grid = new UI_ModulesGrid(CMS_Core::get_instance()->theme_modules(), true);
+    $grid = new UI_ModulesGrid(CM5_Core::get_instance()->theme_modules(), true);
     etag('div',
         $grid->render()
     );
@@ -24,8 +24,8 @@ function theme_switch($theme_name)
 {
     Layout::open('admin')->activate();
     
-    CMS_Core::get_instance()->load_themes();
-    if (($theme = CMS_Core::get_instance()->get_module($theme_name)) === null)
+    CM5_Core::get_instance()->load_themes();
+    if (($theme = CM5_Core::get_instance()->get_module($theme_name)) === null)
         not_found();
         
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
@@ -39,7 +39,7 @@ function theme_switch($theme_name)
             $config = GConfig::get_writable_copy();
             $config->site->theme = $name;
             GConfig::update($config);
-            CMS_Core::get_instance()->invalidate_page_cache(null);
+            CM5_Core::get_instance()->invalidate_page_cache(null);
             UrlFactory::craft("theme.admin")->redirect();
         '),
         array($theme_name),
@@ -52,8 +52,8 @@ function theme_configure($theme_name)
 {
     Layout::open('admin')->activate();
     
-    CMS_Core::get_instance()->load_themes();
-    if (($theme = CMS_Core::get_instance()->get_module($theme_name)) === null)
+    CM5_Core::get_instance()->load_themes();
+    if (($theme = CM5_Core::get_instance()->get_module($theme_name)) === null)
         not_found();
 
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 

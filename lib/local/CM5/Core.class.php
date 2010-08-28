@@ -1,7 +1,7 @@
 <?php
 
 //! CMS Core componment
-class CMS_Core
+class CM5_Core
 {
 
     //! Version of CMS Engine
@@ -41,7 +41,7 @@ class CMS_Core
         
         // Register page changes to invalidate cache
         $invalidate_func = create_function('$e',
-        '   CMS_Core::get_instance()->invalidate_page_cache($e->arguments[\'record\']);   '
+        '   CM5_Core::get_instance()->invalidate_page_cache($e->arguments[\'record\']);   '
         );
         Page::events()->connect('op.post.save', $invalidate_func);
         Page::events()->connect('op.post.delete', $invalidate_func);
@@ -107,7 +107,7 @@ class CMS_Core
     /**
      * @param $module The instance of the module to register
      */
-    public function register_module(CMS_Module $module)
+    public function register_module(CM5_Module $module)
     {   
         $minfo = $module->info();
         $this->modules[$minfo['nickname']] = $module;
@@ -161,7 +161,7 @@ class CMS_Core
             )
         );
         GConfig::update($conf);
-        CMS_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
+        CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
         
         // Reset cache as a module may leave trash
         $this->invalidate_page_cache(null);
@@ -181,7 +181,7 @@ class CMS_Core
             )
         );
         GConfig::update($conf);
-        CMS_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
+        CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
         
         // Reset cache as a module may leave trash
         $this->invalidate_page_cache(null);
@@ -203,7 +203,7 @@ class CMS_Core
     static public function init(Cache $cache_engine)
     {        
         // Create instance
-        self::$instance = new CMS_Core($cache_engine);
+        self::$instance = new CM5_Core($cache_engine);
     }
     
     //! Get the running instance of core
@@ -300,7 +300,7 @@ class CMS_Core
     {
         if ($url === null)
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
-        CMS_Logger::get_instance()->debug('Serving web page ' . $url);
+        CM5_Logger::get_instance()->debug('Serving web page ' . $url);
         
         // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);
@@ -316,7 +316,7 @@ class CMS_Core
         // Initialize themes
         self::$instance->load_themes();
         
-        $response = new CMS_Response();
+        $response = new CM5_Response();
                 
         // Dispatch page request to modules
         $stop_propagation = false;

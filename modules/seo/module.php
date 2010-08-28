@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_SEO extends CMS_Module
+class CM5_Module_SEO extends CM5_Module
 {
     //! The name of the module
     public function info()
@@ -15,7 +15,7 @@ class CMS_Module_SEO extends CMS_Module
     //! Initialize module
     public function init()
     {
-        $c = CMS_Core::get_instance();
+        $c = CM5_Core::get_instance();
         $c->events()->connect('page.request', array($this, 'event_page_request'));
     }
     
@@ -74,5 +74,5 @@ class CMS_Module_SEO extends CMS_Module
     }
 }
 
-CMS_Module_SEO::register();
+CM5_Module_SEO::register();
 ?>

@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/layout.php');
 
-class DefaultTheme extends CMS_Theme
+class DefaultTheme extends CM5_Theme
 {
     public function info()
     {
@@ -14,7 +14,7 @@ class DefaultTheme extends CMS_Theme
     
     public function default_config()
     {
-        $version = CMS_Core::get_instance()->get_version();
+        $version = CM5_Core::get_instance()->get_version();
         return array(
             'page-background-color' => '4B484F',
             'article-background-color' => 'F6F5FF',

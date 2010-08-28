@@ -1,7 +1,7 @@
 <?php
 
 //! Interface to implement themes
-abstract class CMS_Theme extends CMS_Module
+abstract class CM5_Theme extends CM5_Module
 {
     //! Get theme layout class
     abstract public function get_layout_class();
@@ -24,7 +24,7 @@ abstract class CMS_Theme extends CMS_Module
     public function on_save_config()
     {
         if (GConfig::get_instance()->site->theme == $this->config_nickname())
-            CMS_Core::get_instance()->invalidate_page_cache();
+            CM5_Core::get_instance()->invalidate_page_cache();
     }
 }
 

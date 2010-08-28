@@ -58,7 +58,7 @@ Page::events()->connect('op.pre.save', create_function('$e', '
     $r->uri = $r->full_path();
     
     // Log event
-    CMS_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
+    CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
 '));
 
 Page::events()->connect('op.pre.create', create_function('$e', '
@@ -76,7 +76,7 @@ Page::events()->connect('op.post.create', create_function('$e', '
     $r = $e->arguments["record"];
 
     // Log event
-    CMS_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
+    CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
 
     // Update uri
     $r->uri = $r->full_path();
@@ -89,7 +89,7 @@ Page::events()->connect('op.pre.delete', create_function('$e', '
 
     $r = $e->arguments["record"];
         
-    CMS_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
+    CM5_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
 '));
 
 Page::one_to_many('Page', 'parent', 'subpages');

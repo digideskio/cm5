@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_Contents extends CMS_Module
+class CM5_Module_Contents extends CM5_Module
 {
     //! The name of the module
     public function info()
@@ -15,7 +15,7 @@ class CMS_Module_Contents extends CMS_Module
     //! Initialize module
     public function init()
     {
-        $c = CMS_Core::get_instance();
+        $c = CM5_Core::get_instance();
         $c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
         $c->events()->connect('page.post-render', array($this, 'event_post_render'));
     }
@@ -39,7 +39,7 @@ class CMS_Module_Contents extends CMS_Module
         $p->body = str_replace('##subpages##', (string)$contents_el, $p->body);
     }
     
-    private function execute_redirect(Page $p, CMS_Response $r)
+    private function execute_redirect(Page $p, CM5_Response $r)
     {
         if (strstr($p->body, '##redirect ') === false)
             return;
@@ -72,5 +72,5 @@ class CMS_Module_Contents extends CMS_Module
     }
 }
 
-CMS_Module_Contents::register();
+CM5_Module_Contents::register();
 ?>

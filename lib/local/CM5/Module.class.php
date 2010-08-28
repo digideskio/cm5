@@ -1,7 +1,7 @@
 <?php
 
 //! Interface to implement modules
-abstract class CMS_Module extends CMS_Configurable
+abstract class CM5_Module extends CM5_Configurable
 {
     public function config_nickname()
     {
@@ -68,7 +68,7 @@ abstract class CMS_Module extends CMS_Configurable
     public static function register()
     {
         $module_class = get_called_class();
-        CMS_Core::get_instance()->register_module( new $module_class() );
+        CM5_Core::get_instance()->register_module( new $module_class() );
     }
 
 }

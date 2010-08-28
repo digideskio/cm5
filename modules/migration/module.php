@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_Migration_ExportForm extends Output_HTML_Form
+class CM5_Module_Migration_ExportForm extends Output_HTML_Form
 {
     public function __construct()
     {
@@ -76,7 +76,7 @@ class CMS_Module_Migration_ExportForm extends Output_HTML_Form
     }
 }
 
-class CMS_Module_Migration_UploadForm extends Output_HTML_Form
+class CM5_Module_Migration_UploadForm extends Output_HTML_Form
 {
     public $upload_id = null;
     
@@ -138,7 +138,7 @@ class CMS_Module_Migration_UploadForm extends Output_HTML_Form
     }
 }
 
-class CMS_Module_Migration_ImportForm extends Output_HTML_Form
+class CM5_Module_Migration_ImportForm extends Output_HTML_Form
 {
     public $archive;
     
@@ -156,7 +156,7 @@ class CMS_Module_Migration_ImportForm extends Output_HTML_Form
         $this->archive = simplexml_load_string(gzdecode($archive->get_data()));
         
         $current_pages = array(0 => '+ Root');        
-        foreach(CMS_Core::get_instance()->get_tree() as $p)
+        foreach(CM5_Core::get_instance()->get_tree() as $p)
             $this->add_page($p, $current_pages);
 
         parent::__construct(
@@ -262,7 +262,7 @@ class CMS_Module_Migration_ImportForm extends Output_HTML_Form
     }
 }
 
-class CMS_Module_Migration extends CMS_Module
+class CM5_Module_Migration extends CM5_Module
 {
     //! The name of the module
     public function info()
@@ -287,12 +287,12 @@ class CMS_Module_Migration extends CMS_Module
         {
             if (($f = Upload::open($fid)) === false)
                 not_found();
-            $frm = new CMS_Module_Migration_ImportForm($f, $fid);
+            $frm = new CM5_Module_Migration_ImportForm($f, $fid);
             etag('div', $frm->render());
         }
         else
         {
-            $frm = new CMS_Module_Migration_UploadForm();
+            $frm = new CM5_Module_Migration_UploadForm();
             etag('div', $frm->render());
             if ($frm->upload_id !== null)
             {
@@ -305,10 +305,10 @@ class CMS_Module_Migration extends CMS_Module
     
     public function request_export()
     {
-        $frm = new CMS_Module_Migration_ExportForm();
+        $frm = new CM5_Module_Migration_ExportForm();
         etag('div', $frm->render());
     }
 }
 
-CMS_Module_Migration::register();
+CM5_Module_Migration::register();
 ?>

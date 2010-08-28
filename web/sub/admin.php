@@ -82,7 +82,7 @@ Authz::allow('log', '@admin', 'view');
 Authz::allow('system.settings', '@admin', 'admin');
 
 // Load modules
-CMS_Core::get_instance()->modules();
+CM5_Core::get_instance()->modules();
 
 // Special handling for special urls
 Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),

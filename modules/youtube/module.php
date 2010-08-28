@@ -1,6 +1,6 @@
 <?php
 
-class CMS_Module_YouTube extends CMS_Module
+class CM5_Module_YouTube extends CM5_Module
 {
     //! The name of the module
     public function info()
@@ -15,7 +15,7 @@ class CMS_Module_YouTube extends CMS_Module
     //! Initialize module
     public function init()
     {
-        $c = CMS_Core::get_instance();
+        $c = CM5_Core::get_instance();
         $c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
     }
     
@@ -33,7 +33,7 @@ class CMS_Module_YouTube extends CMS_Module
     
     public function on_save_config()
     {
-        CMS_Core::get_instance()->invalidate_page_cache(null);
+        CM5_Core::get_instance()->invalidate_page_cache(null);
     }
     
     public function config_options()
@@ -87,5 +87,5 @@ class CMS_Module_YouTube extends CMS_Module
     }
 }
 
-CMS_Module_YouTube::register();
+CM5_Module_YouTube::register();
 ?>
