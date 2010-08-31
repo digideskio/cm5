@@ -68,7 +68,8 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
             }
         }
     
-        $filename = GConfig::get_instance()->site->title . '-backup-' . date_create()->format('Y-m-d_H-i');
+        $filename = str_replace(' ', '_', GConfig::get_instance()->site->title) . '-backup-' . date_create()->format('Y-m-d_H-i');
+        error_log($filename);
         header('Content-Type: application/x-gzip');
         header("Content-Disposition: attachment; filename=$filename.xml.gz");
         echo gzencode($dom->saveXML()); 
@@ -262,6 +263,108 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
     }
 }
 
+class CM5_Module_Migration_FixLinks extends Output_HTML_Form
+{
+    public function __construct()
+    {
+        parent::__construct(
+            array(
+                'description' => array('type' => 'custom', 'hint' =>
+	                'Sometimes after migration links pointing to uploads are broken.
+	    			This may happen if you changed domain and you used absolute urls, or
+	    			because of moving site to a new subfolder. This tool will search for this links
+	    			and update them so they point again at the right resources.',
+            		'value' => ''),
+            	'url-base' => array('display' => 'The url base of old links.', 'hint' =>
+            		'This is an optional base to make algorithm more acurate. You usually put the base
+            		of the old site before migration for example http://old-host/here-is-cms or relative
+            		url if you want to fix relative urls /here-is-cms'),
+            'write-changes' => array('display' => 'Write changes to database.', 'type' => 'checkbox',
+            	'hint' => 'By default fix links works in preview mode if you want to actually make this changes
+            		check this box.'),
+            'user-validation' => array('display' => 'Fixing links requires searching and editing each page.
+                	Although the algorithm is sophisticated to increase accuracy there is a possibility that some
+                	changes may be wrong. Before continuing you should backup your site.
+                	Are you sure you want to continue?',
+                    'type' => 'checkbox',),
+            ),
+            array(
+                'title' => 'Fix internal links',
+                'buttons' => array(
+                    'Fix' => array('type' => 'submit')
+                )
+            )
+        );
+    }
+    
+    public function on_post()
+    {
+    	if (!$this->get_field_value('user-validation'))
+    		$this->invalidate_field('user-validation', 'You must read and understand the risk before continuing!');
+    }
+    
+    public function __fix_links_callback($matches)
+    {
+    	$logentry = array('orig-url' => $matches[0],
+    		'orig-fname' => $matches['fname']);
+    	
+    	// Base check
+    	if ($this->oldurlbase)
+    	{
+    		$checkbase = substr($matches['base'], strlen($matches['base'])- strlen($this->oldurlbase));
+    		if ($this->oldurlbase != $checkbase)
+    			return $matches[0];	// No match    		
+    	}
+    	
+    	// Validate file
+		$f = Upload::open_query()->where("filename = ?")->execute($matches["fname"]);
+		if (!count($f))
+			return $matches[0];	// No change
+		
+		$newurl = $matches['before'] . (string)UrlFactory::craft("upload.view", $f[0]);
+		
+		// Check if it is actual different
+		if ($newurl == $matches[0])
+			return $matches[0];
+			
+		$logentry['new-url'] = $newurl;	
+		$this->fixed[] = $logentry;
+		return $newurl;
+    }
+    
+    public function on_valid($values)
+    {    	
+    	$this->fixed = array();
+    	$this->oldurlbase = $values['url-base'];
+    	
+        foreach(Page::open_all() as $p)
+    	{    	   			
+			$changed = preg_replace_callback(
+		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[\w\-\.]+))\b#',
+		        array($this, '__fix_links_callback'),
+		        $p->body,
+		        -1,
+		        $count
+		    );
+		    
+		    if ($count && $values['write-changes'])
+		    {
+		    	$p->body = $changed;
+		      	$p->save();
+		    }
+    	}
+    	
+    	etag('h3', count($this->fixed) . ($values['write-changes']?' urls were found and fixed!':' urls were found.'));
+    	$ul = etag('ul');
+    	
+		foreach($this->fixed as $c)
+			$ul->append(tag('li',
+				"{$c['orig-url']} => {$c['new-url']}"
+			));
+		$this->hide();
+    }
+}
+
 class CM5_Module_Migration extends CM5_Module
 {
     //! The name of the module
@@ -279,6 +382,7 @@ class CM5_Module_Migration extends CM5_Module
     {
         $this->declare_action('import', 'Import', 'request_import');
         $this->declare_action('export', 'Export', 'request_export');
+        $this->declare_action('fixlinks', 'Fix links', 'request_fixlinks');
     }
     
     public function request_import()
@@ -306,6 +410,12 @@ class CM5_Module_Migration extends CM5_Module
     public function request_export()
     {
         $frm = new CM5_Module_Migration_ExportForm();
+        etag('div', $frm->render());
+    }
+    
+    public function request_fixlinks()
+    {
+    	$frm = new CM5_Module_Migration_FixLinks();
         etag('div', $frm->render());
     }
 }

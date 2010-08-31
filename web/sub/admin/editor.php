@@ -69,7 +69,6 @@ function show_pages_tree($current_page_id)
 
 function page_editor_form($id)
 {
-	///sleep(1);
     if (!$p = Page::open($id))
         not_found();
 
@@ -84,9 +83,7 @@ function page_editor()
     Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));
     Layout::open('admin')->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
     Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
-    
-    //Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Edit: {$p->title}";
-    
+   
     show_pages_tree(null);
     etag('div id="page_editor"');
 }

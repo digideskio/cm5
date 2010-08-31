@@ -81,7 +81,7 @@ a:hover {
     position: relative;
 }
 
-#page_editor.loading{
+#page_editor span.loading{
 	display: block;
 	height: 400px;
 
