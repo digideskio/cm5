@@ -25,7 +25,7 @@ class DefaultThemeLayout extends CM5_ThemeLayout
             if ($p['uri'] === '/')
                 $sublink->set_autoselect_mode('equal');
                 
-            $this->__add_menu_entries($sublink, $p['childs'], $max_depth - 1);
+            $this->__add_menu_entries($sublink, $p['children'], $max_depth - 1);
         }
     }
     

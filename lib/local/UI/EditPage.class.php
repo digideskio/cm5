@@ -45,6 +45,9 @@ class UI_EditPage extends Output_HTML_Form
     
     public function on_postrender($div)
     {
+    	// Fix action
+    	$div->childs[0]->attr('action', UrlFactory::craft('page.editform', $this->page->id));
+    	
         if ($this->page->system)
             return;
         $fullurl = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));

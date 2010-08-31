@@ -58,7 +58,7 @@
                         array('src' => UrlFactory::craft('upload.thumb', $record))
                     );
 
-                 $res .= tag('span class="url"', (string)UrlFactory::craft_fqn('upload.view', $record));
+                 $res .= tag('span class="url"', (string)UrlFactory::craft('upload.view', $record));
                  $res .= UrlFactory::craft('upload.view', $record)->anchor('link')->add_class('download');
                  $res .= tag('p', $record->description);
                  return $res;

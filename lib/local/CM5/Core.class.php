@@ -244,18 +244,18 @@ class CM5_Core
         foreach($indexed_pages as $idx => & $p)
         {
 
-            if (!isset($p['childs']))
-                $p['childs'] = array();
+            if (!isset($p['children']))
+                $p['children'] = array();
 
             if ($p['parent_id'] === null)
                 $pages[] = & $p;
             else
             {
                 $parent = & $indexed_pages[$p['parent_id']];
-                if (!isset($parent['childs']))
-                    $parent['childs'] = array( & $p);
+                if (!isset($parent['children']))
+                    $parent['children'] = array( & $p);
                 else
-                    $parent['childs'][] = & $p;
+                    $parent['children'][] = & $p;
             }
         }
         
@@ -268,7 +268,7 @@ class CM5_Core
     {
         if ($root['id'] == $page_id)
             return $root;
-        foreach($root['childs'] as $subpage)
+        foreach($root['children'] as $subpage)
         {
             $ret = $this->find_page_in_tree($page_id, $subpage);
             if ($ret !== null)

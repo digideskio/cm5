@@ -81,6 +81,12 @@ a:hover {
     position: relative;
 }
 
+#page_editor.loading{
+	display: block;
+	height: 400px;
+
+}
+
 #page_editor input[name="title"]{
     font-size: 1.4em;
     height: auto;
@@ -403,8 +409,48 @@ a:hover {
     margin-right: 8px;
 }
 
-#page_editor .ui-form{
+.ui-page-form {
     width: auto;
+}
+
+.ui-page-form input[type=submit]{
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 1px 1px 2px #343434;
+	box-shadow: 1px 1px 2px #343434;
+	-webkit-box-shadow: 1px 1px 2px #343434;
+	padding: 2px 20px;
+	font: 11pt "Trebuchet MS";
+	border: 2px solid #656565;
+	
+	text-shadow: 1px 1px 2px #323232;
+	cursor: pointer;
+	margin-right: 5px; 
+}
+
+.ui-page-form input[type=submit], .ui-page-form input[type=submit][disabled]{
+	background: -moz-linear-gradient(center bottom,   rgb(145,145,145) 47%,   rgb(186,186,186) 74%,   rgb(227,227,227) 87%);
+	background: -webkit-gradient( linear, left bottom, left top,
+		color-stop(0.47, rgb(145,145,145)),
+		color-stop(0.74, rgb(186,186,186)), color-stop(0.87, rgb(227,227,227)));
+	color: #dedede;
+}
+
+.ui-page-form input[type=submit][disabled]{
+	color: #878787;	
+	text-shadow: none;
+}
+
+.ui-page-form input[type=submit]:hover{
+	border-color: #454545;
+	color: white;
+	text-shadow: 1px 1px 2px #222222;
+	
+}
+	
+.loading input[type=submit]{
+	background: rgb(186, 186, 186) url('images/loading-small.gif') no-repeat 2px center !important;
 }
 
 .ui-form .button.suggest{
@@ -639,7 +685,11 @@ a:hover {
     display: inline-block;
 }
 
-
+.loading {
+	background-image: url('images/loading.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+}
 
 .monospace{
     font-family: monospace;

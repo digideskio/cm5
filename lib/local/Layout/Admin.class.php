@@ -42,7 +42,7 @@ class Layout_Admin extends Layout
         '));
 
         if (Authz::is_allowed('page', 'admin'))
-            $this->mainmenu->create_link('Pages', url('/admin/pages'));
+            $this->mainmenu->create_link('Pages', url('/admin/editor'));
         if (Authz::is_allowed('file', 'admin'))
             $this->mainmenu->create_link('Files', url('/admin/files'));
         if (Authz::is_allowed('module', 'admin'))

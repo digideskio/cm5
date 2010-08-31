@@ -144,9 +144,9 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
     
     private function add_page($p, &$current_pages, $depth = 0)
     {
-        $prefix = str_repeat(" ", $depth * 3) . "|--" . (count($p["childs"])?"+ ":"- ");
+        $prefix = str_repeat(" ", $depth * 3) . "|--" . (count($p['children'])?"+ ":"- ");
         $current_pages[$p["id"]] = $prefix . $p["title"];
-        foreach($p["childs"] as $c)
+        foreach($p['children'] as $c)
             $this->add_page($c, $current_pages, $depth + 1);
     }
     

@@ -45,7 +45,6 @@ $roles = new Authz_Role_FeederDatabase(array(
 ));
 Authz::set_resource_list($list = new Authz_ResourceList());
 Authz::set_role_feeder($roles);
-//var_dump($roles->get_role('sque')->has_parent('@editor'));
 $list->add_resource('page');
 $list->add_resource('user');
 $list->add_resource('file');
@@ -100,8 +99,8 @@ Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/f
     array('type' => 'url_path', 'chunk[2]' => '/^files?$/'),
     array('type' => 'authz', 'resource' => 'file', 'action' => 'admin')
 );
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/pages.php');"),
-    array('type' => 'url_path', 'chunk[2]' => '/^pages?$/'),
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/editor.php');"),
+    array('type' => 'url_path', 'chunk[2]' => '/^editor$/'),
     array('type' => 'authz', 'resource' => 'page', 'action' => 'admin')
 );
 Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/modules.php');"),
@@ -127,10 +126,10 @@ Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/s
     array('type' => 'authz', 'resource' => 'system.settings', 'action' => 'admin')
 );
 
-Stupid::add_rule('tool_translit',
-    array('type' => 'url_path', 'chunk[2]' => '/tools/', 'chunk[3]' => '/transliterate/'),
-    array('type' => 'url_params', 'op' => 'isset', 'param' => 'text', 'param_type' => 'both')
+Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/tools.php');"),
+    array('type' => 'url_path', 'chunk[2]' => '/^tools$/')
 );
+
 Stupid::set_default_action('default_admin_panel');
 Stupid::chain_reaction();
 
@@ -139,9 +138,4 @@ function default_admin_panel()
     UrlFactory::craft('page.admin')->redirect();
 }
 
-function tool_translit()
-{
-    $str = Net_HTTP_RequestParam::get('text');
-	echo transliterate($str);;
-}
 ?>

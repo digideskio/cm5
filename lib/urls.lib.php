@@ -1,10 +1,11 @@
 <?php
 
 UrlFactory::register('page.view', '$page', '{$page->uri}');
-UrlFactory::register('page.edit', '$page_id', '/admin/page/{$page_id}');
-UrlFactory::register('page.delete', '$page_id', '/admin/page/{$page_id}/+delete');
-UrlFactory::register('page.create', '$page_id', '/admin/page/+create?parent={$page_id}');
-UrlFactory::register('page.admin', '', '/admin/page');
+UrlFactory::register('page.edit', '$page_id', '/admin/editor#{$page_id}');
+UrlFactory::register('page.editform', '$page_id', '/admin/editor/{$page_id}/+form');
+UrlFactory::register('page.delete', '$page_id', '/admin/editor/{$page_id}/+delete');
+UrlFactory::register('page.create', '$page_id', '/admin/editor/+create?parent={$page_id}');
+UrlFactory::register('page.admin', '', '/admin/editor/');
 UrlFactory::register('upload.admin', '', '/admin/files');
 UrlFactory::register('upload.create', '', '/admin/files/+upload');
 UrlFactory::register('upload.view', '$f', '/file/{$f->filename}');

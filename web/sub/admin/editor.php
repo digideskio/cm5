@@ -1,13 +1,13 @@
 <?
 
+Stupid::add_rule('page_editor_form',
+    array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+form/')
+);
 Stupid::add_rule('move_page',
     array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+move/')
 );
 Stupid::add_rule('delete_page',
     array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/', 'chunk[4]' => '/\+delete/')
-);
-Stupid::add_rule('edit_page',
-    array('type' => 'url_path', 'chunk[3]' => '/([\d]+)/')
 );
 Stupid::add_rule('create_page',
     array('type' => 'url_path', 'chunk[3]' => '/\+create/')
@@ -18,12 +18,12 @@ Stupid::chain_reaction();
 function __draw_tree_entry($p, $current_page_id)
 {
     if ($p['system'])
-        $li = tag('li class="system-page"',
+        $li = tag('li class="system-page" id="page_' . $p['id'] . '"',
             $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status'])
         );
     else
     {
-        $li = tag('li class="user-page" id="page_' . $p['id'] . ' ',
+        $li = tag('li class="user-page" id="page_' . $p['id'] . '" ',
             $pg = UrlFactory::craft('page.edit', $p['id'])->anchor($p['title'])->add_class('page')->add_class($p['status']),
             tag('a html_escape_off class="delete"', '&nbsp;', 
                 array(
@@ -44,7 +44,7 @@ function __draw_tree_entry($p, $current_page_id)
     if ($current_page_id == $p['id'])
         $pg->add_class('selected');
 
-    foreach($p['childs'] as $sp)
+    foreach($p['children'] as $sp)
         $ul->append(__draw_tree_entry($sp, $current_page_id));
 
     return $li;
@@ -67,20 +67,28 @@ function show_pages_tree($current_page_id)
 
 }
 
-function edit_page($id)
+function page_editor_form($id)
+{
+	///sleep(1);
+    if (!$p = Page::open($id))
+        not_found();
+
+    header('Content-type: text/html; charset=UTF-8');
+	$frm = new UI_EditPage($p);
+    echo $frm->render();
+}
+
+function page_editor()
 {
     Layout::open('admin')->activate();
+    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));
     Layout::open('admin')->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
     Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
     
-    if (!$p = Page::open($id))
-        not_found();
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Edit: {$p->title}";
+    //Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Edit: {$p->title}";
     
-    $frm = new UI_EditPage($p);
-    
-    show_pages_tree($id);
-    etag('div id="page_editor"', $frm->render());
+    show_pages_tree(null);
+    etag('div id="page_editor"');
 }
 
 function delete_page($page_id)
@@ -157,7 +165,7 @@ function pages_default()
     
     $p = Page::open_query()->limit(1)->execute();
     if (count($p))
-        UrlFactory::craft('page.edit', $p[0]->id)->redirect();
+    	page_editor();
     else
         UrlFactory::craft('page.create', null)->redirect();
 }
