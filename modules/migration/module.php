@@ -306,22 +306,22 @@ class CM5_Module_Migration_FixLinks extends Output_HTML_Form
     public function __fix_links_callback($matches)
     {
     	$logentry = array('orig-url' => $matches[0],
-    		'orig-fname' => $matches['fname']);
+    		'orig-fname' => $matches[4]);
     	
     	// Base check
     	if ($this->oldurlbase)
     	{
-    		$checkbase = substr($matches['base'], strlen($matches['base'])- strlen($this->oldurlbase));
+    		$checkbase = substr($matches[3], strlen($matches[3])- strlen($this->oldurlbase));
     		if ($this->oldurlbase != $checkbase)
     			return $matches[0];	// No match    		
     	}
     	
     	// Validate file
-		$f = Upload::open_query()->where("filename = ?")->execute($matches["fname"]);
+		$f = Upload::open_query()->where("filename = ?")->execute($matches[4]);
 		if (!count($f))
 			return $matches[0];	// No change
 		
-		$newurl = $matches['before'] . (string)UrlFactory::craft("upload.view", $f[0]);
+		$newurl = $matches[1] . (string)UrlFactory::craft("upload.view", $f[0]);
 		
 		// Check if it is actual different
 		if ($newurl == $matches[0])
