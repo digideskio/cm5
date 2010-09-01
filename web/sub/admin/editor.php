@@ -69,6 +69,7 @@ function show_pages_tree($current_page_id)
 
 function page_editor_form($id)
 {
+    //sleep(1);
     if (!$p = Page::open($id))
         not_found();
 
@@ -101,13 +102,27 @@ function delete_page($page_id)
 function create_page()
 {
     Layout::open('admin')->activate();
-    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
     
     $parent_id = Net_HTTP_RequestParam::get('parent', 'get');
     if ($parent_id === '')
         $parent_id = null;
     $frm = new UI_CreatePage($parent_id);
     etag('div', $frm->render());
+    
+    etag('script type="text/javascript" html_escape_off',"
+    	var request_translit = function() {
+			$.get('../tools/transliterate', {
+				text : $('.ui-createpage-form input[name=title]').val()
+			}, function(data) {
+				$('.ui-createpage-form input[name=slug]').val(data);
+			});
+		};
+		
+		$(document).ready(function(){
+			$('.ui-createpage-form input[name=title]').change(request_translit);
+			request_translit();
+		});
+    ");
 }
 
 function move_page($page_id)

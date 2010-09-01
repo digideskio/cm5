@@ -58,26 +58,17 @@
 			$('#page_editor input[type=text]').change(page_set_dirty);
 			$('#page_editor select').change(page_set_dirty);
 		}
-		
-
 
 		// Automatify editor
 		var automatify_editor = function() {
 			var pdiv = $('#page_editor');
 			
-			if ($('.ui-page-form input[name=slug]').length == 0)
-				;
-			else if ($('.ui-page-form input[name=slug]').val() == '') {
-				$('.ui-page-form input[name=title]').change(request_translit);
-				request_translit();
-			} else {
-				$('.ui-page-form input[name=slug]').parent().append(
-						suggest = $('<span class="suggest button"/>').text(
-								'suggest').click(request_translit));
-
-				pdiv.bind('resize', reposition_suggest_btn);
-			}
+			$('.ui-page-form input[name=slug]').parent().append(
+					suggest = $('<span class="suggest button"/>').text(
+							'suggest').click(request_translit));
+			pdiv.bind('resize', reposition_suggest_btn);
 			
+
 			// Submit button
 			var form = pdiv.find('form');
 			form.submit(function(){

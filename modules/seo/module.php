@@ -35,7 +35,7 @@ class CM5_Module_SEO extends CM5_Module
         {
             tag('url',
                 tag('loc', (string)UrlFactory::craft_fqn('page.view', $p)),
-                tag('lastmod', gmdate(DATE_ISO8601, $p->lastmodified->format('U'))),
+                tag('lastmod', gmdate('Y-m-d\TH:i:s+00:00', $p->lastmodified->format('U'))),
                 tag('priority', '0.5'),
                 tag('changefreq', 'weekly')
             )->appendto($urlset);
