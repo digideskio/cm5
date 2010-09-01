@@ -47,6 +47,12 @@ class CM5_Module_SEO extends CM5_Module
     {
         return "User-Agent: *\n" .
             "Allow: /\n" .
+        	"Disallow: /admin\n" .
+        	"Disallow: /modules\n" .
+        	"Disallow: /themes\n" .
+        	"Disallow: /static\n" .
+        	"Disallow: /lib\n" .
+        	"Disallow: /web\n" .
             'Sitemap: ' . (empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . url('/sitemap.xml');
     }
     
