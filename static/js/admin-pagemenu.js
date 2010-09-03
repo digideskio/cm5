@@ -3,7 +3,7 @@
 
 		// Ajax request for translit
 		var request_translit = function() {
-			$.get('../tools/transliterate', {
+			$.get('tools/transliterate', {
 				text : $('.ui-page-form input[name=title]').val()
 			}, function(data) {
 				$('.ui-page-form input[name=slug]').val(data);
@@ -151,56 +151,55 @@
 })(jQuery);
 
 $(document).ready(
-		function() {
+	function() {
+		// Pages tree
+		$('#pages_tree .resort.button').toggle(
+				function() {
+					$('#pages_tree .sortable')
+					.sortable(
+							{
+								connectWith : '.sortable',
+								cancel : '.system-page',
+								helper : 'original',
+								tolerance : 'pointer',
+								opacity : 0.2,
+								grid : [ 10, 10 ],
+								axis : 'y',
+								update : function(event, ui) {
 
-			// Pages tree
-			$('#pages_tree .resort.button').toggle(
-					function() {
-						$('#pages_tree .sortable')
-								.sortable(
-										{
-											connectWith : '.sortable',
-											cancel : '.system-page',
-											helper : 'original',
-											tolerance : 'pointer',
-											opacity : 0.2,
-											grid : [ 10, 10 ],
-											axis : 'y',
-											update : function(event, ui) {
+									if (ui.sender != null)
+										return;
 
-												if (ui.sender != null)
-													return;
+									var page_id = parseInt(ui.item
+											.attr('id').replace(
+													/page_/, ''));
+									var order = ui.item.parent()
+											.sortable('serialize');
+									var par = ui.item.parent()
+											.parent('li');
 
-												var page_id = parseInt(ui.item
-														.attr('id').replace(
-																/page_/, ''));
-												var order = ui.item.parent()
-														.sortable('serialize');
-												var par = ui.item.parent()
-														.parent('li');
+									if (par.length == 0)
+										parent_id = '';
+									else
+										parent_id = parseInt(par
+												.attr('id')
+												.replace(/page_/,
+														''));
 
-												if (par.length == 0)
-													parent_id = '';
-												else
-													parent_id = parseInt(par
-															.attr('id')
-															.replace(/page_/,
-																	''));
-
-												$.post(page_id + '/+move/?'
-														+ order, {
-													parent_id : parent_id
-												});
-											}
-										}).disableSelection()
-								.sortable('enable');
-						$('#pages_tree').toggleClass('sort-mode');
-						$(this).toggleClass('pressed');
-					}, function() {
-						$('#pages_tree .sortable').sortable('disable');
-						$('#pages_tree').toggleClass('sort-mode');
-						$(this).toggleClass('pressed');
-					});
+									$.post('editor/' + page_id + '/+move/?'
+											+ order, {
+										parent_id : parent_id
+									});
+								}
+							}).disableSelection()
+							.sortable('enable');
+					$('#pages_tree').toggleClass('sort-mode');
+					$(this).toggleClass('pressed');
+				}, function() {
+					$('#pages_tree .sortable').sortable('disable');
+					$('#pages_tree').toggleClass('sort-mode');
+					$(this).toggleClass('pressed');
+				});
 
 			$('#pages_tree ul a.page').click(
 					function() {
