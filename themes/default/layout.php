@@ -92,7 +92,7 @@ class DefaultThemeLayout extends CM5_ThemeLayout
             "));
 
         if ($this->get_config()->{"extra-css"})
-            $this->get_document()->get_head()->append(tag('style type="text/css"',$this->get_config()->{"extra-css"}));
+            $this->get_document()->get_head()->append(tag('style type="text/css" html_escape_off',$this->get_config()->{"extra-css"}));
             
         // Search widget
         $this->init_menu();
