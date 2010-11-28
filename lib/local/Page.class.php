@@ -1,5 +1,26 @@
 <?php
-
+/**
+ * 
+ * Model class for pages
+ * @author sque@0x0lab.org
+ *
+ * @property integer $id
+ * @property string $system
+ * @property string $slug
+ * @property string $uri
+ * @property integer $parent_id
+ * @property string $title
+ * @property string $body
+ * @property string $author
+ * @property string $status
+ * @property DateTime $created
+ * @property DateTime $lastmodified
+ * @property integer $order
+ * 
+ * Relations
+ * @property Page $parent
+ * @property array subpages
+ */
 class Page extends DB_Record
 {
     static public function get_table()

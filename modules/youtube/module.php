@@ -46,6 +46,8 @@ class CM5_Module_YouTube extends CM5_Module
              'border' => array('display' => 'Show border:', 'type' => 'checkbox'),
              'privacy-enchanced' => array('display' => 'Privacy enchanced (cookie less youtube):',
                 'type' => 'checkbox'),
+        	'use-iframe' => array('display' => 'Use iframe (HTML5 capable)', 'type' => 'checkbox',
+        		'hint' => 'Not all the options are supported in iframe mode.')
         );                    
     }
     
@@ -62,7 +64,17 @@ class CM5_Module_YouTube extends CM5_Module
         if ($this->get_config()->border)
             $link .= '&amp;border=1';
         
-        return "<object width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"${link}\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"${link}\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"{$width}\" height=\"{$height}\"></embed></object>";
+        if ($this->get_config()->{'use-iframe'}) 
+        	return "<iframe title=\"YouTube video player\" class=\"youtube-player\" type=\"text/html\" " .
+        		"width=\"${width}\" height=\"{$height}\" src=\"http://{$host}/embed/{$vid}?rel=0\" " .
+        		"frameborder=\"0\"></iframe>";
+        else
+        	return "<object width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"${link}\">" .
+        		"</param><param name=\"allowFullScreen\" value=\"true\"></param><param " .
+        		"name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"${link}\" " .
+        		"type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" " .
+        		"allowfullscreen=\"true\" width=\"{$width}\" height=\"{$height}\"></embed></object>";
+        
     }
     
     private function replace_links(Page $p)

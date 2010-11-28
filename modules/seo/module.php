@@ -33,6 +33,8 @@ class CM5_Module_SEO extends CM5_Module
         $pages = Page::open_query()->where('status = ?')->execute('published');
         foreach ($pages as $p)
         {
+        	if ($p->status != 'published')
+        		continue;
             tag('url',
                 tag('loc', (string)UrlFactory::craft_fqn('page.view', $p)),
                 tag('lastmod', gmdate('Y-m-d\TH:i:s+00:00', $p->lastmodified->format('U'))),
