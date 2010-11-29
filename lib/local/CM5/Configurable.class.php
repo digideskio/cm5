@@ -21,15 +21,24 @@
  *      Sque - initial API and implementation
  */
 
-//! Interface to implement configurable modules
+/**
+ * Interface that must be followed by configurable objects
+ * 
+ * This will be typically used by modules and themes.
+ * @author sque
+ *
+ */
 abstract class CM5_Configurable
 {
-    //! Implement with objects configuration nickname
+    /**
+     * Implement with objects configuration nickname
+     * @return string The unique nickname of this object.
+     */
     abstract public function config_nickname();
         
-    //! Get an array with configuration options
     /**
-     * Each entry is an associative array with the following fields.
+     * Get an array with configuration options
+     * @return array Associative array with the following fields.
      *  - @b name The name of this option
      *  - @b display The display to be shown 
      *  - @b type The type of the option (text, select, checkbox)
@@ -41,18 +50,25 @@ abstract class CM5_Configurable
         return array();
     }
     
-    //! Default configuration of the module
     /**
-     * An associative array with default configuration of the module.
+     * Default configuration of the module
+     * @return array Associative array with default configuration of the module.
      */
     public function default_config()
     {
         return array();
     }
-    
+
+    /**
+     * Internal pointer to actual config object
+     * @var Zend_Config
+     */
     private $config = null;
     
-    //! Get module configuration
+    /**
+     * Get the object configuration
+     * @return Zend_Config Configuration object of this object
+     */
     public function get_config()
     {
         // Return instance object
@@ -71,7 +87,9 @@ abstract class CM5_Configurable
         return $this->config;
     }
     
-    //! Save module configuration
+    /**
+     * Save the actual configuration
+     */
     public function save_config()
     {
         $gconfig = GConfig::get_writable_copy();

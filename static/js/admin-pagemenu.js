@@ -37,6 +37,8 @@
 		var reposition_suggest_btn = function() {
 			var title = $('.ui-page-form input[name=title]');
 			var input = $('.ui-page-form input[name=slug]');
+			if (input.length == 0)
+				return;
 			input.width(title.offset().left + title.innerWidth()
 					- input.offset().left);
 
@@ -131,7 +133,7 @@
 				options.editor = CKEDITOR.replace($('#page_editor textarea')[0]);
 				pdiv.data('cm5_editor', options);
 				document.title = document.title.replace(/^([^|]+).*$/, '$1') + ' | Edit: ' 
-					+ pdiv.find('input[name=title]').val();
+					+ (pdiv.find('input[name=title]').length?pdiv.find('input[name=title]').val():'Home');
 				automatify_editor();
 			});
 		}

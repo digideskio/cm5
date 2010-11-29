@@ -15,13 +15,19 @@
  *  GNU General Public License for more details.
  *  
  *  You should have received a copy of the GNU General Public License
- *  along with CM5.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with CM5. If not, see <http://www.gnu.org/licenses/>.
  *  
  *  Contributors:
  *      Sque - initial API and implementation
  */
 
-//! Interface to implement modules
+/**
+ * Interface that must be followed by modules
+ * 
+ * This will be typically used by modules.
+ * @author sque
+ *
+ */
 abstract class CM5_Module extends CM5_Configurable
 {
     public function config_nickname()
@@ -29,24 +35,37 @@ abstract class CM5_Module extends CM5_Configurable
         return $this->info_property('nickname');
     }
 
-    //! Type of module
+    /**
+     * @return string The type of the module
+     */
     public function module_type()
     {
         return 'generic';
     }
     
-    //! Check if this module is enabled
+	/**
+	 * Check if this module is currently enabled.
+	 */
     public function is_enabled()
     {
         return in_array($this->config_nickname(), explode(',', GConfig::get_instance()->enabled_modules));
     }
-    //! Array with module info
+
+    /**
+     * Must be implemented by modules to provide their information.
+     * @return array Associative array with module info.
+     */ 
     abstract public function info();
     
-    //! Initialize this module
+    /**
+     * It will be executed when the module is initialized.
+     */
     abstract public function init();
     
-    //! Get a specific module info
+    /**
+     * Helper function to get an entry from info()
+     * @param string $name The name of the info property
+     */
     public function info_property($name)
     {
         $minfo = $this->info();
@@ -55,10 +74,19 @@ abstract class CM5_Module extends CM5_Configurable
         return $minfo[$name];
     }
         
-    //! Repository of all user actions
+    /**
+     * Storage of all user actions
+     * @var array
+     */
     private $user_actions = array();
     
-    //! Declare a new user action of this module
+    /**
+     * Declare a new user action of this module
+     * @param string $name A unique name for the action, slug
+     * @param string $display The title of this action
+     * @param callable $method A callable object to be executed to
+     * process this action
+     */
     public function declare_action($name, $display, $method)
     {
         $class_name = get_class($this);
@@ -71,7 +99,10 @@ abstract class CM5_Module extends CM5_Configurable
         );
     }
     
-    //! Get all actions of this module
+    /**
+     * Get all actions of this module
+     * @return array All the registered actions in one array.
+     */
     public function get_actions()
     {
         return $this->user_actions;
@@ -85,7 +116,10 @@ abstract class CM5_Module extends CM5_Configurable
         return $this->user_actions[$name];
     }
     
-    //! Register this module to core
+    /**
+     * Helper function to register this module to core
+     * @see CM5_Core::register_module()
+     */
     public static function register()
     {
         $module_class = get_called_class();

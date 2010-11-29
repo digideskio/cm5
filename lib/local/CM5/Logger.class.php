@@ -60,13 +60,23 @@ class CM5_Log_Writer extends Zend_Log_Writer_Abstract
 }
 
 
-//! CMS Core componment
+/**
+ * Singleton Wrapper for the actuall logger
+ * @author sque
+ *
+ */
 class CM5_Logger
 {
-    //! Instance of the logger object
+    /**
+     * Instance of the logger object
+     * @var Zend_Log
+     */
     static $logger = null;
     
-    //! Get the instance of this logger
+    /**
+     * Get the instance of this logger
+     * @return Zend_Log The actual loging engine.
+     */ 
     public static function get_instance()
     {
         if (self::$logger !== null)
@@ -100,5 +110,3 @@ class CM5_Logger
         return $logger;
     }
 }
-
-?>

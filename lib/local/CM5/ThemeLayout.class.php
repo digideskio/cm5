@@ -21,13 +21,23 @@
  *      Sque - initial API and implementation
  */
 
-//! Base class to implement theme layout
+/**
+ * Base class to implement theme layout
+ * @author sque
+ *
+ */
 class CM5_ThemeLayout extends Layout
 {
-    //! The configuration of the module/theme
+    /**
+     * The configuration of the module/theme
+     * @var Zend_Config
+     */
     private $module_config = null;
     
-    //! Get the configuration of this theme
+    /**
+     * Get the configuration of this theme
+     * @return Zend_Config The configuration of this theme.
+     */
     public function get_config()
     {
         if ($this->module_config !== null)
@@ -36,4 +46,3 @@ class CM5_ThemeLayout extends Layout
     }
 }
 
-?>

@@ -21,19 +21,31 @@
  *      Sque - initial API and implementation
  */
 
-//! Interface to implement themes
+/**
+ * Interface that must be followed by themes
+ * 
+ * This will be typically used by themes.
+ * @author sque
+ *
+ */
 abstract class CM5_Theme extends CM5_Module
 {
-    //! Get theme layout class
+    /**
+     * Return the CM5_ThemeLayout class
+     * @return string The name of the class.
+     */
     abstract public function get_layout_class();
  
-    //! Type of module
     public function module_type()
     {
         return 'theme';
     }
     
-    //! Initialize theme
+    /**
+     * Automatic initialization of the theme
+     * (non-PHPdoc)
+     * @see lib/local/CM5/CM5_Module::init()
+     */
     public function init()
     {
         $theme_class = $this->get_layout_class();
@@ -42,11 +54,13 @@ abstract class CM5_Theme extends CM5_Module
         Layout::assign('default', $theme_class);
     }
     
+    /**
+     * Usually when theme settings are changed, cache must be invalidated.
+     */
     public function on_save_config()
     {
         if (GConfig::get_instance()->site->theme == $this->config_nickname())
-            CM5_Core::get_instance()->invalidate_page_cache();
+            CM5_Core::get_instance()->invalidate_page_cache(null);
     }
 }
 
-?>

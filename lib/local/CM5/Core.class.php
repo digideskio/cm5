@@ -21,26 +21,51 @@
  *      Sque - initial API and implementation
  */
 
-//! CMS Core componment
+/**
+ * CM5 Core component
+ * 
+ * The Core is singleton and is used to manage 
+ * all other subsystems of the CMS.
+ * 
+ * @author sque
+ *
+ */
 class CM5_Core
 {
-
-    //! Version of CMS Engine
+    /**
+     * Static version of Core
+     * @var array
+     */
     private $version = array(0, 9, 15);
     
-    //! Events dispatcher with all core events
+    /**
+     * Events dispatcher with all core events
+     * @var EventDispatcher
+     */
     protected $events = null;
     
-    //! An array with all modules
+	/**
+	 * An array with all module
+	 * @var array
+	 */
     protected $modules = array();
 
-    //! A flag if themes have been loaded
+    /**
+     * A flag if themes have been loaded
+     * @var boolean
+     */
     protected $modules_loaded = false;
         
-    //! A flag if themes have been loaded
+    /**
+     * A flag if themes have been loaded
+     * @var boolean
+     */
     protected $themes_loaded = false;
     
-    //! Cache engine
+    /**
+     * Cache engine that will be used by CMS
+     * @var Cache
+     */ 
     protected $cache = null;
     
     //! Construct core
@@ -69,9 +94,11 @@ class CM5_Core
         Page::events()->connect('op.post.create', $invalidate_func);
     }
     
-    //! Invalidate page cache
     /**
-     * @param $page The page that gets invalidated
+     * Invalidate cache for a specific page. This will resolve
+     * all the other cached object that relay on this object
+     * and must be invalidated too.
+     * @param Page $page The page that gets invalidated
      */
     public function invalidate_page_cache($page)
     {
@@ -79,7 +106,9 @@ class CM5_Core
         $this->events()->notify('page.cache-delete', array('page' => $page));
     }
     
-    //! Scan modules folder and load them all
+    /**
+     * Scan modules folder and load them all
+     */
     public function load_modules()
     {
         $this->modules_loaded = true;
@@ -100,7 +129,9 @@ class CM5_Core
         }
     }
     
-    //! Scan modules folder and load them all
+    /**
+     * Scan modules folder and load them all
+     */
     public function load_themes()
     {
         $this->themes_loaded = true;
@@ -124,9 +155,9 @@ class CM5_Core
         $this->modules[GConfig::get_instance()->site->theme]->init();
     }
     
-    //! Register a module
     /**
-     * @param $module The instance of the module to register
+     * Register a module at the core
+     * @param CM5_Module $module The instance of the module to register
      */
     public function register_module(CM5_Module $module)
     {   
@@ -136,9 +167,9 @@ class CM5_Core
             $module->init();
     }
    
-    //! Enumerate modules
     /**
      * Get the list with all registered modules
+     * @return array Array of loaded modules.
      */
     public function modules()
     {
@@ -147,9 +178,9 @@ class CM5_Core
         return $this->modules;
     }
     
-    //! Enumerate themes
     /**
      * Get the list with all registred themes
+     * @return array Array of loaded themes. 
      */
     public function theme_modules()
     {
@@ -158,7 +189,11 @@ class CM5_Core
         return array_filter($this->modules, create_function('$e', ' return ($e->module_type() == "theme"); '));
     }
     
-    //! Get a module info
+    /**
+     * Get a module info
+     * @param string $nickname The nickname of the module
+     * @return CM5_Module The module or NULL if it is not found.
+     */
     public function get_module($nickname)
     {
         if (!$this->modules_loaded)
@@ -168,7 +203,10 @@ class CM5_Core
         return $this->modules[$nickname];
     }
 
-    //! Enable module
+    /**
+     * Enable module
+     * @param string $nickname The nickname of the module
+     */
     public function enable_module($nickname)
     {
         if (($m = $this->get_module($nickname)) == null)
@@ -188,7 +226,10 @@ class CM5_Core
         $this->invalidate_page_cache(null);
     }
     
-    //! Disable module
+    /**
+     * Disable module
+     * @param string $nickname The nickname of the module
+     */
     public function disable_module($nickname)
     {
         if (($m = $this->get_module($nickname)) == null)
@@ -208,26 +249,37 @@ class CM5_Core
         $this->invalidate_page_cache(null);
     }
     
-    //! Get the EventDispatcher object
+    /**
+     * Get the dispatcher for the events emmited by the core.
+     * @param string $nickname The nickname of the module
+     * @return EventDispatcher The dispatcher for the core.
+     */
     public function events()
     {
         return $this->events;
     }
     
-    //! Pointer to singleton instance
+    /**
+     * Pointer to singleton instance
+     * @var CM5_Core
+     */
     static private $instance = null;
     
-    //! Initialize the CMS core
     /**
-     * @param $cache_engine The cache engine to be used by the CMS.
+     * Initialize the CMS core
+     * @param Cache $cache_engine The cache engine to be used by the CMS.
+     * @return CM5_Core The actual initialized instance.
      */
     static public function init(Cache $cache_engine)
     {        
         // Create instance
-        self::$instance = new CM5_Core($cache_engine);
+        return self::$instance = new CM5_Core($cache_engine);
     }
     
-    //! Get the running instance of core
+    /**
+     * Get the running instance of core
+     * @return CM5_Core The actual singleton instance.
+     */
     static public function get_instance()
     {
         if (self::$instance == null)
@@ -235,13 +287,20 @@ class CM5_Core
         return self::$instance;
     }
     
-    //! Get version of CMS
+    /**
+     * Get version of CMS
+     * @return array Associative array with all parts of version
+     */ 
     public function get_version()
     {
         return $this->version;
     }
     
-    //! Get the pages tree
+    /**
+     * Iterate pages and generate the tree of pages.
+     * This action is automatically cached.
+     * @return array Associative array with all pages starting from root level. 
+     */ 
     public function get_tree()
     {
         // Read from cache
@@ -285,6 +344,7 @@ class CM5_Core
         return $pages;
     }
     
+    
     private function find_page_in_tree($page_id, & $root)
     {
         if ($root['id'] == $page_id)
@@ -313,9 +373,11 @@ class CM5_Core
         
         
     }
-    //! Serve a url request to CMS
+
     /**
-     * @param $url Force a custom url to server, or null if it is auto detected.
+     * Serve a url request to CMS. This is the actual entry point when a 
+     * url is requested to be serverd.
+     * @param string $url Force a custom url to server, or null if it is auto detected.
      */
     public function serve($url = null)
     {
@@ -383,4 +445,3 @@ class CM5_Core
             $this->cache->set('url-' . $url, $response, 600);
     }
 }
-?>

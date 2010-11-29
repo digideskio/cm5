@@ -21,25 +21,47 @@
  *      Sque - initial API and implementation
  */
 
-//! Class to hold CMS responses
+//! 
+/**
+ * Container for the response produced by the CM5_Core.
+ * This container apart from the body contains extra meta
+ * info that will help in caching.
+ * @author sque
+ *
+ */
 class CM5_Response
 {
-    //! Extra headers to be set with response
+    /**
+     * Headers that are part of this response
+     * @var array
+     */
     protected $headers = array();
 
-    //! The HTMLDoc of this response object    
+    //! The HTMLDoc of this response object
+    /**
+     * Te document object
+     * @var Output_HTMLDoc
+     */    
     public $document = null;
 
-    //! A flag if this response should be cached
+    /**
+     * A flag if this response can be cached
+     * @var boolean
+     */
     public $cachable = true;
     
-    //! Function to add header in response
+    /**
+     * Add header in response
+     * @param string $header The full header in the RFC format, ready to deliver.
+     */
     public function add_header($header)
     {
         $this->headers[] = $header;
     }
     
-    //! Dump this reponse object in output
+    /**
+     * Dump this reponse object in output. It will also send headers if any.
+     */
     public function show()
     {
         foreach($this->headers as $h)
@@ -48,5 +70,3 @@ class CM5_Response
         echo $this->document;
     }
 }
-
-?>
