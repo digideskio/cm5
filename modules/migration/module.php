@@ -442,4 +442,3 @@ class CM5_Module_Migration extends CM5_Module
 }
 
 CM5_Module_Migration::register();
-?>

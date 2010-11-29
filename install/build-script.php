@@ -40,7 +40,7 @@ DEFAULT CHARSET='UTF8';
 
 
 -- Create memberships
-create table `{$dbprefix}memberships` (
+CREATE TABLE `{$dbprefix}memberships` (
     `username` varchar(50) not null,
     `groupname` varchar(50) not null,
     PRIMARY KEY(`username`, `groupname`)
@@ -55,7 +55,7 @@ create table `{$dbprefix}groups` (
 DEFAULT CHARSET='UTF8';
 
 -- Create pages
-create table `{$dbprefix}pages` (
+CREATE TABLE `{$dbprefix}pages` (
     `id` integer auto_increment not null,
     `slug` varchar(255) not null,
     `uri` varchar(512) not null,

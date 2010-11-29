@@ -45,7 +45,7 @@ class DefaultTheme extends CM5_Theme
             'menu-text-color' => '0A0A0A',
             'menu-selected-background-color' => 'D20000',
             'menu-selected-text-color' => 'FFFFFF',
-            'footer' => "<a href=\"http://cm5.0x0lab.org\">CM5 v{$version[0]}.{$version[1]}.{$version[2]}</a>",
+            'footer' => "<a href=\"http://code.0x0lab.org/p/cm5\">CM5 v{$version[0]}.{$version[1]}.{$version[2]}</a>",
             'favicon-url' => '',
             'extra-css' => '',
         );

@@ -50,7 +50,19 @@ abstract class CM5_Module extends CM5_Configurable
     {
         return in_array($this->config_nickname(), explode(',', GConfig::get_instance()->enabled_modules));
     }
-
+	
+	/**
+     * Override to execute additional code when module is enabled.
+     * @return boolean If there was a problem you can return false to prevent
+     * module from enabling it. 
+     */
+    public function on_enable() {}
+    
+	/**
+     * Override to execute additional code when module is disabled
+     */
+    public function on_disable() {}
+    
     /**
      * Must be implemented by modules to provide their information.
      * @return array Associative array with module info.
@@ -60,7 +72,7 @@ abstract class CM5_Module extends CM5_Configurable
     /**
      * It will be executed when the module is initialized.
      */
-    abstract public function init();
+    abstract public function init();        
     
     /**
      * Helper function to get an entry from info()

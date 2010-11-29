@@ -101,7 +101,7 @@ class Layout_Admin extends Layout
             tag('ul',
                 tag('li',
                     tag('a', "CM5 v{$version[0]}.{$version[1]}.{$version[2]}",
-                        array('href' => 'http://cm5.0x0lab.org', 'target' => '_blank'))
+                        array('href' => 'http://code.0x0lab.org/p/cm5', 'target' => '_blank'))
                 ),
                 tag('li',
                     'made with ', tag('a', 'PHPlibs',

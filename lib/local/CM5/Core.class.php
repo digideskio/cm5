@@ -211,6 +211,11 @@ class CM5_Core
     {
         if (($m = $this->get_module($nickname)) == null)
             return false;
+
+        if ($m->on_enable() === false) {
+        	CM5_Logger::get_instance()->err("Module \"{$m->info_property('title')}\" could not be enabled.");
+        	return false;
+        }
         
         $conf = GConfig::get_writable_copy();
         $conf->enabled_modules = implode(',',
@@ -219,7 +224,7 @@ class CM5_Core
                 explode(',', $conf->enabled_modules)
             )
         );
-        GConfig::update($conf);
+        GConfig::update($conf);        
         CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
         
         // Reset cache as a module may leave trash
@@ -235,6 +240,8 @@ class CM5_Core
         if (($m = $this->get_module($nickname)) == null)
             return false;
         
+        $m->on_disable();
+            
         $conf = GConfig::get_writable_copy();
         $conf->enabled_modules = implode(',',
             array_diff(
@@ -242,7 +249,7 @@ class CM5_Core
                 array($nickname)
             )
         );
-        GConfig::update($conf);
+        GConfig::update($conf);        
         CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
         
         // Reset cache as a module may leave trash

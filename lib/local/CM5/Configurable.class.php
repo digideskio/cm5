@@ -96,8 +96,11 @@ abstract class CM5_Configurable
         $gconfig->module->{$this->config_nickname()} = $this->config;
         GConfig::update($gconfig);
         
-        if (method_exists($this, 'on_save_config'))
-            $this->on_save_config();
+        $this->on_save_config();
     }
     
+    /**
+     * Override this function if you want extra work on after saving configuration
+     */
+    public function on_save_config(){}
 }

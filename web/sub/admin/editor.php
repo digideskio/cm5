@@ -90,7 +90,6 @@ function show_pages_tree($current_page_id)
 
 function page_editor_form($id)
 {
-    //sleep(1);
     if (!$p = Page::open($id))
         not_found();
 
