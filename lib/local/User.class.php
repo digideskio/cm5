@@ -20,6 +20,17 @@
  */
 
 
+/**
+ * Model for User objects. 
+ * @author sque@0x0lab.org
+ *
+ * @property string $username
+ * @property string $password
+ * @property boolean $enabled
+ * 
+ * @property array $groups
+ * @property array $articles
+ */
 class User extends DB_Record
 {
     static public function get_table()
@@ -52,12 +63,16 @@ User::events()->connect('op.pre.delete', create_function('$e',
     CM5_Logger::get_instance()->notice("User \"{$u->username}\" was deleted.");
 '));
 
-User::events()->connect('op.post.save', create_function('$e', '
+User::events()->connect('op.pre.save', create_function('$e', '
     // Update last modified
     $u = $e->arguments["record"];
    
     // Log event
-    CM5_Logger::get_instance()->notice("User \"{$u->username}\" was changed.");
+    if (in_array("password", array_keys($e->arguments["old_values"])))
+    	CM5_Logger::get_instance()->notice("User \"{$u->username}\" changed password.");
+    if ((in_array("enabled", array_keys($e->arguments["old_values"])))
+    		&& ($e->arguments["old_values"]["enabled"] != $u->enabled))
+    	CM5_Logger::get_instance()->notice("User \"{$u->username}\" was " . ($u->enabled?"enabled":"disabled") . ".");
 '));
 
 User::one_to_many('Page', 'user', 'articles');

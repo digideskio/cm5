@@ -2,7 +2,7 @@
 
 class UI_UserEdit extends Output_HTML_Form
 {
-    public function __construct($u)
+    public function __construct(User $u)
     {
         $this->user = $u;
         
@@ -48,18 +48,33 @@ class UI_UserEdit extends Output_HTML_Form
         $this->user->enabled = $values['enabled'];
         if (!empty($values['password']))
             $this->user->password = sha1($values['password']);
-        $this->user->save();
-        foreach(Membership::open_query()->where('username = ?')->execute($this->user->username) as $m)
-            $m->delete();
+        $this->user->save();        
 
+        $groups = array();
+        foreach(Group::open_all() as $g)
+        	$groups[$g->groupname] = false;
+        $groups = array_merge($groups, $values['groups']);
+        
         // Create memberships
-        foreach($values['groups'] as $group => $enabled)
+        foreach($groups as $group => $enabled)
         {
-            if ($enabled)
-                Membership::create(array(
-                    'username' => $this->user->username,
-                    'groupname' => $group
-                ));
+            if ($enabled) {
+            	if (count($this->user->groups->subquery()
+            		->where('groupname = ?')->execute($group)) == 0) {
+		            	Membership::create(array(
+		                    'username' => $this->user->username,
+		                    'groupname' => $group
+		                ));
+            	}
+            } else {
+            	if (count($this->user->groups->subquery()
+            		->where('groupname = ?')->execute($group))) {
+            			Membership::open(array(
+            				'username' => $this->user->username,
+                    		'groupname' => $group)
+            			)->delete();            			
+            	}
+            }
         }
         
         UrlFactory::craft('user.admin')->redirect();

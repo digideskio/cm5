@@ -7,10 +7,10 @@ Stupid::add_rule('dump_file_by_id',
     array('type' => 'url_path', 'chunk[2]' => '/@(\d+)/')
 );
 Stupid::add_rule('image_thumbnail_by_name',
-    array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/([\w\-\(\)\.]+)/')
+    array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/^([^@]{1,255})$/')
 );
 Stupid::add_rule('dump_file_by_name',
-    array('type' => 'url_path', 'chunk[2]' => '/([\w\-\(\)\.]+)/')
+    array('type' => 'url_path', 'chunk[2]' => '/^([^@]{1,255})$/')
 );
 
 Stupid::set_default_action('not_found');

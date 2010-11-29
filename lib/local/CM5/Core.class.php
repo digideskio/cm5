@@ -5,7 +5,7 @@ class CM5_Core
 {
 
     //! Version of CMS Engine
-    private $version = array(0, 9, 14);
+    private $version = array(0, 9, 15);
     
     //! Events dispatcher with all core events
     protected $events = null;
