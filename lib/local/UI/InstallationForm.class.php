@@ -56,9 +56,7 @@ class UI_InstallationForm extends Output_HTML_Form
             'timezone' => array('display' => 'Default timezone', 'type' => 'dropbox',
                 'optionlist' => $this->tzones,
                 'onerror' => 'Select a valid time zone'),
-            'deploy-checks' => array('display' => 'Check for remaining development files.',
-                'type' => 'checkbox', 'hint' => 'It warn if /install folder exists or if configuration files are writable',
-                'value' => true)        ),
+            ),
         array('title' => '', 'css' => array('ui-form', 'ui-installation'),
 		    'buttons' => array(
 		        'Save' => array('display' =>'Install'),
@@ -95,7 +93,6 @@ class UI_InstallationForm extends Output_HTML_Form
         $config->db->pass = $values['db-pass'];
         $config->db->schema = $values['db-schema'];
         $config->db->prefix = $values['db-prefix'];
-        $config->site->deploy_checks = $values['deploy-checks'];
         $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
         $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');
         $config->site->theme = 'default';
