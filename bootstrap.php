@@ -24,6 +24,12 @@
 require_once dirname(__FILE__) . '/lib/vendor/phplibs/ClassLoader.class.php';
 require_once dirname(__FILE__) . '/lib/tools.lib.php';
 
+
+
+
+
+
+
 /**
  * Here you can write code that will be executed at the begining of each page instance
  */
