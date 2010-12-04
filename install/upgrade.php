@@ -269,7 +269,7 @@ $simulated = isset($options['go'])?false:true;
  * The name of this file
  * @var string
  */
-$executable = basename($_SERVER['argv']);
+$executable = basename($_SERVER['argv'][0]);
 
 /**
  * Target CM5 installation folder
