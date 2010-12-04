@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-class UI_EditPage extends Output_HTML_Form
+class CM5_Form_EditPage extends Output_HTML_Form
 {
     public function __construct($page)
     {
@@ -89,5 +89,3 @@ class UI_EditPage extends Output_HTML_Form
         $this->page->save();
     }
 };
-
-?>

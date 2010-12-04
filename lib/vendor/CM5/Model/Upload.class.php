@@ -21,7 +21,25 @@
  *      Sque - initial API and implementation
  */
 
-class Upload extends DB_Record
+/**
+ * Model class for uploads table.
+ * 
+ * @author sque@0x0lab.org
+ *
+ * @property integer $id
+ * @property string $filename
+ * @property integer $filesize
+ * @property string $store_file
+ * @property string $sha1_sum
+ * @property string $mime
+ * @property string $uploader
+ * @property string $description 
+ * @property DateTime $lastmodified
+ * @property boolean $is_image
+ * @property integer $image_width
+ * @property integer $image_height
+ */
+class CM5_Model_Upload extends DB_Record
 {
     static public function get_table()
     {   
@@ -195,39 +213,39 @@ class Upload extends DB_Record
     }
 }
 
-Upload::$thumb_cache = new Cache_File(GConfig::get_instance()->site->cache_folder, 'thumb_');
-Upload::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Upload::$thumb_cache = new Cache_File(GConfig::get_instance()->site->cache_folder, 'thumb_');
+CM5_Model_Upload::events()->connect('op.pre.delete', create_function('$e', '
 
     $r = $e->arguments["record"];
 
     // Clear thumb image cache
-    if (Upload::$thumb_cache)
-        Upload::$thumb_cache->delete($r->id);
+    if (CM5_Model_Upload::$thumb_cache)
+        CM5_Model_Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
     unlink(GConfig::get_instance()->site->upload_folder . "/" . $r->store_file);
 '));
 
-Upload::events()->connect('op.pre.create', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.pre.create', create_function('$e', '
     if (!isset($e->filtered_value["uploader"]))
         $e->filtered_value["uploader"] = Authn_Realm::get_identity()->id();
 '));
 
-Upload::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.post.create', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->info("File \"{$u->filename}\" was uploaded.");
 '));
 
-Upload::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.pre.delete', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->notice("File \"{$u->filename}\" was deleted.");
 '));
 
-Upload::events()->connect('op.post.save', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.post.save', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event

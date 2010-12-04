@@ -41,13 +41,13 @@ class CM5_Module_Contents extends CM5_Module
         $c->events()->connect('page.post-render', array($this, 'event_post_render'));
     }
     
-    private function replace_subpages(Page $p)
+    private function replace_subpages(CM5_Model_Page $p)
     {
         if (strstr($p->body, '##subpages##') === false)
             return;
         
         // Create contents index
-        $subpages = Page::open_query()
+        $subpages = CM5_Model_Page::open_query()
             ->where('status = ?')
             ->where('parent_id = ?')
             ->order_by('order', 'ASC')
@@ -60,7 +60,7 @@ class CM5_Module_Contents extends CM5_Module
         $p->body = str_replace('##subpages##', (string)$contents_el, $p->body);
     }
     
-    private function execute_redirect(Page $p, CM5_Response $r)
+    private function execute_redirect(CM5_Model_Page $p, CM5_Response $r)
     {
         if (strstr($p->body, '##redirect ') === false)
             return;
@@ -94,4 +94,3 @@ class CM5_Module_Contents extends CM5_Module
 }
 
 CM5_Module_Contents::register();
-?>

@@ -55,7 +55,7 @@ class CM5_Log_Writer extends Zend_Log_Writer_Abstract
     protected function _write($event)
     {
         $event['timestamp'] = new DateTime($event['timestamp']);
-        Log::create($event);
+        CM5_Model_Log::create($event);
     }
 }
 

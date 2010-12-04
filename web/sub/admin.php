@@ -39,7 +39,7 @@ if (GConfig::get_instance()->site->deploy_checks)
 
 // Initialize authentication for admin
 $auth = new Authn_Backend_DB(array(
-    'query_user' => User::open_query()
+    'query_user' => CM5_Model_User::open_query()
         ->where('enabled = ?')->push_exec_param(1)
         ->where('username = ?'),
     'field_username' => 'username',
@@ -56,9 +56,9 @@ Authn_Realm::set_session(
 
 // Initialize authorization
 $roles = new Authz_Role_FeederDatabase(array(
-    'role_query' => User::open_query()->where('username = ?'),
+    'role_query' => CM5_Model_User::open_query()->where('username = ?'),
     'role_name_field' => 'username',
-    'parents_query' => Membership::open_query()->where('username = ?'),
+    'parents_query' => CM5_Model_Membership::open_query()->where('username = ?'),
     'parent_name_field' => 'groupname',
     'parent_name_filter_func' => create_function('$name',
         '   return "@" . $name; '

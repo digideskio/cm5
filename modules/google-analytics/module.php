@@ -73,4 +73,3 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
 }
 
 CM5_Module_GoogleAnalytics::register();
-?>

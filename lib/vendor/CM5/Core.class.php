@@ -89,16 +89,16 @@ class CM5_Core
         $invalidate_func = create_function('$e',
         '   CM5_Core::get_instance()->invalidate_page_cache($e->arguments[\'record\']);   '
         );
-        Page::events()->connect('op.post.save', $invalidate_func);
-        Page::events()->connect('op.post.delete', $invalidate_func);
-        Page::events()->connect('op.post.create', $invalidate_func);
+        CM5_Model_Page::events()->connect('op.post.save', $invalidate_func);
+        CM5_Model_Page::events()->connect('op.post.delete', $invalidate_func);
+        CM5_Model_Page::events()->connect('op.post.create', $invalidate_func);
     }
     
     /**
      * Invalidate cache for a specific page. This will resolve
      * all the other cached object that relay on this object
      * and must be invalidated too.
-     * @param Page $page The page that gets invalidated
+     * @param CM5_Model_Page $page The page that gets invalidated
      */
     public function invalidate_page_cache($page)
     {
@@ -316,7 +316,7 @@ class CM5_Core
            return $pages;
             
         // Read from database
-        $dbpages = Page::raw_query()
+        $dbpages = CM5_Model_Page::raw_query()
             ->select(array('id', 'parent_id', 'title', 'status', 'uri', 'system'))
             ->order_by('order', 'ASC')
             ->execute();
@@ -418,10 +418,10 @@ class CM5_Core
             Layout::open('default')->activate();
             
             if ($url == '')
-                $p = Page::open(1);   // Home page
+                $p = CM5_Model_Page::open(1);   // Home page
             else
             {
-                $p = Page::open_query()
+                $p = CM5_Model_Page::open_query()
                     ->where('uri = ?')
                     ->limit(1)
                     ->execute($url);

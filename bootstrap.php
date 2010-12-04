@@ -32,6 +32,7 @@ require_once dirname(__FILE__) . '/lib/tools.lib.php';
 $phplibs_loader = new ClassLoader(
     array(
     dirname(__FILE__) . '/lib/vendor/phplibs',
+    dirname(__FILE__) . '/lib/vendor',
     dirname(__FILE__) . '/lib/local'
 ));
 $phplibs_loader->set_file_extension('.class.php');

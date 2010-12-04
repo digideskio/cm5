@@ -19,8 +19,19 @@
  *  
  */
 
-
-class Membership extends DB_Record
+/**
+ * Model class for memberships table.
+ * 
+ * @author sque@0x0lab.org
+ *
+ * @property string $username
+ * @property string $groupname
+ * 
+ * Relations:
+ * @property CM5_Model_User $user
+ * @property CM5_Model_Group $group
+ */
+class CM5_Model_Membership extends DB_Record
 {
     static public function get_table()
     {   
@@ -28,12 +39,12 @@ class Membership extends DB_Record
     }
 
     static public $fields = array(
-        'username' => array('pk' => true, 'fk' => 'User'),
-        'groupname' => array('pk' => true, 'fk' => 'Group')
+        'username' => array('pk' => true, 'fk' => 'CM5_Model_User'),
+        'groupname' => array('pk' => true, 'fk' => 'CM5_Model_Group')
     );
 }
 
-Membership::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Membership::events()->connect('op.post.create', create_function('$e', '
     // Update last modified
     $m = $e->arguments["record"];
    
@@ -41,11 +52,10 @@ Membership::events()->connect('op.post.create', create_function('$e', '
     CM5_Logger::get_instance()->notice("User \"{$m->username}\" joined group \"{$m->groupname}\".");
 '));
 
-Membership::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Membership::events()->connect('op.pre.delete', create_function('$e', '
     // Update last modified
     $m = $e->arguments["record"];
    
     // Log event
     CM5_Logger::get_instance()->notice("User \"{$m->username}\" parted group \"{$m->groupname}\".");
 '));
-?>

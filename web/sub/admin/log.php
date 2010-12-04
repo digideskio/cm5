@@ -83,7 +83,7 @@ function show_log()
     }
 
     // Show list
-    $log_query = Log::open_query()->order_by('id', 'DESC');
+    $log_query = CM5_Model_Log::open_query()->order_by('id', 'DESC');
     foreach($filters_enabled as $id)
         $log_query->where('priorityName = ?', 'OR')->push_exec_param($id);
     $log = new UI_LogGrid($log_query->execute());
@@ -102,7 +102,7 @@ function clear_log()
         'Are you sure? This action is inreversible!',
         'Clear',
         create_function('','
-            Log::reset();        
+            CM5_Model_Log::reset();        
             UrlFactory::craft("log.view")->redirect();'
         ),
         array(),

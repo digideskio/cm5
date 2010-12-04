@@ -22,7 +22,8 @@
  */
 
 /**
- * Model class for pages
+ * Model class for pages table.
+ * 
  * @author sque@0x0lab.org
  *
  * @property integer $id
@@ -38,11 +39,11 @@
  * @property DateTime $lastmodified
  * @property integer $order
  * 
- * Relations
- * @property Page $parent
- * @property array subpages
+ * Relations:
+ * @property CM5_Model_Page $parent
+ * @property array $subpages
  */
-class Page extends DB_Record
+class CM5_Model_Page extends DB_Record
 {
     static public function get_table()
     {   
@@ -54,10 +55,10 @@ class Page extends DB_Record
         'system' => array('default' => false),
         'slug',
         'uri',
-        'parent_id' => array('fk' => 'Page'),
+        'parent_id' => array('fk' => 'CM5_Model_Page'),
         'title',
         'body',
-        'author' => array('fk' => 'User'),
+        'author' => array('fk' => 'CM5_Model_User'),
         'status',
         'created' => array('type' => 'datetime'),
         'lastmodified' => array('type' => 'datetime'),
@@ -91,7 +92,7 @@ class Page extends DB_Record
     }
 }
 
-Page::events()->connect('op.pre.save', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.save', create_function('$e', '
     // Update last modified
     $r = $e->arguments["record"];
     $r->lastmodified = new DateTime();
@@ -103,7 +104,7 @@ Page::events()->connect('op.pre.save', create_function('$e', '
     CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
 '));
 
-Page::events()->connect('op.pre.create', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.create', create_function('$e', '
     if (!isset($e->filtered_value["created"]))
         $e->filtered_value["created"] = new DateTime();
     if (!isset($e->filtered_value["lastmodified"]))
@@ -114,7 +115,7 @@ Page::events()->connect('op.pre.create', create_function('$e', '
 
 '));
 
-Page::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Page::events()->connect('op.post.create', create_function('$e', '
     $r = $e->arguments["record"];
 
     // Log event
@@ -125,7 +126,7 @@ Page::events()->connect('op.post.create', create_function('$e', '
     $r->save();
 '));
 
-Page::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.delete', create_function('$e', '
     if ($e->arguments["record"]->system)
         $e->filtered_value = true;
 
@@ -134,5 +135,5 @@ Page::events()->connect('op.pre.delete', create_function('$e', '
     CM5_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
 '));
 
-Page::one_to_many('Page', 'parent', 'subpages');
+CM5_Model_Page::one_to_many('CM5_Model_Page', 'parent', 'subpages');
 ?>

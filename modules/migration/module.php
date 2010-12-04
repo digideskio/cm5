@@ -26,7 +26,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
     public function __construct()
     {
         $files_size = 0;
-        foreach(Upload::raw_query()->select(array('filesize'))->execute() as $f)
+        foreach(CM5_Model_Upload::raw_query()->select(array('filesize'))->execute() as $f)
             $files_size += $f['filesize'];
         parent::__construct(
             array(
@@ -58,7 +58,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
         
         // Pages
         $archive->appendChild($pages = $dom->createElement('pages'));
-        foreach(Page::open_all() as $p)
+        foreach(CM5_Model_Page::open_all() as $p)
         {
             $pages->appendChild($page = $dom->createElement('page'));
             $page->setAttribute('title', $p->title);
@@ -78,7 +78,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
         if ($values['files'])
         {
             $archive->appendChild($files = $dom->createElement('files'));
-            foreach(Upload::open_all() as $f)
+            foreach(CM5_Model_Upload::open_all() as $f)
             {
                 $files->appendChild($file = $dom->createElement('file'));
                 $file->setAttribute('id', $f->id);
@@ -105,7 +105,7 @@ class CM5_Module_Migration_UploadForm extends Output_HTML_Form
     public function __construct()
     {
         $current_uploads = array();
-        foreach(Upload::open_all() as $u)
+        foreach(CM5_Model_Upload::open_all() as $u)
             if (substr($u->filename, -7) == '.xml.gz')
                 $current_uploads[$u->id] = "{$u->filename}  (" . date_exformat($u->lastmodified)->human_diff(null, false) . ")" ;
                 
@@ -154,7 +154,7 @@ class CM5_Module_Migration_UploadForm extends Output_HTML_Form
         }
         else if ($values['new-archive'])
         {
-            $f = Upload::from_file($values['new-archive']['data'], $values['new-archive']['orig_name']);
+            $f = CM5_Model_Upload::from_file($values['new-archive']['data'], $values['new-archive']['orig_name']);
             $this->upload_id = $f->id;
         }
     }
@@ -203,7 +203,7 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
 
         if ($values['flush-pages'])
         {
-            Page::raw_query()->delete()->execute();
+            CM5_Model_Page::raw_query()->delete()->execute();
 
             foreach($this->archive->xpath('//pages/page') as $p)
             {
@@ -217,17 +217,17 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
                 $attributes['parent_id'] = $parent_id;
                 $attributes['body'] = (string)$p;
 
-                $newpage = Page::create($attributes);
+                $newpage = CM5_Model_Page::create($attributes);
             }
             
             if (count($this->archive->xpath('//files')))
             {
-                foreach(Upload::open_all() as $u)
+                foreach(CM5_Model_Upload::open_all() as $u)
                     $u->delete();
                 
                 foreach($this->archive->xpath('//files/file') as $f)
                 {
-                    $u = Upload::from_file(base64_decode((string)$f), (string)$f['filename']);
+                    $u = CM5_Model_Upload::from_file(base64_decode((string)$f), (string)$f['filename']);
                     $u->id = (string)$f['id'];
                     $u->description = (string)$f['description'];
                     $u->uploader = (string)$f['uploader'];
@@ -268,7 +268,7 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
                 $attributes['parent_id'] = $parent_id;
                 $attributes['body'] = (string)$p;
                 
-                $newpage = Page::create($attributes);
+                $newpage = CM5_Model_Page::create($attributes);
                 
                 $old_to_new_ids[(string)$p['id']] = $newpage->id;
             }
@@ -338,7 +338,7 @@ class CM5_Module_Migration_FixLinks extends Output_HTML_Form
     	}
     	
     	// Validate file
-		$f = Upload::open_query()->where("filename = ?")->execute($matches[4]);
+		$f = CM5_Model_Upload::open_query()->where("filename = ?")->execute($matches[4]);
 		if (!count($f))
 			return $matches[0];	// No change
 		
@@ -358,7 +358,7 @@ class CM5_Module_Migration_FixLinks extends Output_HTML_Form
     	$this->fixed = array();
     	$this->oldurlbase = $values['url-base'];
     	
-        foreach(Page::open_all() as $p)
+        foreach(CM5_Model_Page::open_all() as $p)
     	{    	   			
 			$changed = preg_replace_callback(
 		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[\w\-\.]+))\b#',
@@ -410,7 +410,7 @@ class CM5_Module_Migration extends CM5_Module
     {
         if (($fid = Net_HTTP_RequestParam::get('fid')) !== null)
         {
-            if (($f = Upload::open($fid)) === false)
+            if (($f = CM5_Model_Upload::open($fid)) === false)
                 not_found();
             $frm = new CM5_Module_Migration_ImportForm($f, $fid);
             etag('div', $frm->render());

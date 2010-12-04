@@ -98,7 +98,7 @@ class CM5_Module_YouTube extends CM5_Module
         
     }
     
-    private function replace_links(Page $p)
+    private function replace_links(CM5_Model_Page $p)
     {
 
         if (strstr($p->body, 'www.youtube.com/watch') === false)

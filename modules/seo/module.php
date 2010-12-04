@@ -51,7 +51,7 @@ class CM5_Module_SEO extends CM5_Module
         )->attr('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 '.
 			'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
         
-        $pages = Page::open_query()->where('status = ?')->execute('published');
+        $pages = CM5_Model_Page::open_query()->where('status = ?')->execute('published');
         foreach ($pages as $p)
         {
         	if ($p->status != 'published')

@@ -26,7 +26,7 @@ class UI_UserCreate extends Output_HTML_Form
     public function __construct()
     {
         $groups = array();
-        foreach(Group::open_all() as $g)
+        foreach(CM5_Model_Group::open_all() as $g)
             $groups[$g->groupname] = $g->groupname;
 
         parent::__construct(array(
@@ -58,7 +58,7 @@ class UI_UserCreate extends Output_HTML_Form
     public function on_valid($values)
     {
 
-        $u = User::create(array(
+        $u = CM5_Model_User::create(array(
             'username' => $values['username'],
             'password' => sha1($values['password']),
             'enabled' => true
@@ -74,7 +74,7 @@ class UI_UserCreate extends Output_HTML_Form
         foreach($values['groups'] as $group => $enabled)
         {
             if ($enabled)
-                Membership::create(array(
+                CM5_Model_Membership::create(array(
                     'username' => $values['username'],
                     'groupname' => $group
                 ));

@@ -23,12 +23,12 @@
 
 class UI_UserEdit extends Output_HTML_Form
 {
-    public function __construct(User $u)
+    public function __construct(CM5_Model_User $u)
     {
         $this->user = $u;
         
         $groups = array();
-        foreach(Group::open_all() as $g)
+        foreach(CM5_Model_Group::open_all() as $g)
             $groups[$g->groupname] = $g->groupname;
         
         $groupselected = array();
@@ -72,7 +72,7 @@ class UI_UserEdit extends Output_HTML_Form
         $this->user->save();        
 
         $groups = array();
-        foreach(Group::open_all() as $g)
+        foreach(CM5_Model_Group::open_all() as $g)
         	$groups[$g->groupname] = false;
         $groups = array_merge($groups, $values['groups']);
         
@@ -82,7 +82,7 @@ class UI_UserEdit extends Output_HTML_Form
             if ($enabled) {
             	if (count($this->user->groups->subquery()
             		->where('groupname = ?')->execute($group)) == 0) {
-		            	Membership::create(array(
+		            	CM5_Model_Membership::create(array(
 		                    'username' => $this->user->username,
 		                    'groupname' => $group
 		                ));
@@ -90,7 +90,7 @@ class UI_UserEdit extends Output_HTML_Form
             } else {
             	if (count($this->user->groups->subquery()
             		->where('groupname = ?')->execute($group))) {
-            			Membership::open(array(
+            			CM5_Model_Membership::open(array(
             				'username' => $this->user->username,
                     		'groupname' => $group)
             			)->delete();            			

@@ -43,10 +43,10 @@ class CM5_Module_Revision extends DB_Record
 	);
 }
 
-Page::one_to_many('CM5_Module_Revision', 'page', 'revisions');
-User::one_to_many('CM5_Module_Revision', 'user', 'revisions');
+CM5_Model_Page::one_to_many('CM5_Module_Revision', 'page', 'revisions');
+CM5_Model_User::one_to_many('CM5_Module_Revision', 'user', 'revisions');
 
-Page::events()->connect('op.pre.save', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.save', create_function('$e', '
 	$p = $e->arguments["record"];
 	$old_values = $e->arguments["old_values"];
 		

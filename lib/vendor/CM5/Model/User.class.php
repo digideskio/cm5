@@ -21,7 +21,7 @@
 
 
 /**
- * Model for User objects. 
+ * Model for users table. 
  * @author sque@0x0lab.org
  *
  * @property string $username
@@ -31,7 +31,7 @@
  * @property array $groups
  * @property array $articles
  */
-class User extends DB_Record
+class CM5_Model_User extends DB_Record
 {
     static public function get_table()
     {   
@@ -45,17 +45,17 @@ class User extends DB_Record
         );
 }
 
-User::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_User::events()->connect('op.post.create', create_function('$e', '
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->notice("User \"{$u->username}\" was created.");
 '));
 
-User::events()->connect('op.pre.delete', create_function('$e',
+CM5_Model_User::events()->connect('op.pre.delete', create_function('$e',
 '
     $u = $e->arguments["record"];
-    Membership::raw_query("Membership")
+    CM5_Model_Membership::raw_query("CM5_Model_Membership")
         ->delete()
         ->where("username = ?")
         ->execute($u->username);
@@ -63,7 +63,7 @@ User::events()->connect('op.pre.delete', create_function('$e',
     CM5_Logger::get_instance()->notice("User \"{$u->username}\" was deleted.");
 '));
 
-User::events()->connect('op.pre.save', create_function('$e', '
+CM5_Model_User::events()->connect('op.pre.save', create_function('$e', '
     // Update last modified
     $u = $e->arguments["record"];
    
@@ -75,6 +75,6 @@ User::events()->connect('op.pre.save', create_function('$e', '
     	CM5_Logger::get_instance()->notice("User \"{$u->username}\" was " . ($u->enabled?"enabled":"disabled") . ".");
 '));
 
-User::one_to_many('Page', 'user', 'articles');
-Group::many_to_many('User', 'Membership', 'groups', 'users');
+CM5_Model_User::one_to_many('CM5_Model_Page', 'user', 'articles');
+CM5_Model_Group::many_to_many('CM5_Model_User', 'CM5_Model_Membership', 'groups', 'users');
 ?>

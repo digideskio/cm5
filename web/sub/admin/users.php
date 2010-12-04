@@ -41,7 +41,7 @@ Stupid::chain_reaction();
 
 function user_myprofile()
 {
-    $user = User::open(Authn_Realm::get_identity()->id());
+    $user = CM5_Model_User::open(Authn_Realm::get_identity()->id());
         
     Layout::open('admin')->activate();
 
@@ -51,7 +51,7 @@ function user_myprofile()
 
 function edit_user($username)
 {
-    if (!($u = User::open($username)))
+    if (!($u = CM5_Model_User::open($username)))
         not_found();
         
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | User: {$u->username}";
@@ -63,7 +63,7 @@ function edit_user($username)
 
 function delete_user($username)
 {
-    if (!($u = User::open($username)))
+    if (!($u = CM5_Model_User::open($username)))
         not_found();
         
     Layout::open('admin')->activate();
@@ -100,7 +100,7 @@ function show_users()
 {
     Layout::open('admin')->activate();
 
-    $grid = new UI_UsersGrid(User::open_all());
+    $grid = new UI_UsersGrid(CM5_Model_User::open_all());
     etag('div',
         $grid->render(),
         UrlFactory::craft('user.create')->anchor('Create user')
@@ -108,4 +108,3 @@ function show_users()
             ->add_class('add')
     );
 }
-?>

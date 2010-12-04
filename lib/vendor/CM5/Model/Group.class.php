@@ -21,7 +21,17 @@
  *      Sque - initial API and implementation
  */
 
-class Group extends DB_Record
+/**
+ * Model class for groups table.
+ * 
+ * @author sque@0x0lab.org
+ *
+ * @property string $groupname
+ * 
+ * Relations:
+ * @property array $users
+ */
+class CM5_Model_Group extends DB_Record
 {
     static public function get_table()
     {   
@@ -32,5 +42,3 @@ class Group extends DB_Record
         'groupname' => array('pk' => true)
     );
 }
-
-?>

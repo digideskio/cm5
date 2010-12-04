@@ -21,7 +21,20 @@
  *      Sque - initial API and implementation
  */
 
-class Log extends DB_Record
+/**
+ * Model class for log table.
+ * 
+ * @author sque@0x0lab.org
+ *
+ * @property integer $id
+ * @property DateTime $timestamp
+ * @property string $message
+ * @property string $priority
+ * @property string $priorityName
+ * @property string $user
+ * @property string $ip 
+ */
+class CM5_Model_Log extends DB_Record
 {
     static public function get_table()
     {   
@@ -40,10 +53,8 @@ class Log extends DB_Record
     
     static public function reset()
     {
-        Log::raw_query()->delete()->execute();
+        CM5_Model_Log::raw_query()->delete()->execute();
         CM5_Logger::get_instance()->warn("Log was reseted.");
     }
 }
 
-
-?>
