@@ -56,7 +56,7 @@ class UI_CreatePage extends Output_HTML_Form
     public function on_valid($values)
     {   
         $values['parent_id'] = $this->parent_id;
-        $p = Page::create($values);
+        $p = CM5_Model_Page::create($values);
         UrlFactory::craft('page.edit', $p->id)->redirect();
     }
 };

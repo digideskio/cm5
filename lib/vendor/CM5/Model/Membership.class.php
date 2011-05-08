@@ -44,18 +44,18 @@ class CM5_Model_Membership extends DB_Record
     );
 }
 
-CM5_Model_Membership::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Membership::events()->connect('op.post.create', function($e) {
     // Update last modified
     $m = $e->arguments["record"];
    
     // Log event
     CM5_Logger::get_instance()->notice("User \"{$m->username}\" joined group \"{$m->groupname}\".");
-'));
+});
 
-CM5_Model_Membership::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Membership::events()->connect('op.pre.delete', function($e) {
     // Update last modified
     $m = $e->arguments["record"];
    
     // Log event
     CM5_Logger::get_instance()->notice("User \"{$m->username}\" parted group \"{$m->groupname}\".");
-'));
+});

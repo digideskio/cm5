@@ -115,25 +115,25 @@ a:hover {
     height: auto;
 }
 
-#page_editor dt.type-dropbox{
+#page_editor li[data-name=status]{
     display: block;
     position: absolute;
     top: 25px;
     right: 90px;
 }
 
-#page_editor dt a.view{
+#page_editor li a.view{
     position: absolute;
     top: 25px;
     right: 25px;
 }
 
 
-#page_editor dt.type-dropbox label{
+#page_editor li[data-name=status] label{
     display: none;
 }
 
-#page_editor dt{
+#page_editor li{
     margin-bottom: 10px;
 }
 
@@ -371,11 +371,17 @@ a:hover {
     font-size: 0.9em;
 }
 
-.ui-form dt.type-radio{
+.ui-form ul.fields {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+.ui-form li.type-radio{
     margin-bottom: 10px;
 }
 
-.ui-form dt.type-radio span{
+.ui-form li.type-radio span{
     display: block;
 }
 

@@ -31,14 +31,14 @@ class CM5_Module_Revision extends DB_Record
 	
 	public static $fields = array(
 		'id' => array('ai' => true, 'pk' => true),
-		'page_id' => array('fk' => 'Page'),
+		'page_id' => array('fk' => 'CM5_Model_Page'),
 		'new_title',
 		'old_title',
 		'new_slug',
 		'old_slug',
 		'new_body',
 		'old_body',
-		'author' => array('fk' => 'User'),
+		'author' => array('fk' => 'CM5_Model_User'),
 		'created_at' => array('type' => 'datetime')
 	);
 }

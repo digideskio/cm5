@@ -21,9 +21,18 @@
  *      Sque - initial API and implementation
  */
 
-class CM5_Form_EditPage extends Output_HTML_Form
+/**
+ * Form for editing an existing page.
+ * @author sque
+ *
+ */
+class CM5_Form_EditPage extends CM5_Form_Event
 {
-    public function __construct($page)
+	/**
+	 * Construct a new editing form
+	 * @param CM5_Model_Page $page The page that will be edited
+	 */
+    public function __construct(CM5_Model_Page $page)
     {
         $this->page = $page;
         
@@ -45,13 +54,13 @@ class CM5_Form_EditPage extends Output_HTML_Form
 			    'htmlattribs' => array('id' => 'bodyeditor'))
         );
         
-        if ($page->system)
-        {
+        if ($page->system) {
             unset($fields['slug'], $fields['title'], $fields['status']);
             $title = "Edit \"{$page->title}\" page";
         }
         
-        parent::__construct($fields,
+        parent::__construct(
+        	$fields,
             array('title' => $title,
                 'css' => array('ui-form', 'ui-page-form'),
 		        'buttons' => array(
@@ -69,19 +78,23 @@ class CM5_Form_EditPage extends Output_HTML_Form
     	// Fix action
     	$div->childs[0]->attr('action', UrlFactory::craft('page.editform', $this->page->id));
     	
-        if ($this->page->system)
-            return;
+        if ($this->page->system) {
+        	parent::on_postrender($div);
+        	return;
+        }
+            
         $fullurl = explode('/', (string)UrlFactory::craft_fqn('page.view', $this->page));
         $url = implode('/', array_slice($fullurl, 0, -1)) . '/';
         $dt = $div->childs[0]->childs[3];
         $dt->childs[2] = $dt->childs[1];
         $dt->childs[1] = $url;
+        
+        parent::on_postrender($div);
     }
 
     public function on_valid($values)
     {
-        foreach($values as $name => $v)
-        {
+        foreach($values as $name => $v) {
             if (in_array($name, array('preview')))
                 continue;
             $this->page->{$name} = $v;

@@ -23,7 +23,7 @@
 
 class CM5_Module_Revisions extends CM5_Module
 {
-     //! The name of the module
+    //! The name of the module
     public function info()
     {
         return array(
@@ -33,11 +33,22 @@ class CM5_Module_Revisions extends CM5_Module
         );
     }
     
+    public function enhance_edit_form(Event $e)
+    {
+    	$div = $e->filtered_value;
+    	$form = $e->arguments['form'];
+    	$page = $form->page;
+    	var_dump($page->revisions->all());
+    	$div->childs[0]->childs[3]->append();
+    }
+    
     //! Initialize module
     public function init()
     {
     	// Adding model add hooks also
     	require dirname(__FILE__) . '/lib/Revision.class.php';
+    	
+    	CM5_Form_EditPage::events()->connect('post-render', array($this, 'enhance_edit_form'));
     }
     
     public function on_enable()

@@ -214,7 +214,7 @@ class CM5_Model_Upload extends DB_Record
 }
 
 CM5_Model_Upload::$thumb_cache = new Cache_File(GConfig::get_instance()->site->cache_folder, 'thumb_');
-CM5_Model_Upload::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
 
     $r = $e->arguments["record"];
 
@@ -224,31 +224,31 @@ CM5_Model_Upload::events()->connect('op.pre.delete', create_function('$e', '
     
     // delete file from file system
     unlink(GConfig::get_instance()->site->upload_folder . "/" . $r->store_file);
-'));
+});
 
-CM5_Model_Upload::events()->connect('op.pre.create', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.pre.create', function($e) {
     if (!isset($e->filtered_value["uploader"]))
         $e->filtered_value["uploader"] = Authn_Realm::get_identity()->id();
-'));
+});
 
-CM5_Model_Upload::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.post.create', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->info("File \"{$u->filename}\" was uploaded.");
-'));
+});
 
-CM5_Model_Upload::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->notice("File \"{$u->filename}\" was deleted.");
-'));
+});
 
-CM5_Model_Upload::events()->connect('op.post.save', create_function('$e', '
+CM5_Model_Upload::events()->connect('op.post.save', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->info("File \"{$u->filename}\" was changed.");
-'));
-?>
+});
+

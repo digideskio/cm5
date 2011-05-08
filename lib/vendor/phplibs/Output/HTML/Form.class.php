@@ -706,5 +706,3 @@ class Output_HTML_Form
         $this->options['hideform'] = true;
     }
 }
-
-?>

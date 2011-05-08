@@ -92,7 +92,7 @@ class CM5_Model_Page extends DB_Record
     }
 }
 
-CM5_Model_Page::events()->connect('op.pre.save', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.save', function($e) {
     // Update last modified
     $r = $e->arguments["record"];
     $r->lastmodified = new DateTime();
@@ -102,9 +102,9 @@ CM5_Model_Page::events()->connect('op.pre.save', create_function('$e', '
     
     // Log event
     CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
-'));
+});
 
-CM5_Model_Page::events()->connect('op.pre.create', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.create', function($e) {
     if (!isset($e->filtered_value["created"]))
         $e->filtered_value["created"] = new DateTime();
     if (!isset($e->filtered_value["lastmodified"]))
@@ -113,9 +113,9 @@ CM5_Model_Page::events()->connect('op.pre.create', create_function('$e', '
     if (!isset($e->filtered_value["author"]))
         $e->filtered_value["author"] = Authn_Realm::get_identity()->id();
 
-'));
+});
 
-CM5_Model_Page::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_Page::events()->connect('op.post.create', function($e) {
     $r = $e->arguments["record"];
 
     // Log event
@@ -124,16 +124,16 @@ CM5_Model_Page::events()->connect('op.post.create', create_function('$e', '
     // Update uri
     $r->uri = $r->full_path();
     $r->save();
-'));
+});
 
-CM5_Model_Page::events()->connect('op.pre.delete', create_function('$e', '
+CM5_Model_Page::events()->connect('op.pre.delete', function($e) {
     if ($e->arguments["record"]->system)
         $e->filtered_value = true;
 
     $r = $e->arguments["record"];
         
     CM5_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
-'));
+});
 
 CM5_Model_Page::one_to_many('CM5_Model_Page', 'parent', 'subpages');
-?>
+

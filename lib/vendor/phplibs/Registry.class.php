@@ -68,4 +68,3 @@ class Registry extends ArrayObject
         self::get_instance()->offsetSet($name, $value);
     }
 };
-?>

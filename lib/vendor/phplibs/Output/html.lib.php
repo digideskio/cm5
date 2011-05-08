@@ -21,6 +21,10 @@
 
 
 //! Create a new tag
+/**
+ * @return Output_HTMLTag
+ * Enter description here ...
+ */
 function tag()
 {	
     $args = func_get_args();
@@ -31,6 +35,10 @@ function tag()
 }
 
 //! Create a tag and echo it
+/**
+ * * @return Output_HTMLTag
+ * Enter description here ...
+ */
 function etag()
 {	
     $args = func_get_args();

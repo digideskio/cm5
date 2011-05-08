@@ -94,7 +94,7 @@ function page_editor_form($id)
         not_found();
 
     header('Content-type: text/html; charset=UTF-8');
-	$frm = new CM5_Form_EditPage($p);
+	$frm = new CM5_Form_EditPage2($p);
     echo $frm->render();
 }
 

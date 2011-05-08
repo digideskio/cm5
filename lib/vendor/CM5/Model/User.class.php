@@ -45,15 +45,14 @@ class CM5_Model_User extends DB_Record
         );
 }
 
-CM5_Model_User::events()->connect('op.post.create', create_function('$e', '
+CM5_Model_User::events()->connect('op.post.create', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
     CM5_Logger::get_instance()->notice("User \"{$u->username}\" was created.");
-'));
+});
 
-CM5_Model_User::events()->connect('op.pre.delete', create_function('$e',
-'
+CM5_Model_User::events()->connect('op.pre.delete', function($e) {
     $u = $e->arguments["record"];
     CM5_Model_Membership::raw_query("CM5_Model_Membership")
         ->delete()
@@ -61,9 +60,9 @@ CM5_Model_User::events()->connect('op.pre.delete', create_function('$e',
         ->execute($u->username);
         
     CM5_Logger::get_instance()->notice("User \"{$u->username}\" was deleted.");
-'));
+});
 
-CM5_Model_User::events()->connect('op.pre.save', create_function('$e', '
+CM5_Model_User::events()->connect('op.pre.save', function($e) {
     // Update last modified
     $u = $e->arguments["record"];
    
@@ -73,8 +72,8 @@ CM5_Model_User::events()->connect('op.pre.save', create_function('$e', '
     if ((in_array("enabled", array_keys($e->arguments["old_values"])))
     		&& ($e->arguments["old_values"]["enabled"] != $u->enabled))
     	CM5_Logger::get_instance()->notice("User \"{$u->username}\" was " . ($u->enabled?"enabled":"disabled") . ".");
-'));
+});
 
 CM5_Model_User::one_to_many('CM5_Model_Page', 'user', 'articles');
 CM5_Model_Group::many_to_many('CM5_Model_User', 'CM5_Model_Membership', 'groups', 'users');
-?>
+
