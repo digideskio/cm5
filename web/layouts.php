@@ -21,7 +21,7 @@
 
 
 // Enable XHTML Mode
-Output_HTMLTag::$default_render_mode = 'xhtml';
+Output_HTMLTag::$default_render_mode = 'html';
 
 Layout::assign('admin', 'Layout_Admin');
 Layout::assign('failover', 'Layout_FailOver');
@@ -31,4 +31,3 @@ function not_found()
 {
     require_once dirname(__FILE__) . '/not_found.php';
 }
-?>

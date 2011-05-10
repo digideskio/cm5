@@ -1,5 +1,8 @@
 <?php
 
+require_once(__DIR__ . '/Field/Input.class.php');
+require_once(__DIR__ . '/Field/Select.class.php');
+
 /**
  * HTML Rendered for forms.
  */
@@ -17,6 +20,7 @@ class Form_Html extends Form
      * 	- action (default: ''): The url that form will post to.
      *  - enctype : The encoding type of this form.
      *  - method : post,
+     *  - nobrowservalidation: (default false) : Skip browser auto validation. 
      *  - buttons : An associative array with buttons of this form.
      *    Each entry will support:
      *    	- label (default: button id): The display of this button
@@ -32,7 +36,8 @@ class Form_Html extends Form
 		$this->options->extend($options,
 			array(
 				'action' => '',
-				'enctype' => self::ENCTYPE_URLENCODED,
+				'enctype' => self::ENCTYPE_MULTIPART,
+				'nobrowservalidation' => false,
 				'buttons' => array(
 					'submit' => array('label' => 'Submit'),
 					'reset' => array('label' => 'Reset', 'type' => 'reset')
@@ -61,9 +66,14 @@ class Form_Html extends Form
 			
 		$main_el = tag('div', $this->options['attribs'],
 			tag('span class="title"', $this->options['title']));
-		tag('form', array('action' => $this->options['action'], 'method' => $this->options['method']))
+		$form_el = tag('form', array(
+				'action' => $this->options['action'],
+				'method' => $this->options['method'],
+				'enctype' => $this->options['enctype']))
 			->appendTo($main_el)->push_parent();
-		
+		if ($this->options['nobrowservalidation'])
+			$form_el->attr('novalidate', 'novalidate');
+			
 		// Render fields
 		etag('ul class="fields"')->push_parent();
 		foreach($this->fields as $field) {
@@ -75,8 +85,8 @@ class Form_Html extends Form
 			Output_HTMLTag::get_current_parent()->append($field->render());
 			
 			// Add extra fields
-			if (($field->isValid() === false) && ($field->options->has('onerror')))
-				etag('span class="ui-form-error"', $field->options['onerror']);
+			if (($field->isValid() === false) && ($field->getError()))
+				etag('span class="ui-form-error"', (string)$field->getError());
 			else if ($field->options->has('hint'))
 				etag('span class="ui-form-hint"', $field->options['hint']);
 			Output_HTMLTag::pop_parent();

@@ -8,10 +8,12 @@ class Form_Validator
 
 	/**
 	 * Always return invalid.
+	 * @param string $error The error message in case of failure.
 	 */
-	public static function invalid()
+	public static function invalid($error = 'This field is invalid.')
 	{
-		return function($field){
+		return function($value, & $result_error) use($error){
+			$result_error = $error;
 			return false;
 		};
 	}
@@ -21,7 +23,7 @@ class Form_Validator
 	 */
 	public static function valid()
 	{
-		return function($field){
+		return function($value){
 			return true;
 		};
 	}
@@ -38,9 +40,9 @@ class Form_Validator
 		if (empty($validators))
 			return self::invalid();
 		
-		return function($field, & $error) use($validators) {
-			foreach($validators as $v)
-				if (!$v($field, $error))
+		return function($value, & $error, $field) use($validators) {
+			foreach($validators as $v)				
+				if (!$v($value, $error, $field))
 					return false;
 			return true;
 		};
@@ -58,10 +60,13 @@ class Form_Validator
 		if (empty($validators))
 			return self::invalid();
 		
-		return function($field) use($validators) {
-			foreach($validators as $v)
-				if ($v($field))
+		return function($value, & $error, $field) use($validators) {
+			$last_error = 0;
+			foreach($validators as $v) {
+				if ($v($value, $last_error, $field))
 					return true;
+			}
+			$error = $last_error;
 			return false;
 		};
 	}
@@ -69,79 +74,202 @@ class Form_Validator
 	/**
 	 * Return the opposite result of another validator.
 	 * @param callable $validator The validator that the result will be swifted.
+	 * @param string $error_override If not null, this message will override original
+	 *  validators error message.
 	 */
-	public static function boolNot($validator)
+	public static function boolNot($validator, $error_override = null)
 	{
-		return function($field) use($validator) {
-			return !$validator($field);
+		return function($value, & $result_error, $field) use($validator, $error_override) {
+			if ($error_override === null)
+				return !$validator($value, $result_error, $field);
+
+			if ($validator($value)) {
+				$result_error = $error_override;
+				return false;
+			}
+			return true;
 		};
 	}
 	
 	/**
 	 * Validate based on a regular expression
+	 * @param string $pattern The preg expression to test.
+	 * @param string $error The error message in case of failure.
 	 */
-	public static function regCheck($pattern)
+	public static function matchRegex($pattern, $error = "Does not match field criteria.")
 	{
-		return function($field) use($pattern) {
-			return (preg_match($pattern, $field->getValue()) > 0);
+		return function($value, & $result_error) use($pattern, $error) {
+			if (preg_match($pattern, $value) > 0)
+				return true;
+			$result_error = $error;
+			return false;
 		};		
 	}
 	
 	/**
-	 * Valid only if in the limits of minimum and maximum
+	 * Valid only if strlength is in the limits of minimum and maximum
 	 * @param $min The minimum size that value must be equal or greater.
 	 * 	If you give NULL no checks will be done for minimum size.
 	 * @param $max The maximum size that value must be equal or greater.
 	 * 	If you give NULL no checks will be done for maximum size.
+	 * @param string $error The error message in case of failure.
 	 */
-	public static function strSize($min, $max)
+	public static function isStrlenBetween($min, $max, $error = "String has exceeded acceptable limits.")
 	{
-		return function($field) use($min, $max) {
-			$size = strlen($field->getValue());
+		return function($value, & $result_code) use($min, $max, $error) {
+			$size = strlen($value);
 			if ($min !== null)
-				if ($size < $min)
+				if ($size < $min) {
+					$result_code = $error;
 					return false;
+				}
 			if ($max !== null)
-				if ($size > $max)
-					return false;
+				if ($size > $max) {
+					$result_code = $error;
+					return false;					
+				}
 			return true;
+		};
+	}
+	
+	/**
+	 * Valid only if number is in the limits of minimum and maximum
+	 * @param $min The minimum must be equal or greater.
+	 * 	If you give NULL no checks will be done for lower bound.
+	 * @param $max The maximum size that value must be equal or greater.
+	 * 	If you give NULL no checks will be done for uper bound.
+	 * @param string $error The error message in case of failure.
+	 */
+	public static function isNumberBetween($min, $max, $error = "Number has exceeded acceptable values.")
+	{
+		return function($value, & $result_code) use($min, $max, $error) {
+			
+			if ($min !== null)
+				if ($value < $min) {
+					$result_code = $error;
+					return false;
+				}
+			if ($max !== null)
+				if ($value > $max) {
+					$result_code = $error;
+					return false;					
+				}
+			return true;
+		};
+	}
+	
+	/**
+	 * Check if a number is properly quantized in steps
+	 */
+	public static function isNumberQuantized($step, $base = null, $error = "Only certain numbers are allowed.")
+	{
+		return function($value, & $result_code) use($step, $base, $error) {			
+			
+			if ($base != null)
+				$value -= $base;
+			if ($result = (fmod($value, $step) == 0))
+				return true;
+			$result_code = $error;
+			return false;			
 		};
 	}
 		
 	/**
 	 * Validate based on equallity with another subject.
 	 * @param mixed $subject the subject to be compared at.
+	 * @param string $error The error message in case of failure.
 	 * @param boolean $strict Flag if it will use strict comparison.
 	 */
-	public static function isEqual($subject, $strict = false)
+	public static function isEqual($subject, $error = "Does not match field criteria.", $strict = false)
 	{
-		return function($field) use($subject, $strict) {
-			if ($strict)
-				return $field->getValue() === $subject;
-			else
-				return $field->getValue() == $subject;
+		return function($value, & $result_error) use($subject, $error, $strict) {
+			
+			$result = ($strict) ? $value === $subject : $value == $subject;
+			
+			if (!$result)
+				$result_error = $error;
+			return $result;
 		};
 	}
 	
 	/**
-	 * Valid only if field is empty.	 
+	 * Validate only if this is a number
+	 * @param string $error The error message in case of failure.
 	 */
-	public static function isEmpty()
+	public static function isNumber($error = "This is not a number.")
 	{
-		return function($field) {
-			$value = $field->getValue();
-			return empty($value);
+		return function($value, & $result_error) use($subject, $error) {
+			if (!is_numeric($value)) {
+				$result_error = $error;
+				return false;
+			}
+			return true;
 		};
 	}
 	
 	/**
-	 * Valid only if field is not empty.	 
+	 * Valid only if field is empty.
+	 * @param string $error The error message in case of failure.
 	 */
-	public static function isNotEmpty()
+	public static function isEmpty($error = "This field must be empty.")
 	{
-		return function($field) {
-			$value = $field->getValue();
-			return ! empty($value);
+		return function($value, & $result_error) use($error){
+			if (!empty($value)) {
+				$result_error = $error;
+				return false;
+			}
+			return true;
+		};
+	}
+	
+	/**
+	 * Valid only if it is a valid url.
+	 * @param string $error The error message in case of failure.
+	 */
+	public static function isUrl($error = "This is not valid url address.")
+	{
+		return self::matchRegex('#((http|https|ftp)://([\w-\d]+\.)+[\w-\d]+)(/[\w~,;\-\./?%&+\#=]*)?#', $error);		
+	}
+	
+	/**
+	 * Valid only if it is a valid email.
+	 * @param string $error The error message in case of failure.
+	 */
+	public static function isEmail($error = "This is not valid email address.")
+	{
+		return self::matchRegex('/([a-zA-Z0-9\-\.])+@([a-zA-Z0-9\-\.])+/', $error);		
+	}
+	
+	
+	/**
+	 * Valid only if field is not empty.
+	 * @param $error The error message to display on failure.
+	 */
+	public static function isNotEmpty($error = "This field is required.")
+	{
+		return function($value, & $result_error) use ($error){			
+			if (empty($value)) {
+				$result_error = $error;
+				return false;
+			}
+			return true;
+		};
+	}
+	
+	/**
+	 * Validate all elements of in array of value
+	 * @param callable $validator The validator to be used to validate each element
+	 */
+	public static function eachElement($validator)
+	{
+		return function($values, & $result_error, $field) use($validator) {
+			if (!is_array($values))
+				return false;
+			foreach($values as $value)
+				if (!$validator($value, $result_error, $field))
+					return false;
+			return true;
+			exit;
 		};
 	}
 	

@@ -2,9 +2,11 @@
 
 require_once(__DIR__ . '/./Html.class.php');
 
-class Form_Field_Select extends Form_Field_Html
+class Form_Field_Select_Html extends Form_Field_Html {}
+
+class Form_Field_Select extends Form_Field_Container
 {
-	public function __construct($name, $options) 
+	public function __construct($name, $options = array()) 
 	{
 		parent::__construct($name, new Options($options, array(
 			'attribs' => array(),
@@ -13,7 +15,7 @@ class Form_Field_Select extends Form_Field_Html
 			array('optionlist')
 		));
 
-		$this->setValidator(
+		$this->addValidator(
 			Form_Validator::inArray(array_keys($this->options['optionlist'])));
 	}
 	
@@ -30,4 +32,8 @@ class Form_Field_Select extends Form_Field_Html
 		}
 		return $select;
 	}
+}
+
+function field_select($name, $options = array()) {
+	return new Form_Field_Select($name, $options);
 }
