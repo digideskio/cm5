@@ -337,5 +337,5 @@ function field_tel($name, $options = array()) {
  * @return Form_Field_Input
  */
 function field_file($name, $options = array()) {
-	return new Form_Field_Input($name, array_merge($options, array('type' => 'file')));
+	return new Form_Field_Input($name, array_merge($options, array('type' => 'file', 'enctype' => Form_Field_Interface::ENCTYPE_MULTIPART)));
 }

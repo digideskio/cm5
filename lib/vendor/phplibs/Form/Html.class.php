@@ -2,23 +2,23 @@
 
 require_once(__DIR__ . '/Field/Input.class.php');
 require_once(__DIR__ . '/Field/Select.class.php');
+require_once(__DIR__ . '/FieldSet.class.php');
 
 /**
  * HTML Rendered for forms.
  */
 class Form_Html extends Form
 {
-	//! Encoding type for urlencoded
-    const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
-    
-    //! Encoding type for multipart (files)
-    const ENCTYPE_MULTIPART  = 'multipart/form-data';
+	//! Encoding type string for multipart (files)
+    const ENCTYPE_STR_MULTIPART  = 'multipart/form-data';
+	
+	//! Encoding type string for urlencoded
+    const ENCTYPE_STR_URLENCODED = 'application/x-www-form-urlencoded';
     
     /**
      * Construct a new HTML Rendable form
      * @param array $options Acceptable options are
      * 	- action (default: ''): The url that form will post to.
-     *  - enctype : The encoding type of this form.
      *  - method : post,
      *  - nobrowservalidation: (default false) : Skip browser auto validation. 
      *  - buttons : An associative array with buttons of this form.
@@ -36,7 +36,6 @@ class Form_Html extends Form
 		$this->options->extend($options,
 			array(
 				'action' => '',
-				'enctype' => self::ENCTYPE_MULTIPART,
 				'nobrowservalidation' => false,
 				'buttons' => array(
 					'submit' => array('label' => 'Submit'),
@@ -69,14 +68,14 @@ class Form_Html extends Form
 		$form_el = tag('form', array(
 				'action' => $this->options['action'],
 				'method' => $this->options['method'],
-				'enctype' => $this->options['enctype']))
+				'enctype' => $this->getEncodingTypeString()))
 			->appendTo($main_el)->push_parent();
 		if ($this->options['nobrowservalidation'])
 			$form_el->attr('novalidate', 'novalidate');
 			
 		// Render fields
 		etag('ul class="fields"')->push_parent();
-		foreach($this->fields as $field) {
+		$this->walkFields(function($field){
 			etag('li')->attr('data-name', $field->getName())->push_parent();
 			
 			etag('label', $field->options['label']);
@@ -90,7 +89,7 @@ class Form_Html extends Form
 			else if ($field->options->has('hint'))
 				etag('span class="ui-form-hint"', $field->options['hint']);
 			Output_HTMLTag::pop_parent();
-		}
+		});
 		Output_HTMLTag::pop_parent();
 		
 		// Render buttons
@@ -106,5 +105,16 @@ class Form_Html extends Form
 		
 		Output_HTMLTag::pop_parent(2);
 		return $main_el;
+	}
+	
+	/**
+	 * Get the encoding type string
+	 */
+	public function getEncodingTypeString()
+	{
+		if ($this->getEncodingType() == Form_Field_Interface::ENCTYPE_MULTIPART)
+			return self::ENCTYPE_STR_MULTIPART;
+		else
+			return self::ENCTYPE_STR_URLENCODED;
 	}
 }

@@ -7,7 +7,7 @@ require_once(__DIR__ . '/Validator.class.php');
  * This is a full working without the rendering part.
  * @note Chainable
  */
-class Form_Field
+class Form_Field implements Form_Field_Interface
 {
 	/**
 	 * The name of this field
@@ -16,7 +16,7 @@ class Form_Field
 	private $name;
 	
 	/**
-	 * Array with all validators for this field
+	 * Array with all validators for this field.
 	 * @var array
 	 */
 	private $validators = array();
@@ -28,7 +28,7 @@ class Form_Field
 	private $valid = null;
 	
 	/**
-	 * In case of unsuccessfull validatio, this will hold the error message
+	 * In case of unsuccessfull validation, this will hold the error message.
 	 * @var string
 	 */
 	private $error = null;
@@ -52,6 +52,8 @@ class Form_Field
 	 * 	- label (default: $name) : The label of this field.
 	 * 	- value (default: null) : The default value of this field.
 	 * 	- validator (default: isNotEmpty) : A callable object to validate this field.
+	 *  - enctype (default : Form_Field_Interface::ENCTYPE_AUTO)
+	 *  	The desired encoding type tht form must use.
 	 */
 	public function __construct($name, $options = array())
 	{
@@ -60,30 +62,12 @@ class Form_Field
 		$this->options = new Options($options, array(
 			'value' => null,
 			'label' => $this->name,
-			'validator' => Form_Validator::isNotEmpty()
+			'validator' => Form_Validator::isNotEmpty(),
+			'enctype' => Form_Field_Interface::ENCTYPE_AUTO
 		));
 		
 		$this->value = $this->options['value'];
 		$this->addValidator($this->options['validator'], 'default');
-	}
-	
-	/**
-	 * Get the value of an option.
-	 * @param string $name The key name of option.
-	 */
-	public function getOption($name)
-	{
-		return $this->options->get($name);
-	}
-	
-	/**
-	 * Set the value of an option.
-	 * @param string $name The key name of option.
-	 * @param string $value The value of the option.
-	 */
-	public function setOption($name, $value)
-	{
-		return $this->options->set($name);
 	}
 	
 	/**
@@ -204,6 +188,17 @@ class Form_Field
 	{
 		$this->error = $error;
 		$this->valid = false;
+	}
+	
+	/**
+	 * Get the desired encoding type that form must have
+	 * to include this field.
+	 * (non-PHPdoc)
+	 * @see Form_Field_Interface::getEncodingType()
+	 */
+	public function getEncodingType()
+	{
+		return $this->options['enctype'];
 	}
 }
 
