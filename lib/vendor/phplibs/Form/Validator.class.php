@@ -257,6 +257,21 @@ class Form_Validator
 	}
 	
 	/**
+	 * Valid only if element is checked.
+	 * @param $error The error message to display on error.
+	 */
+	public static function isChecked($error = 'This field must be checked.')
+	{
+		return function ($value, & $result_error, $field) use ($error) {
+			if (!$field->isChecked()) {
+				$result_error = $error;
+				return false;
+			}
+			return true;
+		};
+	}
+	
+	/**
 	 * Validate all elements of in array of value
 	 * @param callable $validator The validator to be used to validate each element
 	 */

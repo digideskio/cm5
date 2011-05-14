@@ -1,7 +1,9 @@
 <?php
 
-
-class Form_Field_Dummy extends Form_Field
+/**
+ * 
+ */
+class Form_Field_Dummy extends Form_Field_Html
 {
 	public function __construct($name, $options = array())
 	{

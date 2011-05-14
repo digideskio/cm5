@@ -1,6 +1,8 @@
 <?php
 
 require_once(__DIR__ . '/Field/Input.class.php');
+require_once(__DIR__ . '/Field/Checkable.class.php');
+require_once(__DIR__ . '/Field/File.class.php');
 require_once(__DIR__ . '/Field/Select.class.php');
 require_once(__DIR__ . '/FieldSet.class.php');
 

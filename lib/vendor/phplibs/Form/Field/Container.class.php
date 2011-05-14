@@ -15,7 +15,7 @@ class Form_Field_Container
 	 * @note This function implements "chainable" concept.
 	 * @param Form_Field $obj
 	 */
-	public function addField(Form_Field_Interface $obj)
+	public function add(Form_Field_Interface $obj)
 	{	
 		// Unique name field
 		if (!isset($this->fields[$obj->getName()]))
@@ -33,11 +33,11 @@ class Form_Field_Container
 	 * @note This function implements "chainable" concept.
 	 * @param Form_Field $obj1
 	 */
-	public function addFields(Form_Field_Interface $obj1)
+	public function addMany(Form_Field_Interface $obj1)
 	{	
 		$args = func_get_args();
 		foreach($args as $o)
-			$this->addField($o);
+			$this->add($o);
 		return $this;
 	}
 	

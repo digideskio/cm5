@@ -25,10 +25,12 @@ class Form_Field_Input extends Form_Field_Html
 	 *  - max : Maximum value for "range", "date/time" and "number" type.
 	 *  - step : The step size used by "range", "date/time" and "number".
 	 *  - pattern : Defines the pattern as an HTML5 attribute and adds server-side validator.
+	 *  	Notice that / must be escaped because they are used as delimiters in server side validation. 
 	 *  - required : If true this field is marked as required and a server validator is added.
 	 *  - readonly : If you want the field to be readonly
 	 *  - rendervalue (Default : true any / false for password,file) : Setting true it will render the value in
 	 *  	the element, on false it will skip it.
+	 *  - checked : For boolean state controls like radio and checkbox
 	 *  .
 	 */
 	public function __construct($name, $options)
@@ -46,8 +48,10 @@ class Form_Field_Input extends Form_Field_Html
 			$this->options->add('min', 0);
 			$this->options->add('max', 100);
 		}
+		if (in_array($this->getType(), array('radio', 'checkbox')))
+			$this->setValue(($this->getValue() === null)?'on':$this->getValue());
 		if (in_array($this->getType(), array('range', 'number')))
-			$this->options['step'] = 1;
+			$this->options->add('step', 1);
 			
 		if (!$this->options->has('rendervalue'))
 			$this->options['rendervalue'] = in_array($this->getType(), array('password','file'))?false:true;
@@ -96,7 +100,7 @@ class Form_Field_Input extends Form_Field_Html
 		
 		// Add pattern matching
 		if ($this->options->has('pattern'))
-			$validator[] = Form_Validator::matchRegex('\\' . trim($this->options['pattern'], ' ^$') . '\\');
+			$validator[] = Form_Validator::matchRegex('/' . trim($this->options['pattern'], ' ^$') . '/');
 
 		// Add max length
 		if ($this->options->has('maxlength'))
@@ -115,12 +119,16 @@ class Form_Field_Input extends Form_Field_Html
 			
 		// Merge validators with required and multiple
 		if ($this->options->get('required')) {
+			$req_validator = (in_array($this->getType(), array('radio', 'checkbox')))
+				?Form_Validator::isChecked('This field is required.')
+				:Form_Validator::isNotEmpty('This field is required.');
+				
 			if ($this->options->get('multiple')) {
 				$validator = call_user_func_array(array('Form_Validator', 'boolAnd'), $validator);
 				$validator = Form_Validator::eachElement($validator);
-				$validator = Form_Validator::boolAnd(Form_Validator::isNotEmpty('This field is required.'), $validator);				
+				$validator = Form_Validator::boolAnd($req_validator, $validator);				
 			} else {
-				array_unshift($validator, Form_Validator::isNotEmpty('This field is required.'));			
+				array_unshift($validator, $req_validator);			
 				$validator = call_user_func_array(array('Form_Validator', 'boolAnd'), $validator);
 			}
 		} else {
@@ -141,6 +149,23 @@ class Form_Field_Input extends Form_Field_Html
 	}
 	
 	/**
+	 * Check if control is checked
+	 */
+	public function isChecked()
+	{
+		return $this->options->get('checked');
+	}
+	
+	/**
+	 * Check if control is checked
+	 * @param boolean $checked Set the checked state.
+	 */
+	public function setChecked($checked)
+	{
+		return $this->options['checked'] = (boolean)$checked;
+	}
+	
+	/**
 	 * Overwrite parsing phase and enchance it per case.
 	 * (non-PHPdoc)
 	 * @see Form_Field::onParse()
@@ -151,9 +176,6 @@ class Form_Field_Input extends Form_Field_Html
 		if ($this->options->get('readonly') || $this->options->get('disabled'))
 			return $this->getValue();
 		
-		if ($this->getType() == 'file')
-			var_dump($submitted[$this->getName()], $_FILES);
-			
 		// Explode values when multiple is set.
 		if ($this->options->get('multiple')) {
 			if ($this->getType() == 'email') {
@@ -167,10 +189,12 @@ class Form_Field_Input extends Form_Field_Html
 		}
 		
 		// On/Off state
-		if (in_array($this->getType(), array('checkbox', 'radio')))
-			return (isset($submitted[$this->getName()]) && ($submitted[$this->getName()] == 'on'))
-				?true
-				:false;
+		if (in_array($this->getType(), array('checkbox', 'radio'))) {
+			$this->options['checked'] = isset($submitted[$this->getName()]) 
+				&& ($submitted[$this->getName()] == $this->getValue());
+			var_dump($this->getValue(), $this->isChecked());
+			return $this->getValue();
+		}
 		
 		// Numbers only
 		if (in_array($this->getType(), array('number', 'range'))) {
@@ -192,9 +216,8 @@ class Form_Field_Input extends Form_Field_Html
 		
 		// Attribute based values
 		if (in_array($this->getType(), array('checkbox', 'radio'))) {
-			if ($value)
+			if ($this->isChecked())
 				$input_el->attr('checked', 'checked');
-			return null;
 		}
 		
 		// Multiple data
@@ -269,24 +292,6 @@ function field_password($name, $options = array()) {
 }
 
 /**
- * Create a Form_Field_Input with type="checkbox"
- * @see Form_Field_Input
- * @return Form_Field_Input
- */
-function field_checkbox($name, $options = array()) {
-	return new Form_Field_Input($name, array_merge($options, array('type' => 'checkbox')));
-}
-
-/**
- * Create a Form_Field_Input with type="radio"
- * @see Form_Field_Input
- * @return Form_Field_Input
- */
-function field_radio($name, $options = array()) {
-	return new Form_Field_Input($name, array_merge($options, array('type' => 'radio')));
-}
-
-/**
  * Create a Form_Field_Input with type="hidden"
  * @see Form_Field_Input
  * @return Form_Field_Input
@@ -329,13 +334,4 @@ function field_search($name, $options = array()) {
  */
 function field_tel($name, $options = array()) {
 	return new Form_Field_Input($name, array_merge($options, array('type' => 'tel')));
-}
-
-/**
- * Create a Form_Field_Input with type="file"
- * @see Form_Field_Input
- * @return Form_Field_Input
- */
-function field_file($name, $options = array()) {
-	return new Form_Field_Input($name, array_merge($options, array('type' => 'file', 'enctype' => Form_Field_Interface::ENCTYPE_MULTIPART)));
 }

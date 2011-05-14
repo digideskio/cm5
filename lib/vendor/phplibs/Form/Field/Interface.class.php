@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * Interface that all fields must follow.
+ */
 interface Form_Field_Interface 
 {
     //! Code when the selected encoding type "multipart"

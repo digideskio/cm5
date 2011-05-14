@@ -87,6 +87,14 @@ class Form extends Form_Field_Container
 	}
 	
 	/**
+	 * Check if this form is processed.
+	 */
+	public function isProcessed()
+	{		
+		return $this->result_code == self::RESULT_NOTPROCESSED;
+	}
+	
+	/**
 	 * Check if this form is valid.
 	 */
 	public function isValid()
