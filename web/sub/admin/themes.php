@@ -56,13 +56,13 @@ function theme_switch($theme_name)
         'Theme: ' . $theme->info_property('title'),
         'Are you sure you want to switch to this theme?',
         'Switch',
-        create_function('$name', '
+        function($name) {
             $config = GConfig::get_writable_copy();
             $config->site->theme = $name;
             GConfig::update($config);
             CM5_Core::get_instance()->invalidate_page_cache(null);
             UrlFactory::craft("theme.admin")->redirect();
-        '),
+        },
         array($theme_name),
         UrlFactory::craft("theme.admin")
     );
@@ -83,4 +83,3 @@ function theme_configure($theme_name)
     $frm = new UI_ModuleConfigure($theme);
     etag('div',  $frm->render());
 }
-?>

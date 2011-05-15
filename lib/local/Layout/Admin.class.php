@@ -34,12 +34,11 @@ class Layout_Admin extends Layout
     private function init_menu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));
-        $this->events()->connect('pre-flush', create_function('$event',
-        '
-            $layout = $event->arguments["layout"];
-            $layout->get_document()->get_body()->getElementById("main-menu")
+        $this->events()->connect('pre-flush', function($event) {
+            $layout = $event->arguments['layout'];
+            $layout->get_document()->get_body()->getElementById('main-menu')
                 ->append($layout->get_mainmenu()->render());
-        '));
+        });
 
         if (Authz::is_allowed('page', 'admin'))
             $this->mainmenu->create_link('Pages', url('/admin/editor'));
@@ -63,12 +62,11 @@ class Layout_Admin extends Layout
             return $this->submenu;
 
         $this->submenu = new SmartMenu(array('class' => 'menu submenu'));
-        $this->events()->connect('pre-flush', create_function('$event',
-        '
-            $layout = $event->arguments["layout"];
-            $layout->get_document()->get_body()->getElementById("content")
+        $this->events()->connect('pre-flush', function($event) {
+            $layout = $event->arguments['layout'];
+            $layout->get_document()->get_body()->getElementById('content')
                 ->prepend($layout->get_submenu()->render());
-        '));
+        });;
         
         return $this->submenu;
     }

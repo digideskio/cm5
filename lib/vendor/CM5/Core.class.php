@@ -86,9 +86,9 @@ class CM5_Core
         $this->cache = $cache;
         
         // Register page changes to invalidate cache
-        $invalidate_func = create_function('$e',
-        '   CM5_Core::get_instance()->invalidate_page_cache($e->arguments[\'record\']);   '
-        );
+        $invalidate_func = function($e) {
+        	CM5_Core::get_instance()->invalidate_page_cache($e->arguments['record']);
+        };
         CM5_Model_Page::events()->connect('op.post.save', $invalidate_func);
         CM5_Model_Page::events()->connect('op.post.delete', $invalidate_func);
         CM5_Model_Page::events()->connect('op.post.create', $invalidate_func);
@@ -114,7 +114,7 @@ class CM5_Core
         $this->modules_loaded = true;
         
         // Load modules
-        $modules_folder = dirname(__FILE__) . '/../../../modules';
+        $modules_folder = __DIR__ . '/../../../modules';
         if ($dh = opendir($modules_folder))
         {
             while (($file = readdir($dh)) !== false)
@@ -137,7 +137,7 @@ class CM5_Core
         $this->themes_loaded = true;
         
         // Load themes
-        $themes_folder = dirname(__FILE__) . '/../../../themes';
+        $themes_folder = __DIR__ . '/../../../themes';
         if ($dh = opendir($themes_folder))
         {
             while (($file = readdir($dh)) !== false)

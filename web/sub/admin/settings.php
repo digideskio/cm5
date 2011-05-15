@@ -33,5 +33,3 @@ function view_settings()
     $frm = new UI_SystemSettings();
     etag('div', $frm->render());
 }
-
-?>

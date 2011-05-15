@@ -98,4 +98,3 @@ function image_thumbnail_by_name($name)
     
     image_thumbnail_by_id($files[0]['id']);
 }
-?>

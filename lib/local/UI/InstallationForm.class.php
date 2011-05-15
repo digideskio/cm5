@@ -93,8 +93,8 @@ class UI_InstallationForm extends Output_HTML_Form
         $config->db->pass = $values['db-pass'];
         $config->db->schema = $values['db-schema'];
         $config->db->prefix = $values['db-prefix'];
-        $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
-        $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');
+        $config->site->upload_folder = realpath(__DIR__ . '/../../../uploads');
+        $config->site->cache_folder = realpath(__DIR__ . '/../../../cache');
         $config->site->theme = 'default';
         $config->site->title = $values['site-title'];
         

@@ -29,5 +29,5 @@ Layout::assign('login', 'Layout_Login');
 
 function not_found()
 {
-    require_once dirname(__FILE__) . '/not_found.php';
+    require_once __DIR__ . '/not_found.php';
 }

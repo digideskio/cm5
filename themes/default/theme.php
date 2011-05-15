@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-require_once(dirname(__FILE__) . '/layout.php');
+require_once(__DIR__ . '/layout.php');
 
 class DefaultTheme extends CM5_Theme
 {

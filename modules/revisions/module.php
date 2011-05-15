@@ -46,7 +46,7 @@ class CM5_Module_Revisions extends CM5_Module
     public function init()
     {
     	// Adding model add hooks also
-    	require dirname(__FILE__) . '/lib/Revision.class.php';
+    	require __DIR__ . '/lib/Revision.class.php';
     	
     	CM5_Form_EditPage::events()->connect('post-render', array($this, 'enhance_edit_form'));
     }
@@ -54,7 +54,7 @@ class CM5_Module_Revisions extends CM5_Module
     public function on_enable()
     {
 		$dbprefix = GConfig::get_instance()->db->prefix;
-		if (DB_Conn::get_link()->multi_query(require(dirname(__FILE__) . '/install/build-script.php')))
+		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/install/build-script.php')))
 			while (DB_Conn::get_link()->next_result());    	
     }
 }

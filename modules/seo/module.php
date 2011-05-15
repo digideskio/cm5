@@ -92,7 +92,7 @@ class CM5_Module_SEO extends CM5_Module
         {
             $event->filtered_value = true;
             $response->add_header('Content-Type: text/xml');
-            $response->document = file_get_contents(dirname(__FILE__) . '/sitemap.xsl');
+            $response->document = file_get_contents(__DIR__ . '/sitemap.xsl');
         }
         else if ($event->arguments['url'] == '/robots.txt')
         {

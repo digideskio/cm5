@@ -4,6 +4,8 @@ require_once(__DIR__ . '/../Field.class.php');
 
 /**
  * Base class for HTML rendable fields.
+ * Implement all basic tools to create full html
+ * compliant fields.
  */
 class Form_Field_Html extends Form_Field
 {
@@ -11,6 +13,54 @@ class Form_Field_Html extends Form_Field
 	public function __construct($name, $options)
 	{
 		parent::__construct($name, $options);
+		
+		// Add 'html' validator
+		if (!$this->isBaredFromValidation()) {
+			$this->addValidator($this->getConstraintsValidator(),
+				'html');
+		}
+	}
+	
+	/**
+	 * Get an array of the per specification constraints
+	 * that are supported by this element.
+	 * @note This should be overloaded by derivatives.
+	 * @return array Default array('required');
+	 */
+	public function getSupportedConstraints()
+	{
+		return array('required');
+	}
+	
+	/**
+	 * Generate a complete validator for these constraints
+	 */
+	public function getConstraintsValidator()
+	{
+		$constraints = array();
+		
+		foreach($this->getSupportedConstraints() as $const) {
+			if ($const == 'required') {
+				$constraints[] = Form_Validator::isNotEmpty(); 
+			} else if ($const == 'pattern') {
+				if ($this->options->has('pattern'))
+					$constraints[] = Form_Validator::matchRegex($this->options['pattern']);
+			} else if ($const == 'maxlength') {
+				if ($this->options->has('maxlength'))
+					$constraints[] = Form_Validator::isStrlenBetween(null, $this->options['maxlength']);
+			}
+		}
+		
+		// Cannot be 
+		if (empty($constraints))
+			$constraints = Form_Validator::valid();
+		else if (count($constraints) > 1)
+			$constraints = call_user_func_array(
+				array('Form_Validator', 'boolAnd'), $constraints);
+		else
+			$constraints = $constraints[0];
+			
+		return $constraints;		
 	}
 	
 	/**
@@ -136,5 +186,13 @@ class Form_Field_Html extends Form_Field
 	public function setRequired($state)
 	{
 		return $this->options->set('required', (boolean)$state);
+	}
+	
+	/**
+	 * Check if this element is bared from validation
+	 */
+	public function isBaredFromValidation()
+	{
+		return $this->isDisabled();
 	}
 }

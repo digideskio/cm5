@@ -34,8 +34,6 @@ class Form_Field_Textarea extends Form_Field_Html
 		if (!isset($this->options['attribs']['rows']))
 			$this->options['attribs']['rows'] = 8;
 			
-		if ($this->isRequired())
-			$this->addValidator(Form_Validator::isNotEmpty(), 'html');
 	}
 	
 	/**

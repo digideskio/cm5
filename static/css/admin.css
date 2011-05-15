@@ -344,8 +344,8 @@ a:hover {
     height: 5px;
 }
 
-/** ui-form **/
-.ui-form{
+/** .form **/
+.form{
     margin: 5px auto;
     width: 500px;
     background-color: #656565;
@@ -356,7 +356,7 @@ a:hover {
     border: 1px solid #898989;
 }
 
-.ui-form .title{
+.form .title{
     display: block;
     font-size: 1.2em;
     font-weight: bold;
@@ -365,27 +365,27 @@ a:hover {
     margin-bottom: 5px;
 }
 
-.ui-form label{
+.form label{
     display: block;
     margin: 5px 0px 2px 0px;
     font-size: 0.9em;
 }
 
-.ui-form ul.fields {
+.form ul.fields {
 	padding: 0px;
 	margin: 0px;
 	list-style-type: none;
 }
 
-.ui-form li.type-radio{
+.form li.type-radio{
     margin-bottom: 10px;
 }
 
-.ui-form li.type-radio span{
+.form li.type-radio span{
     display: block;
 }
 
-.ui-form input[type=text], .ui-form input[type=password], .ui-form textarea{
+.form input[type=text], .form input[type=password], .form textarea{
     border: 1px solid black;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -393,48 +393,49 @@ a:hover {
     padding: 2px;
     width: 98%;
     background-color: #dedede;
+    resize: vertical;
 }
 
-.ui-form input[type=text]{
+.form input[type=text]{
     height: 16px;
 }
 
-.ui-form input[type=text]:focus, .ui-form textarea{
+.form input[type=text]:focus, .form textarea{
     background-color: white;
     border: 1px solid #d20000;
 }
 
-.ui-form input.color{
+.form input.color{
     width: 6em;
 }
 
-.ui-form .buttons{
+.form .buttons{
     text-align: right;
     margin-top: 8px;
 }
 
-.ui-form .buttons input{
+.form .buttons input{
     margin-left: 15px;
 }
 
-.ui-form-hint, .ui-form-error{
+.form .hint, .form .error{
     display: block;
     color: #b3b3b3;
     font-size: 9pt;
 }
 
-.ui-form-error{
+.form .error{
     color: #ff4545;
     font-weight: bold;
 }
 
-.ui-form-checklist{
+.form-checklist{
     list-style-type: none;
     margin: 0px;
     padding: 0px;
 }
 
-.ui-form-checklist input{
+.form-checklist input{
     margin-right: 8px;
 }
 
@@ -489,30 +490,30 @@ a:hover {
 	background: rgb(186, 186, 186) url('images/loading-small.gif') no-repeat 2px center !important;
 }
 
-.ui-form .button.suggest{
+.form .button.suggest{
     height: 14px;
 }
 
-.ui-form.ui-login{
+.form.ui-login{
     width: 300px;
     margin-top: 110px;
 }
 
-.ui-form.ui-login input[type=text], .ui-form.ui-login input[type=password]{
+.form.ui-login input[type=text], .form.ui-login input[type=password]{
     font-size: 1.5em;
     height: auto;
 }
 
-.ui-form-upload-edit .filename{
+.form-upload-edit .filename{
     font-size: 1.2em;
     font-weight: bold;
 }
 
-.ui-form-upload-edit .size{
+.form-upload-edit .size{
     margin-left: 1em;
 }
 
-.ui-form-moduleconfig{
+.form-moduleconfig{
     width: 800px ;
 }
 /** ui-grid **/

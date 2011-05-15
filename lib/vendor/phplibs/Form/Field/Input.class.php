@@ -61,7 +61,7 @@ class Form_Field_Input extends Form_Field_Html
 			unset($this->options['multiple']);
 
 		// Add default validator
-		$this->addValidator($this->generateDefaultValidator(), 'default');
+		$this->addValidator($this->generateDefaultValidator(), 'html');
 	}
 	
 	/**
@@ -81,6 +81,25 @@ class Form_Field_Input extends Form_Field_Html
 	{
 		$types = func_get_args();
 		return in_array($this->getType(), $types);
+	}
+	
+	/**
+	 * Get supported constraints per type
+	 * (non-PHPdoc)
+	 * @see Form_Field_Html::getSupportedConstraints()
+	 */
+	public function getSupportedConstraints()
+	{
+		if ($this->isType('hidden', 'color')) {
+			return array();
+		} else if ($this->isType('date', 'datetime', 'datetime-local',
+			'month', 'week', 'time', 'number')) {
+			return array('min', 'max', 'step', 'required');
+		} else if ($this->isType('range')) {
+			return array('min', 'max', 'step');		
+		} else if ($this->isType('checkbox', 'radio'))
+			return array('required');	
+		return array('required', 'maxlength', 'pattern');
 	}
 	
 	/**

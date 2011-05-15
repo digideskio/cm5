@@ -20,7 +20,7 @@
  */
 
 
-require_once dirname(__FILE__) . '/OnDestruct.class.php';
+require_once __DIR__ . '/OnDestruct.class.php';
 
 //! Layouts handler and manager
 class Layout
@@ -173,5 +173,3 @@ class Layout
         self::$instances[$name] = $class;
     }
 }
-
-?>

@@ -21,8 +21,8 @@
  *      Sque - initial API and implementation
  */
 
-require_once dirname(__FILE__) . '/lib/vendor/phplibs/ClassLoader.class.php';
-require_once dirname(__FILE__) . '/lib/tools.lib.php';
+require_once __DIR__ . '/lib/vendor/phplibs/ClassLoader.class.php';
+require_once __DIR__ . '/lib/tools.lib.php';
 
 /**
  * Here you can write code that will be executed at the begining of each page instance
@@ -31,30 +31,30 @@ require_once dirname(__FILE__) . '/lib/tools.lib.php';
 // Autoloader for local and phplibs classes
 $phplibs_loader = new ClassLoader(
     array(
-    dirname(__FILE__) . '/lib/vendor/phplibs',
-    dirname(__FILE__) . '/lib/vendor',
-    dirname(__FILE__) . '/lib/local'
+    __DIR__ . '/lib/vendor/phplibs',
+    __DIR__ . '/lib/vendor',
+    __DIR__ . '/lib/local'
 ));
 $phplibs_loader->set_file_extension('.class.php');
 $phplibs_loader->register();
 
 // Zend
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/lib/vendor');
-$zend_loader = new ClassLoader(array(dirname(__FILE__) . '/lib/vendor'));
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/lib/vendor');
+$zend_loader = new ClassLoader(array(__DIR__ . '/lib/vendor'));
 $zend_loader->register();
 
 // Load static library for HTML
-require_once dirname(__FILE__) . '/lib/vendor/phplibs/Output/html.lib.php';
+require_once __DIR__ . '/lib/vendor/phplibs/Output/html.lib.php';
 
 // Load urls library
-require_once dirname(__FILE__) . '/lib/urls.lib.php';
+require_once __DIR__ . '/lib/urls.lib.php';
 
 // Load configuration file
 GConfig::$default_config = array(
     'module' => array(),
     'enabled_modules' => '',
 );
-GConfig::$config_file = dirname(__FILE__) . '/config.inc.php';
+GConfig::$config_file = __DIR__ . '/config.inc.php';
 GConfig::load_config();
 $config = GConfig::get_instance();
 

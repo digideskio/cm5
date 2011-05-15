@@ -20,8 +20,8 @@
  */
 
 
-require_once dirname(__FILE__) . '/../tools.lib.php';
-require_once dirname(__FILE__) . '/SmartMenuEntry.class.php';
+require_once __DIR__ . '/../tools.lib.php';
+require_once __DIR__ . '/SmartMenuEntry.class.php';
 
 //! Demo class of a smart menu
 class SmartMenu

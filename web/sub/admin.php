@@ -24,13 +24,13 @@
 // Deploy checks
 if (GConfig::get_instance()->site->deploy_checks)
 {
-    if (is_writable(dirname(__FILE__) . '/config.inc.php'))
+    if (is_writable(__DIR__ . '/config.inc.php'))
     {
         echo 'Security check: "config.inc.php" is writable, change file permissions and retry.';
         exit;
     }
     
-    if (is_dir(dirname(__FILE__) . '/install'))
+    if (is_dir(__DIR__ . '/install'))
     {
         echo 'Security check: You must delete folder "/install" if you have installed site.';
         exit;
@@ -105,49 +105,58 @@ Authz::allow('system.settings', '@admin', 'admin');
 CM5_Core::get_instance()->modules();
 
 // Special handling for special urls
-Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
+Stupid::add_rule(function() {require(__DIR__ . '/../login.php'); },
     array('type' => 'url_path', 'chunk[-1]' => '/\+login/')
 );
-Stupid::add_rule(create_function('', 'require(dirname(__FILE__) . \'/../login.php\');'),
+Stupid::add_rule(function() {require(__DIR__ . '/../login.php'); },
     array('type' => 'url_path', 'chunk[-1]' => '/\+logout/')
 );
 
-Stupid::add_rule(create_function('', "Net_HTTP_Response::redirect(url(\$_SERVER['PATH_INFO'] . '/+login'));"),
+Stupid::add_rule(function() { Net_HTTP_Response::redirect(url($_SERVER['PATH_INFO'] . '/+login')); },
     array('type' => 'authn', 'op' => 'isanon')
 );
 
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/files.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/files.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^files?$/'),
     array('type' => 'authz', 'resource' => 'file', 'action' => 'admin')
 );
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/editor.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/editor.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^editor$/'),
     array('type' => 'authz', 'resource' => 'page', 'action' => 'admin')
 );
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/modules.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/modules.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^modules?$/'),
     array('type' => 'authz', 'resource' => 'module', 'action' => 'admin')
 );
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/users.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/users.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^users?$/'),
     array('type' => 'authz', 'resource' => 'user', 'action' => 'admin')
 );
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/themes.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/themes.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^themes?$/'),
     array('type' => 'authz', 'resource' => 'theme', 'action' => 'admin')
 );
 
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/log.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/log.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^log$/'),
     array('type' => 'authz', 'resource' => 'log', 'action' => 'view')
 );
 
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/settings.php');"),
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/settings.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^settings$/'),
     array('type' => 'authz', 'resource' => 'system.settings', 'action' => 'admin')
 );
 
-Stupid::add_rule(create_function('', "require_once(dirname(__FILE__) . '/admin/tools.php');"),
+Stupid::add_rule(function(){
+		Layout::open('admin')->activate();
+		$frm = new UI_TestForm(array());
+		$frm->render()->appendTo(Output_HTMLTag::get_current_parent());
+		exit;
+	},
+    array('type' => 'url_path', 'chunk[2]' => '/^test$/')
+);
+
+Stupid::add_rule(function() { require_once(__DIR__ . '/admin/tools.php'); },
     array('type' => 'url_path', 'chunk[2]' => '/^tools$/')
 );
 
@@ -158,5 +167,3 @@ function default_admin_panel()
 {
     UrlFactory::craft('page.admin')->redirect();
 }
-
-?>

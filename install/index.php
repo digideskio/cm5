@@ -21,29 +21,29 @@
  *      Sque - initial API and implementation
  */
 
-require_once dirname(__FILE__) . '/../lib/vendor/phplibs/ClassLoader.class.php';
-require_once dirname(__FILE__) . '/../lib/tools.lib.php';
+require_once __DIR__ . '/../lib/vendor/phplibs/ClassLoader.class.php';
+require_once __DIR__ . '/../lib/tools.lib.php';
 
 // Autoloader for local and phplibs classes
 $phplibs_loader = new ClassLoader(
     array(
-    dirname(__FILE__) . '/../lib/vendor/phplibs',
-    dirname(__FILE__) . '/../lib/local'
+    __DIR__ . '/../lib/vendor/phplibs',
+    __DIR__ . '/../lib/local'
 ));
 $phplibs_loader->set_file_extension('.class.php');
 $phplibs_loader->register();
 
 // Zend
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../lib/vendor');
-$zend_loader = new ClassLoader(array(dirname(__FILE__) . '/../lib/vendor'));
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/../lib/vendor');
+$zend_loader = new ClassLoader(array(__DIR__ . '/../lib/vendor'));
 $zend_loader->register();
 
 // Load static library for HTML
-require_once dirname(__FILE__) . '/../lib/vendor/phplibs/Output/html.lib.php';
+require_once __DIR__ . '/../lib/vendor/phplibs/Output/html.lib.php';
 
 // File names
-$fn_config = dirname(__FILE__) . '/../config.inc.php';
-$fn_htaccess = dirname(__FILE__) . '/../.htaccess';
+$fn_config = __DIR__ . '/../config.inc.php';
+$fn_htaccess = __DIR__ . '/../.htaccess';
 
 
 $dl = new Layout('debug');
@@ -63,7 +63,7 @@ if (! is_writable($fn_config))
     exit;
 }
 
-if (! is_writable(dirname(__FILE__) . '/../uploads'))
+if (! is_writable(__DIR__ . '/../uploads'))
 {
     etag('div class="error" nl_escape_on', 'Cannot continue installing site.
         The uploads folder "/uploads" must be writable, you can change
@@ -71,7 +71,7 @@ if (! is_writable(dirname(__FILE__) . '/../uploads'))
     exit;
 }
 
-if (! is_writable(dirname(__FILE__) . '/../cache'))
+if (! is_writable(__DIR__ . '/../cache'))
 {
     etag('div class="error" nl_escape_on', 'Cannot continue installing site.
         The thumbnails cache folder "/cache" must be writable, you can change
@@ -79,6 +79,6 @@ if (! is_writable(dirname(__FILE__) . '/../cache'))
     exit;
 }
 
-$f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build-script.php');
+$f = new UI_InstallationForm($fn_config, __DIR__ . '/build-script.php');
 etag('div', $f->render());
 ?>

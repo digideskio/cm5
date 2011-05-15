@@ -32,9 +32,9 @@ class Form_Field_Select extends Form_Field_Html
 
 		$this->addValidator(
 			Form_Validator::inArray(array_keys($this->extractValues())),
-			'default');
+			'html');
 			
-		if ($this->options['required'])
+		if ($this->isRequired())
 			$this->addValidator(
 				Form_Validator::boolAnd(
 					Form_Validator::isNotEmpty(),
