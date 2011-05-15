@@ -27,42 +27,46 @@ class Form_Field_File extends Form_Field_Input
 	
 	protected function onParse($submitted)
 	{
-		if (!isset($_FILES[$this->getName()]))
-			return $this->value = null;
+		// Dont change immutable
+		if (!$this->isMutable())
+			return $this->getValue();
+		
+		// Check for existing value
+		if (!isset($submitted[$this->getName()]))
+			return null;
 			
 		// Upload of multiple files.
-		if ($this->options['multiple']) {
+		if ($this->options->get('multiple')) {
 			$values = array();
-			foreach($_FILES[$this->getName()]['name'] as $idx => $name) {
-				if ($_FILES[$this->getName()]['error'][$idx] == UPLOAD_ERR_NO_FILE)
+			foreach($submitted[$this->getName()] as $idx => $file) {
+				if ($file['error'] == UPLOAD_ERR_NO_FILE)
 					continue;
 					
 				 $uploadedfile = new UploadedFile(
-					$_FILES[$this->getName()]['name'][$idx],
-					$_FILES[$this->getName()]['type'][$idx],
-					$_FILES[$this->getName()]['tmp_name'][$idx],
-					$_FILES[$this->getName()]['size'][$idx],
-					$_FILES[$this->getName()]['error'][$idx]
+					$file['name'],
+					$file['type'],
+					$file['tmp_name'],
+					$file['size'],
+					$file['error']
 				);
 				
 				$values[] = $uploadedfile;
 			}
 			
-			return $this->value = $values;
+			return $values;
 		}
 			
 		
 		// Simple upload		
-		if ($_FILES['error'] == UPLOAD_ERR_NO_FILE)
-			return $this->value = null;
+		if ($submitted[$this->getName()]['error'] == UPLOAD_ERR_NO_FILE)
+			return null;
 			
-		return $this->value = 
-			new UploadedFile(
-				$_FILES[$this->getName()]['name'],
-				$_FILES[$this->getName()]['type'],
-				$_FILES[$this->getName()]['tmp_name'],
-				$_FILES[$this->getName()]['size'],
-				$_FILES[$this->getName()]['error']
+		return new UploadedFile(
+				$submitted[$this->getName()]['name'],
+				$submitted[$this->getName()]['type'],
+				$submitted[$this->getName()]['tmp_name'],
+				$submitted[$this->getName()]['size'],
+				$submitted[$this->getName()]['error']
 			);
 	}
 	
@@ -71,15 +75,15 @@ class Form_Field_File extends Form_Field_Input
 	 * @see Form_Field_Input::render()
 	 * @return Output_HTMLTag html element.
 	 */
-	public function render()
+	public function render($namespace)
 	{
-		$t = tag('input type="file"', $this->options['attribs']);
+		$t = tag('input type="file"', $this->generateAttributes());
 		
 		if ($this->options->get('multiple')) {
-			$t->attr('name', $this->getName() .'[]');
+			$t->attr('name', $this->getHtmlFullName($namespace) .'[]');
 			$t->attr('multiple', 'multiple');
 		} else {
-			$t->attr('name', $this->getName());
+			$t->attr('name', $this->getHtmlFullName($namespace));
 		}
 		return $t;
 	}

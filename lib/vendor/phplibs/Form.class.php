@@ -21,6 +21,18 @@ class Form extends Form_Field_Container
 	//! When processed and submitted data were not valid.
 	const RESULT_INVALID = 2;
 
+	//! Encoding type string for multipart (files)
+    const ENCTYPE_STR_MULTIPART  = 'multipart/form-data';
+	
+	//! Encoding type string for urlencoded
+    const ENCTYPE_STR_URLENCODED = 'application/x-www-form-urlencoded';
+    
+    /**
+     * Name of this form
+     * @var string
+     */
+    protected $name = null;
+    
 	/**
 	 * Form options.
 	 * @var Options 
@@ -50,6 +62,8 @@ class Form extends Form_Field_Container
 	 *  - process.invalid: When a POST is processed and there was a invalid result.
 	 * @return EventDispatcher Object with events for the form
 	 * 	class that was called from.
+	 * @note You can also overide the equivalent function if you have
+	 *  subclassed the class. e.g. onInitialized(), onProcessGet() ...
 	 */
 	public static function events()
 	{
@@ -72,10 +86,28 @@ class Form extends Form_Field_Container
      *  - enctype (default : null): The encoding type of this form.
      *  	This field overides detection based on contained fields
 	 */
-	public function __construct($options = array())
+	public function __construct($name, $options = array())
 	{
+		$this->name = $name;
 		$this->options = new Options($options,
 			array('enctype' => null));
+	}
+	
+	/**
+	 * Get the name of the form
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	
+	/**
+	 * Change the name of the form
+	 * @param string $name
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
 	}
 	
 	/**
@@ -126,8 +158,50 @@ class Form extends Form_Field_Container
 	 */
 	public function process($submitted = null)
 	{	
+
+		$fix_files_keys = function($files) use (& $fix_files_keys)
+		{
+			if (isset($files['name'], $files['tmp_name'], $files['size'], $files['type'], $files['error'])){
+				
+				// Multiple values for post-keys indexes
+				$move_indexes_right = function($files) use(& $move_indexes_right)
+				{
+					$results = array();
+					foreach($files['name'] as $index => $name) {
+						$reordered = array(
+							'name' => $files['name'][$index],
+							'tmp_name' => $files['tmp_name'][$index],
+							'size' => $files['size'][$index],
+							'type' => $files['type'][$index],
+							'error' => $files['error'][$index],
+						);
+						
+						// If this is not leaf do it recursivly
+						if (is_array($name))
+							$reordered = $move_indexes_right($reordered);
+						
+						$results[$index] = $reordered;
+					}
+					return $results;
+				};
+				return $move_indexes_right($files);
+			}
+			
+			// Re order pre-keys indexes			
+			array_walk($files, function(&$sub) use(& $fix_files_keys) {
+				$sub = $fix_files_keys($sub);
+			});			
+			return $files;
+		};
+		
+		
+		
 		if ($submitted == null){
-			$submitted = ($_SERVER['REQUEST_METHOD'] == 'POST') ? $_POST : null;
+			$submitted = ($_SERVER['REQUEST_METHOD'] == 'POST') 
+				? (count($_FILES))
+					? array_merge_recursive($_POST, $fix_files_keys($_FILES))
+					: $_POST 
+				: null;
 		}
 
 		// Check if the form is posted
@@ -140,9 +214,7 @@ class Form extends Form_Field_Container
 	    }
 	    
 	    // Process each field
-	    $this->walkFields(function($field) use($submitted){	    
-	       	$field->process($submitted);
-	    });
+	    parent::process($submitted);	    
 	    
 	    // Send process.post event.
 	    $this->notifyEvent('process.post', 'onProcessPost');	   	
@@ -158,5 +230,16 @@ class Form extends Form_Field_Container
 	   	
 	   	$this->notifyEvent('processed', 'onProcessed');
     	return $this->result_code;
+	}
+	
+	/**
+	 * Get the encoding type string
+	 */
+	public function getEncodingTypeString()
+	{
+		if ($this->getEncodingType() == Form_Field_Interface::ENCTYPE_MULTIPART)
+			return self::ENCTYPE_STR_MULTIPART;
+		else
+			return self::ENCTYPE_STR_URLENCODED;
 	}
 }

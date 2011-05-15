@@ -93,6 +93,15 @@ function esc_html($text)
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 }
 
+function etag_var_dump()
+{
+	$args = func_get_args();
+	ob_start();
+	call_user_func_array('var_dump', $args);
+	$data = ob_get_clean();
+	etag('pre', $data);
+}
+
 //! Escape white space
 function esc_sp($str, $tab_width = '4', $nobreak = true)
 {
@@ -142,5 +151,3 @@ function html_linkify_urls($text, $replace_text = '<a href="${0}" target="_blank
 {
     return preg_replace('/((?:http|ftp):\/\/[^\s\<\>]*)/im', $replace_text, $text);
 }
-
-?>

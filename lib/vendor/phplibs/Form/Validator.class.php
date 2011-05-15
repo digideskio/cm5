@@ -289,12 +289,17 @@ class Form_Validator
 	}
 	
 	/**
-	 * Valid only if field has a value in the $subject_array.	 
+	 * Valid only if field has a value in the $subject_array.	
+	 * @param $error The error message to display on error. 
 	 */
-	public static function inArray($subject_array)
+	public static function inArray($subject_array, $error = 'This is not an acceptable option.')
 	{
-		return function($field) use($subject_array) {
-			return in_array($field->getValue(), $subject_array);
+		return function($value, & $result_error, $field) use($subject_array, $error) {
+			if (! in_array($value, $subject_array)) {
+				$result_error = $error;
+				return false;
+			}
+			return true;
 		};
 	}
 }

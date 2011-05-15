@@ -4,21 +4,18 @@ require_once(__DIR__ . '/Field/Input.class.php');
 require_once(__DIR__ . '/Field/Checkable.class.php');
 require_once(__DIR__ . '/Field/File.class.php');
 require_once(__DIR__ . '/Field/Select.class.php');
-require_once(__DIR__ . '/FieldSet.class.php');
+require_once(__DIR__ . '/Field/Set.class.php');
+require_once(__DIR__ . '/Field/Textarea.class.php');
 
 /**
  * HTML Rendered for forms.
  */
 class Form_Html extends Form
 {
-	//! Encoding type string for multipart (files)
-    const ENCTYPE_STR_MULTIPART  = 'multipart/form-data';
-	
-	//! Encoding type string for urlencoded
-    const ENCTYPE_STR_URLENCODED = 'application/x-www-form-urlencoded';
-    
+
     /**
      * Construct a new HTML Rendable form
+     * @param $name The name of the form.
      * @param array $options Acceptable options are
      * 	- action (default: ''): The url that form will post to.
      *  - method : post,
@@ -32,9 +29,9 @@ class Form_Html extends Form
      *  - attribs: Extra html attributes to be set at the main div.
      * .
      */
-	public function __construct($options)
+	public function __construct($name, $options)
 	{
-		parent::__construct();
+		parent::__construct($name);
 		$this->options->extend($options,
 			array(
 				'action' => '',
@@ -72,26 +69,31 @@ class Form_Html extends Form
 				'method' => $this->options['method'],
 				'enctype' => $this->getEncodingTypeString()))
 			->appendTo($main_el)->push_parent();
+			
 		if ($this->options['nobrowservalidation'])
 			$form_el->attr('novalidate', 'novalidate');
+		if ($this->getName())
+			$form_el->attr('name', $this->getName());
 			
 		// Render fields
 		etag('ul class="fields"')->push_parent();
-		$this->walkFields(function($field){
+		$form = $this;
+		$this->walkFields( function($field, $index) use($form) {
 			etag('li')->attr('data-name', $field->getName())->push_parent();
-			
 			etag('label', $field->options['label']);
 			
 			// Render field
-			Output_HTMLTag::get_current_parent()->append($field->render());
+			Output_HTMLTag::get_current_parent()->append($field->render(array(
+				'namespace' => $form->getName(),
+				'index' => $index)));
 			
 			// Add extra fields
 			if (($field->isValid() === false) && ($field->getError()))
-				etag('span class="ui-form-error"', (string)$field->getError());
+				etag('span class="error"', (string)$field->getError());
 			else if ($field->options->has('hint'))
-				etag('span class="ui-form-hint"', $field->options['hint']);
+				etag('span class="hint"', $field->options['hint']);
 			Output_HTMLTag::pop_parent();
-		});
+		} );
 		Output_HTMLTag::pop_parent();
 		
 		// Render buttons
@@ -107,16 +109,5 @@ class Form_Html extends Form
 		
 		Output_HTMLTag::pop_parent(2);
 		return $main_el;
-	}
-	
-	/**
-	 * Get the encoding type string
-	 */
-	public function getEncodingTypeString()
-	{
-		if ($this->getEncodingType() == Form_Field_Interface::ENCTYPE_MULTIPART)
-			return self::ENCTYPE_STR_MULTIPART;
-		else
-			return self::ENCTYPE_STR_URLENCODED;
 	}
 }

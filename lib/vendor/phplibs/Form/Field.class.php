@@ -51,7 +51,8 @@ class Form_Field implements Form_Field_Interface
 	 * @param array $options accept
 	 * 	- label (default: $name) : The label of this field.
 	 * 	- value (default: null) : The default value of this field.
-	 * 	- validator (default: isNotEmpty) : A callable object to validate this field.
+	 * 	- validator (default: null) : A user validator to be added in validators list
+	 * 	under slot "user".
 	 *  - enctype (default : Form_Field_Interface::ENCTYPE_AUTO)
 	 *  	The desired encoding type tht form must use.
 	 */
@@ -62,12 +63,13 @@ class Form_Field implements Form_Field_Interface
 		$this->options = new Options($options, array(
 			'value' => null,
 			'label' => $this->name,
-			'validator' => Form_Validator::isNotEmpty(),
+			'validator' => null,
 			'enctype' => Form_Field_Interface::ENCTYPE_AUTO
 		));
 		
 		$this->value = $this->options['value'];
-		$this->addValidator($this->options['validator'], 'default');
+		if ($this->options->get('validator') !== null)
+			$this->addValidator($this->options['validator'], 'user');
 	}
 	
 	/**
@@ -102,7 +104,11 @@ class Form_Field implements Form_Field_Interface
 	 */
 	protected function onParse($submitted)
 	{
-		return isset($submitted[$this->name])?$submitted[$this->name]:null;		
+		return isset($submitted[$this->name])
+			?is_array($submitted[$this->name])
+				?$submitted[$this->name][0]	// In case of array get the first
+				:$submitted[$this->name]
+			:null;		
 	}
 	
 	/**

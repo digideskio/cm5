@@ -1,11 +1,12 @@
 <?php
 
 require_once(__DIR__ . '/Interface.class.php');
+require_once(__DIR__ . '/SameNameContainer.class.php');
 
 /**
  * Base class to implement "fields container" concept. 
  */
-class Form_Field_Container
+class Form_Field_Container implements Form_Field_Interface
 {
 	//! List with al fields of container.
 	protected $fields = array();
@@ -21,10 +22,11 @@ class Form_Field_Container
 		if (!isset($this->fields[$obj->getName()]))
 			return $this->fields[$obj->getName()] = $obj;
 
-		if (!is_array($this->fields[$obj->getName()]))
-			$this->fields[$obj->getName()] = array($this->fields[$obj->getName()]);
+		if (! $this->fields[$obj->getName()] instanceof Form_Field_SameNameContainer)
+			$this->fields[$obj->getName()] =
+				new Form_Field_SameNameContainer(array($this->fields[$obj->getName()]), $obj->getName());
 		
-		$this->fields[$obj->getName()][] = $obj;
+		$this->fields[$obj->getName()]->append($obj);
 		return $this;		
 	}
 	
@@ -45,16 +47,18 @@ class Form_Field_Container
 	 * Get a field from this form based on its unique name.
 	 * @return Form_Field The actual field object or null.
 	 */
-	public function getField($name)
+	public function get($name)
 	{
-		return isset($this->fields[$name])?$this->fields[$name]:null;
+		return isset($this->fields[$name])
+			? $this->fields[$name]
+			: null;
 	}
 	
 	/**
 	 * Get the list with all fields of this form.
 	 * @return array
 	 */
-	public function getFields()
+	public function getMany()
 	{
 		return $this->fields;
 	}
@@ -63,9 +67,29 @@ class Form_Field_Container
 	 * Remove a field from this form
 	 * @param $name The unique name of the field.
 	 */
-	public function removeField($name)
+	public function remove($name)
 	{
 		unset($this->fields[$name]);
+	}
+	
+	/**
+	 * Container returns null name by default
+	 * (non-PHPdoc)
+	 * @see Form_Field_Interface::getName()
+	 */
+	public function getName()
+	{
+		return null;
+	}
+	
+	/**
+	 * Get the value of this container
+	 * (non-PHPdoc)
+	 * @see Form_Field_Interface::getValue()
+	 */
+	public function getValue()
+	{
+		return $this->getValues();
 	}
 	
 	/**
@@ -74,31 +98,28 @@ class Form_Field_Container
 	public function getValues()
 	{
 		$values = array();
-		foreach($this->fields as $name => $field) {
-			if (!is_array($field)) {
-				$values[$name] = $field->getValue();				
-			} else {
-				$values[$name] = array();
-				foreach($field as $subfields)
-					$values[$name][] = $subfields->getValue();
-			}
-		}
+		foreach($this->fields as $name => $field)
+			$values[$name] = $field->getValue();			
 		return $values;
 	}
 	
 	/**
 	 * A function to walk through all fields
 	 * @param callable $callable A function to be called with parameters
-	 *  ($field)
+	 *  callable($field, $multiple).
+	 *  - $field Is one object of the iteration
+	 *  - $index: In case that there are multiple fields with same
+	 *  	name this is their index. NULL if it is unique.
+	 *  .
 	 */
 	public function walkFields($callable)
 	{
 		foreach($this->fields as $field) {
-			if (!is_array($field)) {
-				$callable($field);
+			if (!$field instanceof Form_Field_SameNameContainer) {
+				$callable($field, null);
 			} else {
-				foreach($field as $subfield)
-				$callable($subfield);
+				foreach($field as $index => $subfield)
+					$callable($subfield, $index);
 			}
 		}
 	}
@@ -117,6 +138,16 @@ class Form_Field_Container
 	}
 	
 	/**
+	 * Return null error by default
+	 * (non-PHPdoc)
+	 * @see Form_Field_Interface::getError()
+	 */
+	public function getError()
+	{
+		return null;
+	}
+	
+	/**
 	 * Get the desired encoding type. It will search in all
 	 * fields and get the one with the highest priority.
 	 */
@@ -129,4 +160,22 @@ class Form_Field_Container
 		});
 		return $enctype;
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see Form_Field_Interface::process()
+	 */
+	public function process($submitted)
+	{
+		$subvalues = ($this->getName() == null)
+			? $submitted
+			: ((isset($submitted[$this->getName()]))
+				?$submitted[$this->getName()]
+				:array());
+
+		$this->walkFields(function($field, $index) use($subvalues){
+			$field->process($subvalues);
+		});
+	}
+	
 }
