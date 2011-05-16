@@ -21,7 +21,10 @@
  *      Sque - initial API and implementation
  */
 
-class UI_SystemSettings extends Form_Html
+/**
+ * Form to edit system settings
+ */
+class CM5_Form_SystemSettings extends Form_Html
 {
     public function __construct()
     {

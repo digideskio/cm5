@@ -21,8 +21,15 @@
  *      Sque - initial API and implementation
  */
 
-class UI_CreatePage extends Form_Html
+/**
+ * Form to construct a new page.
+ */
+class CM5_Form_PageCreate extends Form_Html
 {
+	/**
+	 * @param integer $parent_id The id of the parent page to be created under. Give
+	 * 	null to create a root page.
+	 */
     public function __construct($parent_id)
     {
         if (($parent_id !== null) && (!Cm5_Model_Page::open($parent_id)))
@@ -34,7 +41,7 @@ class UI_CreatePage extends Form_Html
 		    'buttons' => array(
 		        'create' => array('label' =>'Create'),
 	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
-	                'onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
+	                'attribs' => array('onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'"))
                 )
             )
         );

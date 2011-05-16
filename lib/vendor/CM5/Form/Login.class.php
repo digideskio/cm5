@@ -19,9 +19,14 @@
  *  
  */
 
-
-class UI_LoginForm extends Form_Html
+/**
+ * Form that is used to login on page.
+ */
+class CM5_Form_Login extends Form_Html
 {
+	/**
+	 * @param string $redirect_url A url to redirect after successfull login.
+	 */
     public function __construct($redirect_url)
     {
         $this->redirect_url = $redirect_url;
@@ -39,7 +44,7 @@ class UI_LoginForm extends Form_Html
         
         $this->addMany(
         	field_text('user', array('label' => 'Username', 'required' => true, 'autofocus' => true)),
-        	field_text('pass', array('label' => 'Password', 'type' => 'password', 'required' => true))
+        	field_password('pass', array('label' => 'Password', 'required' => true))
         );
     }
 

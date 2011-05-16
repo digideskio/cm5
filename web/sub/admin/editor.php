@@ -94,7 +94,7 @@ function page_editor_form($id)
         not_found();
 
     header('Content-type: text/html; charset=UTF-8');
-	$frm = new CM5_Form_EditPage2($p);
+	$frm = new CM5_Form_PageEdit($p);
     echo $frm->render();
 }
 
@@ -115,7 +115,7 @@ function delete_page($page_id)
         not_found();
 
     Layout::open('admin')->activate();
-    $frm = new UI_DeletePage($p);
+    $frm = new CM5_Form_PageDelete($p);
     etag('div', $frm->render());
 }
 
@@ -126,7 +126,7 @@ function create_page()
     $parent_id = Net_HTTP_RequestParam::get('parent', 'get');
     if ($parent_id === '')
         $parent_id = null;
-    $frm = new UI_CreatePage($parent_id);
+    $frm = new CM5_Form_PageCreate($parent_id);
     etag('div', $frm->render());
     
     etag('script type="text/javascript" html_escape_off',"
@@ -201,4 +201,3 @@ function pages_default()
     else
         UrlFactory::craft('page.create', null)->redirect();
 }
-?>

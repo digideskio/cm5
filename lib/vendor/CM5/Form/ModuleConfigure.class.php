@@ -21,9 +21,16 @@
  *      Sque - initial API and implementation
  */
 
-class UI_ModuleConfigure extends Form_Html
+/**
+ * Form to configure a module. It has the advantage that
+ * builds fields dynamicaly from configuration.
+ */
+class CM5_Form_ModuleConfigure extends Form_Html
 {
-    public function __construct($module)
+	/**
+	 * @param CM5_Configurable $module The module to configure
+	 */
+    public function __construct(CM5_Configurable $module)
     {
         $this->module = $module;
         $this->mconfig = $module->get_config();

@@ -27,16 +27,16 @@
 		// Ajax request for translit
 		var request_translit = function() {
 			$.get('tools/transliterate', {
-				text : $('.ui-page-form input[name=title]').val()
+				text : $('.form.page-editor input[name=title]').val()
 			}, function(data) {
-				$('.ui-page-form input[name=slug]').val(data);
+				$('.form.page-editor input[name=slug]').val(data);
 			});
 		};
 
 		// Position suggest button in proper state
 		var reposition_suggest_btn = function() {
-			var title = $('.ui-page-form input[name=title]');
-			var input = $('.ui-page-form input[name=slug]');
+			var title = $('.form.page-editor input[name=title]');
+			var input = $('.form.page-editor input[name=slug]');
 			if (input.length == 0)
 				return;
 			input.width(title.offset().left + title.innerWidth()
@@ -53,14 +53,14 @@
 						+ ((input.outerHeight() - suggest.outerHeight()) / 2)
 			};
 			suggest.offset(new_off);
-		}
+		};
 
 		// Check if it is dirty
 		var is_editor_dirty = function(){
 			var pdiv = $('#page_editor');
 			var editor = pdiv.data('cm5_editor').editor;
 			return (pdiv.hasClass('dirty') || ((editor) && (pdiv.data('cm5_editor').editor.checkDirty())));
-		}
+		};
 		
 		// Reset page guard
 		var reset_page_guard = function() {
@@ -73,7 +73,7 @@
 			// Guard page
 			var page_set_dirty = function() {
 				$('#page_editor').addClass('dirty');
-			}
+			};
 
 			$('#page_editor input[type=submit]').click(function() {
 				window.onbeforeunload = null;
@@ -82,13 +82,13 @@
 			$('#page_editor input[type=text]').change(page_set_dirty);
 			$('#page_editor input[type=text]').change(page_set_dirty);
 			$('#page_editor select').change(page_set_dirty);
-		}
+		};
 
 		// Automatify editor
 		var automatify_editor = function() {
 			var pdiv = $('#page_editor');
 			
-			$('.ui-page-form input[name=slug]').parent().append(
+			$('.form.page-editor input[name=slug]').parent().append(
 					suggest = $('<span class="suggest button"/>').text(
 							'suggest').click(request_translit));
 			pdiv.bind('resize', reposition_suggest_btn);
@@ -97,28 +97,28 @@
 			// Submit button
 			var form = pdiv.find('form');
 			form.submit(function(){
-				pdiv.data('cm5_editor').editor.updateElement()
+				pdiv.data('cm5_editor').editor.updateElement();
 				data = form.serialize();
 				action = form.attr('action');
 				page_id = action.split('/');
 				page_id = page_id[page_id.length - 2];
 				form.find('input').attr('disabled', 'disabled');
-				pdiv.find('.ui-page-form').addClass('loading');
+				pdiv.find('.form.page-editor').addClass('loading');
 				$.post(form.attr('action'), data, function(){
 					loadpage(pdiv, page_id);
-				})
+				});
 				//alert();
 				return false;
-			})
+			});
 						
 			reposition_suggest_btn();
 			reset_page_guard();
-		}
+		};
 
 		// Automatification destroy
 		var destroy_automatification = function() {
 			$('#page_editor').unbind('resize');
-		}
+		};
 
 		var loadpage = function(pdiv, page_id) {
 			var options = pdiv.data('cm5_editor');
@@ -136,7 +136,7 @@
 					+ (pdiv.find('input[name=title]').length?pdiv.find('input[name=title]').val():'Home');
 				automatify_editor();
 			});
-		}
+		};
 		
 		// ENTRY POINT
 		return this.each(function() {

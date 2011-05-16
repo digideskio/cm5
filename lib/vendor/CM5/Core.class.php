@@ -390,7 +390,7 @@ class CM5_Core
     {
         if ($url === null)
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
-        CM5_Logger::get_instance()->debug('Serving web page ' . $url);
+        // 2ms out! CM5_Logger::get_instance()->debug('Serving web page ' . $url);
         
         // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);

@@ -21,9 +21,15 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserEditMyProfile extends Form_Html
+/**
+ * Form to edit a user by his prespective.
+ */
+class CM5_Form_UserEditMyProfile extends Form_Html
 {
-    public function __construct($u)
+	/**
+	 * @param CM5_Model_User $u User to be edited.
+	 */
+    public function __construct(CM5_Model_User $u)
     {
         $this->user = $u;
 

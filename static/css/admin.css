@@ -120,6 +120,7 @@ a:hover {
     position: absolute;
     top: 25px;
     right: 90px;
+    margin: 0px;
 }
 
 #page_editor li a.view{
@@ -449,11 +450,11 @@ a:hover {
     margin-right: 8px;
 }
 
-.ui-page-form {
+.form.page-editor {
     width: auto;
 }
 
-.ui-page-form input[type=submit]{
+.form.page-editor input[type=submit]{
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
@@ -468,7 +469,7 @@ a:hover {
 	margin-right: 5px; 
 }
 
-.ui-page-form input[type=submit], .ui-page-form input[type=submit][disabled]{
+.form.page-editor input[type=submit], .form.page-editor input[type=submit][disabled]{
 	background: -webkit-gradient(
 	    linear,
 	    left bottom,
@@ -484,12 +485,12 @@ a:hover {
 	color: #d3d3d3;
 }
 
-.ui-page-form input[type=submit][disabled]{
+.form.page-editor input[type=submit][disabled]{
 	color: #878787;	
 	text-shadow: none;
 }
 
-.ui-page-form input[type=submit]:hover{
+.form.page-editor input[type=submit]:hover{
 	border-color: #666666;
 	color: white;
 	text-shadow: 1px 1px 2px #222222;

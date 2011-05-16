@@ -85,7 +85,7 @@ function module_configure($module_name)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Configure";
         
-    $frm = new UI_ModuleConfigure($module);
+    $frm = new CM5_Form_ModuleConfigure($module);
     etag('div',  $frm->render());
 }
 
@@ -100,7 +100,7 @@ function module_enable($module_name)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Enable";
         
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         'Module: ' . $module->info_property('title'),
         'Are you sure you want to enable this module?',
         'Enable',
@@ -125,7 +125,7 @@ function module_disable($module_name)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Disable";
         
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         'Module: ' . $module->info_property('title'),
         'Are you sure you want to disable this module?',
         'Disable',

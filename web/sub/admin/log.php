@@ -97,7 +97,7 @@ function clear_log()
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Clear log";
         
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         'Clear system log',
         'Are you sure? This action is inreversible!',
         'Clear',

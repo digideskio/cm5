@@ -52,7 +52,7 @@ function theme_switch($theme_name)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Theme: {$theme->info_property('title')} > Switch";
         
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         'Theme: ' . $theme->info_property('title'),
         'Are you sure you want to switch to this theme?',
         'Switch',
@@ -80,6 +80,6 @@ function theme_configure($theme_name)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | Theme: {$theme->info_property('title')} > Configure";
         
-    $frm = new UI_ModuleConfigure($theme);
+    $frm = new CM5_Form_ModuleConfigure($theme);
     etag('div',  $frm->render());
 }

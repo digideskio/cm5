@@ -30,6 +30,6 @@ function view_settings()
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | System settings";
         
-    $frm = new UI_SystemSettings();
+    $frm = new CM5_Form_SystemSettings();
     etag('div', $frm->render());
 }

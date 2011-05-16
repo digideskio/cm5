@@ -21,8 +21,14 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserEdit extends Form_Html
+/**
+ * Form to edit an existing user
+ */
+class CM5_Form_UserEdit extends Form_Html
 {
+	/**
+	 * @param CM5_Model_User $u The user to edit.
+	 */
     public function __construct(CM5_Model_User $u)
     {
         $this->user = $u;

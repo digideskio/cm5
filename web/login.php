@@ -48,7 +48,7 @@ Stupid::chain_reaction();
 // Login form
 if (! Authn_Realm::has_identity())
 {
-    $form = new UI_LoginForm(reference_url());
+    $form = new CM5_Form_Login(reference_url());
     etag('div', $form->render());
 }
 else

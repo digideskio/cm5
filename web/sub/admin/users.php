@@ -45,7 +45,7 @@ function user_myprofile()
         
     Layout::open('admin')->activate();
 
-    $frm = new UI_UserEditMyProfile($user);
+    $frm = new CM5_Form_UserEditMyProfile($user);
     etag('div', $frm->render());
 }
 
@@ -57,7 +57,7 @@ function edit_user($username)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | User: {$u->username}";
     Layout::open('admin')->activate();
 
-    $frm = new UI_UserEdit($u);
+    $frm = new CM5_Form_UserEdit($u);
     etag('div', $frm->render());
 }
 
@@ -74,7 +74,7 @@ function delete_user($username)
         exit;
     }
     
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         "Delete user \"{$u->username}\"",
         "Are you sure? This action is inreversible!",
         'Delete',
@@ -92,7 +92,7 @@ function create_user()
 {
     Layout::open('admin')->activate();
     
-    $frm = new UI_UserCreate();
+    $frm = new CM5_Form_UserCreate();
     etag('div', $frm->render());
 }
 

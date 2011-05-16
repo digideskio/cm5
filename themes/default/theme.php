@@ -38,13 +38,13 @@ class DefaultTheme extends CM5_Theme
     {
         $version = CM5_Core::get_instance()->get_version();
         return array(
-            'page-background-color' => '4B484F',
-            'article-background-color' => 'F6F5FF',
-            'article-text-color' => '292929',
-            'menu-background-color' => 'F0F0F0',
-            'menu-text-color' => '0A0A0A',
-            'menu-selected-background-color' => 'D20000',
-            'menu-selected-text-color' => 'FFFFFF',
+            'page-background-color' => '#4B484F',
+            'article-background-color' => '#F6F5FF',
+            'article-text-color' => '#292929',
+            'menu-background-color' => '#F0F0F0',
+            'menu-text-color' => '#0A0A0A',
+            'menu-selected-background-color' => '#D20000',
+            'menu-selected-text-color' => '#FFFFFF',
             'footer' => "using <a target=\"_blank\" href=\"http://code.0x0lab.org/p/cm5\">CM5</a>",
             'favicon-url' => '',
             'extra-css' => '',
@@ -73,4 +73,3 @@ class DefaultTheme extends CM5_Theme
 }
 
 DefaultTheme::register();
-?>

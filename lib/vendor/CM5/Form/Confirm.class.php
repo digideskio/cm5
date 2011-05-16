@@ -21,8 +21,19 @@
  *      Sque - initial API and implementation
  */
 
-class UI_ConfirmForm extends Form_Html
+/**
+ * Form to simply confirm an action
+ */
+class CM5_Form_Confirm extends Form_Html
 {
+	/**
+	 * @param string $title Title of the confiramtion dialog
+	 * @param string $message Message to confirm
+	 * @param string $ok_button Title of OK button
+	 * @param callable $ok_action Action to execute on ok.
+	 * @param array $ok_action_args Extra arguments to pass at ok action.
+	 * @param string $cancel_url The cancel url to visit on cancel.
+	 */
     public function __construct($title, $message, $ok_button, $ok_action, $ok_action_args, $cancel_url)
     {
         $this->ok_action = $ok_action;

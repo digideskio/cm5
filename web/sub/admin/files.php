@@ -37,7 +37,7 @@ Stupid::chain_reaction();
 function upload_file()
 {
     Layout::open('admin')->activate();
-    $frm = new UI_UploadFile();
+    $frm = new CM5_Form_UploadCreate();
     etag('div',
         $frm->render());
 }
@@ -50,7 +50,7 @@ function edit_file($id)
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | File: {$u->filename} > Edit";
         
-    $frm = new UI_UploadEdit($u);
+    $frm = new CM5_Form_UploadEdit($u);
     
     etag('div', $frm->render());
 }
@@ -62,7 +62,7 @@ function delete_file($id)
         not_found();
     Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
         " | File: {$u->filename} > Delete";
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         "Delete \"{$u->filename}\"",
         'Are you sure? This action is inreversible!',
         'Delete',

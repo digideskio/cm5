@@ -88,27 +88,27 @@ class DefaultThemeLayout extends CM5_ThemeLayout
         // Customized style
         $this->get_document()->get_head()->append(tag('style type="text/css" html_escape_off',"
             body{
-                background-color: #{$this->get_config()->{"page-background-color"}};
+                background-color: {$this->get_config()->{"page-background-color"}};
             }
             #content{
-                background-color: #{$this->get_config()->{"article-background-color"}};
-                color: #{$this->get_config()->{"article-text-color"}};
+                background-color: {$this->get_config()->{"article-background-color"}};
+                color: {$this->get_config()->{"article-text-color"}};
             }
             .menu >li{
-                background-color: #{$this->get_config()->{"menu-background-color"}};
+                background-color: {$this->get_config()->{"menu-background-color"}};
             }
             .menu > li a{
-                color: #{$this->get_config()->{"menu-text-color"}};
+                color: {$this->get_config()->{"menu-text-color"}};
             }
             .menu li.selected a{
-                color: #{$this->get_config()->{"menu-selected-text-color"}};
+                color: {$this->get_config()->{"menu-selected-text-color"}};
             }
             .menu{
-                border-bottom-color: #{$this->get_config()->{"menu-selected-background-color"}};
+                border-bottom-color: {$this->get_config()->{"menu-selected-background-color"}};
              }
              
             .menu > li.selected, .menu > li.selected ul{
-                background-color: #{$this->get_config()->{"menu-selected-background-color"}};
+                background-color: {$this->get_config()->{"menu-selected-background-color"}};
             }
             "));
 
@@ -120,5 +120,3 @@ class DefaultThemeLayout extends CM5_ThemeLayout
         $this->deactivate();
     }
 }
-
-?>

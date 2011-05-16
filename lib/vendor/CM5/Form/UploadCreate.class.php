@@ -21,7 +21,10 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UploadFile extends Form_Html
+/**
+ * Form to create a new upload
+ */
+class CM5_Form_UploadCreate extends Form_Html
 {
     public function __construct()
     {

@@ -21,8 +21,14 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UploadEdit extends Form_Html
+/**
+ * Form to edit an upload
+ */
+class CM5_Form_UploadEdit extends Form_Html
 {
+	/**
+	 * @param CM5_Model_Upload $u The upload to be edited.
+	 */
     public function __construct(CM5_Model_Upload $u)
     {
         $this->upload = $u;

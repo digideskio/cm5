@@ -48,7 +48,7 @@ class CM5_Module_Revisions extends CM5_Module
     	// Adding model add hooks also
     	require __DIR__ . '/lib/Revision.class.php';
     	
-    	CM5_Form_EditPage::events()->connect('post-render', array($this, 'enhance_edit_form'));
+    	CM5_Form_PageEdit::events()->connect('post-render', array($this, 'enhance_edit_form'));
     }
     
     public function on_enable()

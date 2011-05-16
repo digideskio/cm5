@@ -21,7 +21,10 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserCreate extends Form_Html
+/**
+ * Form to create a new user
+ */
+class CM5_Form_UserCreate extends Form_Html
 {
     public function __construct()
     {

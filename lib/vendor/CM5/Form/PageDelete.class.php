@@ -21,9 +21,15 @@
  *      Sque - initial API and implementation
  */
 
-class UI_DeletePage extends Form_Html
+/**
+ * Form to delete a page
+ */
+class CM5_Form_PageDelete extends Form_Html
 {
-    public function __construct($p)
+	/**
+	 * @param CM5_Model_Page $p The page to delete.
+	 */
+    public function __construct(CM5_Model_Page $p)
     {
         $this->page = $p;
         parent::__construct(null, array(
