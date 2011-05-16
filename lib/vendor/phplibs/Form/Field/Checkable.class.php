@@ -86,13 +86,12 @@ class Form_Field_Checkable extends Form_Field_Input
 	 */
 	public function render($options)
 	{
-		$input_el = parent::render($options);
-		$input_el->attr('value', $this->getOptionValue());
-		
+		$input_el = parent::renderInput($options);
+		$input_el->attr('value', $this->getOptionValue());		
 		if ($this->isChecked())
 			$input_el->attr('checked', 'checked');
 		
-		return $input_el;
+		return tag('label',	$input_el, $this->options['label']);
 	}
 	
 	/**

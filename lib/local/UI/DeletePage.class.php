@@ -21,45 +21,44 @@
  *      Sque - initial API and implementation
  */
 
-class UI_DeletePage extends Output_HTML_Form
+class UI_DeletePage extends Form_Html
 {
     public function __construct($p)
     {
         $this->page = $p;
-        parent::__construct(array(
-                'mode' => array('type' => 'radio', 'mustselect' => true, 'display' => 'Action to take in subpages',
-                    'onerror' => 'You must select deletion mode.',
-                    'optionlist' => array(
-                        'delete-all' => 'Delete this page and all subpages',
-                        'move-to-parent' => 'Move all subchilds to parent'
-                    )
-                ),
-                'msg' => array('type' => 'custom', 'value' => 'Are you sure? This action is inreversible!')
-            ),
-            array(
+        parent::__construct(null, array(
                 'title' => "Delete \"{$p->title}\"",
-                'css' => array('ui-form', 'ui-form-delete'),
+                'attribs' => array('class' => 'form form-delete'),
 		        'buttons' => array(
-		            'delete' => array('display' =>'Delete'),
-		            'cancel' => array('display' =>'Cancel', 'type' => 'button',
-		                'onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
-                    )
+		            'delete' => array('label' =>'Delete'),
+		            'cancel' => array('label' =>'Cancel', 'type' => 'button',
+		                'attribs' => array('onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
+                    ))
                 )
         );
+        
+		$this->addMany(
+			field_radio('mode', array('label' => 'Delete this page and all subpages', 'value' => 'delete-all')),
+			field_radio('mode', array('label' => 'Move all subchilds to parent', 'value' => 'move-to-parent')),
+			field_raw('msg', array('value' => 'Are you sure? This action is inreversible!'))
+		);
     }
     
-    public function on_valid($values)
+    public function onProcessValid()
     {
-        if ($values['mode'] == 'delete-all')
+    	$values = $this->getValue(); 
+        if ($values['mode'][0] == 'delete-all')
         {
             $this->page->delete_all();
         }
-        else if ($values['mode'] == 'move-to-parent')
+        else if ($values['mode'][0] == 'move-to-parent')
         {
             $this->page->delete_move_orphans();
+        }
+        else {
+        	var_dump($this->get('mode')->getValue());
+        	return;
         }
         UrlFactory::craft('page.admin')->redirect();
     }
 };
-
-?>

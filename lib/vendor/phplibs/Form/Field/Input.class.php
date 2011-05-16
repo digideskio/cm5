@@ -65,6 +65,16 @@ class Form_Field_Input extends Form_Field_Html
 	}
 	
 	/**
+	 * Get all supported types
+	 * @return array Array will types that are imlpemented
+	 * and supported.
+	 */
+	public function getSupportedTypes()
+	{
+		return $this->supported_types;
+	}
+	
+	/**
 	 * Get the type of the input field.
 	 */
 	public function getType()
@@ -116,6 +126,8 @@ class Form_Field_Input extends Form_Field_Html
 			$validator[] = Form_Validator::isEmail();
 		} else if ('url' == $type) {
 			$validator[] = Form_Validator::isUrl();
+		} else if ('color' == $type) {
+			$validator[] = Form_Validator::isSimpleColor();
 		} else {
 			$validator[] = Form_Validator::valid();
 		}
@@ -221,9 +233,10 @@ class Form_Field_Input extends Form_Field_Html
 	}
 	
 	/**
-	 * Render this input box.
+	 * Render the input tag
+	 * @param array $options
 	 */
-	public function render($options)
+	protected function renderInput($options)
 	{
 		// Create element
 		$t = tag('input', $this->generateAttributes())
@@ -234,6 +247,14 @@ class Form_Field_Input extends Form_Field_Html
 		if ($this->options['rendervalue'])
 			$this->applyRendableValue($t);
 		return $t;
+	}
+	/**
+	 * Render this input box.
+	 */
+	public function render($options)
+	{
+		return tag('label', tag('span', $this->options['label']),
+			$this->renderInput($options));
 	}
 }
 
@@ -325,4 +346,13 @@ function field_search($name, $options = array()) {
  */
 function field_tel($name, $options = array()) {
 	return new Form_Field_Input($name, array_merge($options, array('type' => 'tel')));
+}
+
+/**
+ * Create a Form_Field_Input with type="color"
+ * @see Form_Field_Input
+ * @return Form_Field_Input
+ */
+function field_color($name, $options = array()) {
+	return new Form_Field_Input($name, array_merge($options, array('type' => 'color')));
 }

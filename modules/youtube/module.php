@@ -47,8 +47,8 @@ class CM5_Module_YouTube extends CM5_Module
             'video-height' => '344',
             'privacy-enchanced' => true,
             'border' => false,
-            'controls-color-1' => 'b1b1b1',
-            'controls-color-2' => 'd2d2d2',
+            'controls-color-1' => '#b1b1b1',
+            'controls-color-2' => '#d2d2d2',
         );
     }
     
@@ -60,14 +60,14 @@ class CM5_Module_YouTube extends CM5_Module
     public function config_options()
     {
         return array(
-             'video-width' => array('display' => 'Video width:'),
-             'video-height' => array('display' => 'Video height:'),
-             'controls-color-1' => array('display' => 'Control color 1:', 'type' => 'color'),
-             'controls-color-2' => array('display' => 'Control color 2:', 'type' => 'color'),
-             'border' => array('display' => 'Show border:', 'type' => 'checkbox'),
-             'privacy-enchanced' => array('display' => 'Privacy enchanced (cookie less youtube):',
+             'video-width' => array('label' => 'Video width:'),
+             'video-height' => array('label' => 'Video height:'),
+             'controls-color-1' => array('label' => 'Control color 1:', 'type' => 'color'),
+             'controls-color-2' => array('label' => 'Control color 2:', 'type' => 'color'),
+             'border' => array('label' => 'Show border:', 'type' => 'checkbox'),
+             'privacy-enchanced' => array('label' => 'Privacy enchanced (cookie less youtube):',
                 'type' => 'checkbox'),
-        	'use-iframe' => array('display' => 'Use iframe (HTML5 capable)', 'type' => 'checkbox',
+        	'use-iframe' => array('label' => 'Use iframe (HTML5 capable)', 'type' => 'checkbox',
         		'hint' => 'Not all the options are supported in iframe mode.')
         );                    
     }
@@ -76,8 +76,8 @@ class CM5_Module_YouTube extends CM5_Module
     {
         $vid = $matches[1];
         $host = ($this->get_config()->{'privacy-enchanced'}?'www.youtube-nocookie.com':'www.youtube.com');
-        $color1 = $this->get_config()->{'controls-color-1'};
-        $color2 = $this->get_config()->{'controls-color-2'};
+        $color1 = trim($this->get_config()->{'controls-color-1'}, '#');
+        $color2 = trim($this->get_config()->{'controls-color-2'}, '#');
         $width =  $this->get_config()->{'video-width'};
         $height =  $this->get_config()->{'video-height'};
         

@@ -62,8 +62,6 @@ class Form_FieldSet extends Form_Field_Container
 		$this->walkFields(function($field, $index) use($html_name){
 			etag('li')->attr('data-name', $field->getName())->push_parent();
 			
-			etag('label', $field->options['label']);
-			
 			// Render field
 			Output_HTMLTag::get_current_parent()->append($field->render(array(
 				'namespace' => $html_name,
@@ -71,9 +69,9 @@ class Form_FieldSet extends Form_Field_Container
 			
 			// Add extra fields
 			if (($field->isValid() === false) && ($field->getError()))
-				etag('span class="ui-form-error"', (string)$field->getError());
+				etag('span class="error"', (string)$field->getError());
 			else if ($field->options->has('hint'))
-				etag('span class="ui-form-hint"', $field->options['hint']);
+				etag('span class="hint"', $field->options['hint']);
 			Output_HTMLTag::pop_parent();
 		});
 		Output_HTMLTag::pop_parent();

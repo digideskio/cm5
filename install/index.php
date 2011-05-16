@@ -51,7 +51,7 @@ $dl->activate();
 $dl->get_document()->add_ref_css(surl('/../static/debug/debug.css'));
 $dl->get_document()->title = 'Installation';
 
-etag('h2', 'PHPLibs Skeleton');
+etag('h2', 'CM5');
 etag('h3', 'Installation process');
 
 // Make checks for writable files
@@ -80,5 +80,18 @@ if (! is_writable(__DIR__ . '/../cache'))
 }
 
 $f = new UI_InstallationForm($fn_config, __DIR__ . '/build-script.php');
-etag('div', $f->render());
-?>
+if ($f->process() == Form::RESULT_VALID){
+        
+        etag('strong', 'Installation finished succesfully !');
+        etag('p class="error"', 'For security reasons you must delete folder "install" from web server.');
+        
+        $relative_folder = implode('/', array_slice(explode('/', dirname($_SERVER['SCRIPT_NAME'])), 0, -1));        
+        if (!empty($relative_folder))
+            etag('p class="error"', 'Site is running under a subdirectory, for proper support of ' .
+                'cool urls, the .htaccess file must be edit and the option ', tag('strong', 'RewriteBase'),
+                ' should be change to: ',
+            tag('pre class="code"', "RewriteBase $relative_folder")
+            );
+} else
+	etag('div', $f->render());
+

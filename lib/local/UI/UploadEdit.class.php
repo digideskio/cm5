@@ -21,44 +21,43 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UploadEdit extends Output_HTML_Form
+class UI_UploadEdit extends Form_Html
 {
-    public function __construct($u)
+    public function __construct(CM5_Model_Upload $u)
     {
         $this->upload = $u;
-        parent::__construct(array(
-            'oldfile' => array('type' => 'custom' , 'value' =>
-                tag('span class="filename"', $u->filename) .
-                tag('span class="size"', html_human_fsize($u->filesize, ''))
-            ),
-			'file' => array('type' => 'file', 'display' => 'File'),
-			'description' => array('display' => 'Description',
-			    'hint' => 'Optional description for file', 'type' => 'textarea',
-			    'value' => $u->description)
-        ),
-        array('title' => 'Edit upload',
-            'css' => array('ui-form', 'ui-form-upload-edit'),
+        parent::__construct(null, array('title' => 'Edit upload',
+            'attribs' => array('class' => 'form upload-edit'),
 		    'buttons' => array(
-		        'upload' => array('display' =>'Save'),
-	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
+		        'upload' => array('label' =>'Save'),
+	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
 	                'onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
                 )
             )
         );
+        
+        $this->addMany(
+        	field_raw('oldfile', array('label' => '', 'value' =>
+                tag('span', tag('span class="filename"', $u->filename),
+                	tag('span class="size"', html_human_fsize($u->filesize, ''))))),
+			field_file('file', array('label' => 'File', 'multiple' => false, 'required' => false)),
+			field_textarea('description', array('display' => 'Description',
+			    'hint' => 'Optional description for file', 'type' => 'textarea',
+			    'value' => $u->description))
+        );        
     }
 
-    public function on_valid($values)
+    public function onProcessValid()
     {
-        if ($this->get_field_value('file'))
+        if ($this->get('file')->getValue())
         {
+        	error_log('new file');
             // Update file
-            $this->upload->update_file($values['file']['data'], $values['file']['orig_name']);
+            $this->upload->update_upload($this->get('file')->getValue());
         }
-        $this->upload->description = $values['description'];
+        $this->upload->description = $this->get('description')->getValue();
         $this->upload->save();
         
-         UrlFactory::craft('upload.admin')->redirect();
+        UrlFactory::craft('upload.admin')->redirect();
     }
 };
-
-?>

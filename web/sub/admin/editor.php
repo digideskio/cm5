@@ -132,14 +132,14 @@ function create_page()
     etag('script type="text/javascript" html_escape_off',"
     	var request_translit = function() {
 			$.get('../tools/transliterate', {
-				text : $('.ui-createpage-form input[name=title]').val()
+				text : $('.form.createpage input[name=title]').val()
 			}, function(data) {
-				$('.ui-createpage-form input[name=slug]').val(data);
+				$('.form.createpage  input[name=slug]').val(data);
 			});
 		};
 		
 		$(document).ready(function(){
-			$('.ui-createpage-form input[name=title]').change(request_translit);
+			$('.form.createpage input[name=title]').change(request_translit);
 			request_translit();
 		});
     ");

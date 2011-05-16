@@ -37,7 +37,7 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
     public function config_options()
     {
         return array(
-            'property_id' => array('display' => 'Site property id as defined by google analytics.'),
+            'property_id' => array('label' => 'Site property id as defined by google analytics.'),
 //            'inform_admin' => array('display' => 'Monitor admin activity.', 'type' => 'checkbox'),
         );
     }

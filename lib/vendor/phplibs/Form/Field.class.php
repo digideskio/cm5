@@ -179,6 +179,15 @@ class Form_Field implements Form_Field_Interface
 	}
 	
 	/**
+	 * Remove a validator from a slot.
+	 * @param $slot The slot that was returned from addValidator function
+	 */
+	public function removeValidator($slot)
+	{
+		unset($this->validators[$slot]);
+	}
+	
+	/**
 	 * Get the error message after failed validation.
 	 */
 	public function getError()

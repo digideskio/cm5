@@ -21,60 +21,62 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserEdit extends Output_HTML_Form
+class UI_UserEdit extends Form_Html
 {
     public function __construct(CM5_Model_User $u)
     {
         $this->user = $u;
-        
-        $groups = array();
-        foreach(CM5_Model_Group::open_all() as $g)
-            $groups[$g->groupname] = $g->groupname;
-        
-        $groupselected = array();
-        foreach($u->groups->all() as $g)
-            $groupselected[$g->groupname] = true;
 
-        parent::__construct(array(
-			'password' => array('display' => 'Reset password', 'type' => 'password',
-			    'onerror' => 'Password must be at least 3 characters long.'),
-			'password2' => array('display' => ' ', 'type' => 'password'),
-			'enabled' => array('display' => 'Enabled', 'type' => 'checkbox', 'value' => $u->enabled),
-			'groups' => array('display' => 'Groups', 'value' => $groupselected,
-			    'type' => 'checklist', 'optionlist' => $groups)
-        ),
-        array('title' => 'Edit user "' . $u->username . '"',
-            'css' => array('ui-form'),
+        parent::__construct(null, array('title' => 'Edit user "' . $u->username . '"',
+            'attribs' => array('class' => 'form'),
 		    'buttons' => array(
-		        'save' => array('display' => 'Save'),
-		        'cancel' => array('display' => 'Cancel', 'type' => 'button',
-		            'onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'")
+		        'save' => array('label' => 'Save'),
+		        'cancel' => array('label' => 'Cancel', 'type' => 'button',
+		            'attribs' => array('onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'"))
                 )
             )
         );
+        
+        $this->addMany(
+			field_password('password', array('label' => 'Reset password', 'pattern' => '/^.{3,}$/')),
+			field_password('password2', array('label' => '', 'pattern' => '/^.{3,}$/',
+				'hint' => 'Password must be at least 3 characters long.')),
+			field_checkbox('enabled', array('label' => 'Enabled', 'checked' => $u->enabled, 'value' => true)),
+			field_set('groups', array('label' => 'Groups'))
+        );
+
+        $enabledgroups = array();
+        foreach($u->groups->all() as $g)
+            $enabledgroups[] = $g->groupname;
+        foreach(CM5_Model_Group::open_all() as $g) {
+        	$checked = in_array($g->groupname, $enabledgroups);
+        	$this->get('groups')->add(field_checkbox('group', array('label' => $g, 'value' => $g, 'checked' => $checked)));
+        }
+        
     }
     
-    public function on_post()
+    public function onProcessPost()
     {
-        $pass1 = $this->get_field_value('password');
-        $pass2 = $this->get_field_value('password2');
+        $pass1 = $this->get('password')->getValue();
+        $pass2 = $this->get('password2')->getValue();
         
         if ((!empty($pass1)) || (!empty($pass2)))
             if ($pass1 != $pass2)
-                $this->invalidate_field('password2', 'Passwords do not match.');
+                $this->get('password2')->invalidate('Passwords do not match.');
     }
 
-    public function on_valid($values)
+    public function onProcessValid()
     {
+    	$values = $this->getValues();
+    	
         $this->user->enabled = $values['enabled'];
         if (!empty($values['password']))
             $this->user->password = sha1($values['password']);
         $this->user->save();        
 
-        $groups = array();
+        
         foreach(CM5_Model_Group::open_all() as $g)
-        	$groups[$g->groupname] = false;
-        $groups = array_merge($groups, $values['groups']);
+        	$groups[$g->groupname] = in_array($g->groupname, $values['groups']['group'])?true:false;        
         
         // Create memberships
         foreach($groups as $group => $enabled)
@@ -82,6 +84,7 @@ class UI_UserEdit extends Output_HTML_Form
             if ($enabled) {
             	if (count($this->user->groups->subquery()
             		->where('groupname = ?')->execute($group)) == 0) {
+            			// Add membership
 		            	CM5_Model_Membership::create(array(
 		                    'username' => $this->user->username,
 		                    'groupname' => $group
@@ -90,6 +93,7 @@ class UI_UserEdit extends Output_HTML_Form
             } else {
             	if (count($this->user->groups->subquery()
             		->where('groupname = ?')->execute($group))) {
+            			// Remove membership
             			CM5_Model_Membership::open(array(
             				'username' => $this->user->username,
                     		'groupname' => $group)
@@ -101,5 +105,3 @@ class UI_UserEdit extends Output_HTML_Form
         UrlFactory::craft('user.admin')->redirect();
     }
 };
-
-?>

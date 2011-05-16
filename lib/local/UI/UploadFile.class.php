@@ -25,9 +25,9 @@ class UI_UploadFile extends Form_Html
 {
     public function __construct()
     {
-        parent::__construct(array(
+        parent::__construct(null, array(
         	'title' => 'Upload a new file',
-            'attribs' => array('class' => 'ui-form ui-form-upload'),
+            'attribs' => array('class' => 'form upload'),
 		    'buttons' => array(
 		        'upload' => array('label' =>'Upload'),
 	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
@@ -36,36 +36,38 @@ class UI_UploadFile extends Form_Html
             )
         ));
         
-        $this->addFields(
-        	//'file' => array('type' => 'file', 'display' => 'File'),
-			new Form_Field_Text('description', array(
-				'multiline' => true,
-				'label' => 'Description',
+        $this->addMany(
+        	field_file('file', array('label' => 'File', 'multiple' => true, 'required' => true)),
+        	field_textarea('description', array('label' => 'Description',
 				'hint' => 'Optional description for file',
-				'validator' => Form_Validator::valid()))
+				'required' => false))
         );
     }
 
     public function onProcessPost()
     {
-       /* if (!($file = $this->get_field_value('file')))
-            $this->getField('file')->invalidate('You must select a file to upload');
-        
-        if (count(Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($file['orig_name'])))
-            $this->getField('file')->invalidate('There is already an upload with the same filename.');
-            */
+       
+    	foreach($this->get('file')->getValue() as $file) {
+	        if (count(CM5_Model_Upload::raw_query()->select(array('id'))
+	        	->where('filename = ?')->execute($file->getName())))
+    	        $this->get('file')->invalidate("There is already an upload with the same \"{$file->getName()}\" filename.");
+    	}
+
     }
     
     public function onProcessValid()
     {
-    	return;
-        $up = Upload::from_file($values['file']['data'], $values['file']['orig_name']);
-        $up->description = $values['description'];
-        $up->save();
+    	foreach($this->get('file')->getValue() as $upload) {
+	        $up = CM5_Model_Upload::create_from_upload($upload);
+	        $up->description = $this->get('description')->getValue();
+	        $up->save();
+	        
+	        if (!$up) {
+	            $this->invalidate_field('file', 'There was an unknown problem trying to upload file');
+	            return;
+	        }
+    	}
         
-        if (!$up)
-            $this->invalidate_field('file', 'There was an unknown problem trying to upload file');
-        else
-            UrlFactory::craft('upload.admin')->redirect();
+        UrlFactory::craft('upload.admin')->redirect();
     }
 };

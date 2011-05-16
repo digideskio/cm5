@@ -108,27 +108,29 @@ class CM5_Model_Upload extends DB_Record
         return $mime_type;*/
     }
     
-    static function from_file($data, $filename)
+    static function create_from_upload(UploadedFile $upload)
     {   
         $upload_folder = GConfig::get_instance()->site->upload_folder;
 
-        // Get mime type
-        $mime_type = self::data_mime($data);
         
         // Calculate save_path
         $path_count = 0;
+        $data = file_get_contents($upload->getTempName());
         $datasum = sha1($data);
         $store_file = $datasum . '.dat';
+        
+        // Get mime type
+        $mime_type = self::data_mime($data);
 
         while(file_exists($upload_folder . '/' . $store_file))
             $store_file = '/' . $datasum . '.' . ($path_count += 1) . '.dat';
 
         // Save data
-        file_put_contents($upload_folder . '/' . $store_file, $data);
+        $upload->move($upload_folder . '/' . $store_file);      
 
         // Save entry
-        $a = Upload::create(array(
-            'filename' => $filename,
+        $up = CM5_Model_Upload::create(array(
+            'filename' => $upload->getName(),
             'filesize' => strlen($data),
             'store_file' => $store_file,
             'sha1_sum' => $datasum,
@@ -137,20 +139,22 @@ class CM5_Model_Upload extends DB_Record
         ));
         
         // Check if it is image
-        $a->update_image_info();
+        $up->update_image_info();
         
-        return $a;
+        return $up;
     }
     
-    public function update_file($data, $filename)
+    public function update_upload(UploadedFile $upload)
     {
         $upload_folder = GConfig::get_instance()->site->upload_folder;
         
         // Get mime type
+        $data = file_get_contents($upload->getTempname());
         $mime_type = self::data_mime($data);
             
         // Overwrite old file
-        file_put_contents($upload_folder . '/' . $this->store_file, $data);
+        unlink($this->get_store_path());
+        $upload->move($this->get_store_path());        
         
         // Save to database
         $this->filesize = strlen($data);
@@ -181,9 +185,14 @@ class CM5_Model_Upload extends DB_Record
         echo $this->get_data();
     }
     
+    function get_store_path()
+    {
+    	return GConfig::get_instance()->site->upload_folder . '/' . $this->store_file;
+    }
+    
     function get_data()
     {
-        return file_get_contents(GConfig::get_instance()->site->upload_folder . '/' . $this->store_file);
+        return file_get_contents($this->get_store_path());
     }
     
     function dump_thumb()
@@ -223,7 +232,7 @@ CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
         CM5_Model_Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
-    unlink(GConfig::get_instance()->site->upload_folder . "/" . $r->store_file);
+    unlink($r->get_store_path());
 });
 
 CM5_Model_Upload::events()->connect('op.pre.create', function($e) {

@@ -41,12 +41,13 @@ class Form_Field_Html extends Form_Field
 		
 		foreach($this->getSupportedConstraints() as $const) {
 			if ($const == 'required') {
-				$constraints[] = Form_Validator::isNotEmpty(); 
+				if ($this->isRequired())
+					$constraints[] = Form_Validator::isNotEmpty(); 
 			} else if ($const == 'pattern') {
-				if ($this->options->has('pattern'))
+				if ($this->options->get('pattern'))
 					$constraints[] = Form_Validator::matchRegex($this->options['pattern']);
 			} else if ($const == 'maxlength') {
-				if ($this->options->has('maxlength'))
+				if ($this->options->get('maxlength'))
 					$constraints[] = Form_Validator::isStrlenBetween(null, $this->options['maxlength']);
 			}
 		}
@@ -100,7 +101,7 @@ class Form_Field_Html extends Form_Field
 		foreach(array('min', 'max', 'step', 'maxlength') as $attr)
 			if ($this->options->has($attr))
 				$attribs[$attr] = $this->options[$attr];
-		foreach(array('required', 'readonly', 'disabled', 'multiple') as $attr)
+		foreach(array('required', 'readonly', 'disabled', 'multiple', 'autofocus') as $attr)
 			if ($this->options->get($attr))
 				$attribs[$attr] = $attr;
 		

@@ -20,30 +20,33 @@
  */
 
 
-class UI_LoginForm extends Output_HTML_Form
+class UI_LoginForm extends Form_Html
 {
     public function __construct($redirect_url)
     {
         $this->redirect_url = $redirect_url;
 
-        parent::__construct(array(
-			'login-user' => array('display' => 'Username'),
-			'login-pass' => array('display' => 'Password', 'type' => 'password'),
-        ),
-        array('title' => GConfig::get_instance()->site->title . ' Login',
-            'css' => array('ui-form','ui-login'),
+        parent::__construct(null, array(
+        	'title' => GConfig::get_instance()->site->title . ' Login',
+            'attribs' => array('class' => 'form login'),
 		    'buttons' => array(
-		        'login' => array('display' =>'Login'),
-		        'back' => array('display' => 'Back', 'type' => 'button', 'onclick' => "window.location='{$redirect_url}'")
+		        'login' => array('label' =>'Login'),
+		        'back' => array('label' => 'Back', 'type' => 'button',
+		        	'attribs' => array('onclick' => "window.location='{$redirect_url}'"))
                 )
             )
         );
+        
+        $this->addMany(
+        	field_text('user', array('label' => 'Username', 'required' => true, 'autofocus' => true)),
+        	field_text('pass', array('label' => 'Password', 'type' => 'password', 'required' => true))
+        );
     }
 
-    public function on_post()
+    public function onProcessValid()
     {
-        $user = $this->get_field_value('login-user');
-        $pass = $this->get_field_value('login-pass');
+        $user = $this->get('user')->getValue();
+        $pass = $this->get('pass')->getValue();
         if (Authn_Realm::authenticate($user, $pass))
         {
             CM5_Logger::get_instance()->info("User \"{$user}\" logged on.");
@@ -52,9 +55,7 @@ class UI_LoginForm extends Output_HTML_Form
         else
         {
             CM5_Logger::get_instance()->err("User \"{$user}\" tried to login unsuccesfully.");
-            $this->invalidate_field('login-pass', 'The username or password you entered is incorrect.');
+            $this->get('pass')->invalidate('The username or password you entered is incorrect.');
         }
     }
 };
-
-?>

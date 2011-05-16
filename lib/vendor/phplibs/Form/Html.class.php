@@ -6,6 +6,7 @@ require_once(__DIR__ . '/Field/File.class.php');
 require_once(__DIR__ . '/Field/Select.class.php');
 require_once(__DIR__ . '/Field/Set.class.php');
 require_once(__DIR__ . '/Field/Textarea.class.php');
+require_once(__DIR__ . '/Field/Raw.class.php');
 
 /**
  * HTML Rendered for forms.
@@ -80,7 +81,6 @@ class Form_Html extends Form
 		$form = $this;
 		$this->walkFields( function($field, $index) use($form) {
 			etag('li')->attr('data-name', $field->getName())->push_parent();
-			etag('label', $field->options['label']);
 			
 			// Render field
 			Output_HTMLTag::get_current_parent()->append($field->render(array(

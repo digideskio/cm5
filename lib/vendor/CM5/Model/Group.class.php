@@ -41,4 +41,9 @@ class CM5_Model_Group extends DB_Record
     static public $fields = array(
         'groupname' => array('pk' => true)
     );
+    
+    public function __toString()
+    {
+    	return $this->groupname;
+    }
 }

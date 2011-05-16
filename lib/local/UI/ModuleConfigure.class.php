@@ -21,61 +21,55 @@
  *      Sque - initial API and implementation
  */
 
-class UI_ModuleConfigure extends Output_HTML_Form
+class UI_ModuleConfigure extends Form_Html
 {
     public function __construct($module)
     {
         $this->module = $module;
         $this->mconfig = $module->get_config();
 
-        $fields = array();
-        foreach($module->config_options() as $id => $opt)
-        {
-            $fields[$id] = array('display' => $opt['display']);
-            $f =  & $fields[$id];
-            if (isset($opt['type']))
-            {
-                if ($opt['type'] === 'checkbox')
-                    $f['type'] = 'checkbox';
-                if ($opt['type'] === 'select')
-                {
-                    $f['type'] = 'dropbox';
-                    $f['optionlist'] = $opt['options'];
-                }
-                if ($opt['type'] === 'textarea')
-                    $f['type'] = 'textarea';
-                if ($opt['type'] === 'color')
-                    $f['htmlattribs'] = array('class' => 'color');
-
-            }
-            $f['value'] = $this->mconfig->{$id};
-        }   
-        parent::__construct(
-            $fields,
+        parent::__construct(null,
         array('title' => 'Configure ' . ($this->module->module_type() == 'theme'?'theme':'module') . ': ' . $this->module->info_property('title'),
-            'css' => array('ui-form', 'ui-form-moduleconfig'),
+            'attribs' => array('class' => 'form moduleconfig'),
 		    'buttons' => array(
-		        'upload' => array('display' =>'Save'),
-	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
-	                'onclick' => "window.location='" . UrlFactory::craft('module.admin') . "'")
+		        'upload' => array('label' =>'Save'),
+	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
+	                'attribs' => array('onclick' => "window.location='" . UrlFactory::craft('module.admin') . "'"))
                 )
             )
         );
+        
+        // Convert all config options to editable fields
+        foreach($module->config_options() as $name => $options) {
+        	$options['type'] = !isset($options['type'])?'text':$options['type'];
+        	
+        	if (in_array($options['type'], array('radio', 'checkbox'))) {
+        		$options['value'] = true;
+        		$options['checked'] = $this->mconfig->{$name};
+        	} else {
+        		$options['value'] = $this->mconfig->{$name};
+        	}
+        	
+        	$this->add(call_user_func('field_' . $options['type'], $name, $options));
+        }   
+        
     }
     
-    public function on_valid($values)
+    public function onProcessValid()
     {
+    	$values = $this->getValues();
+    	
         foreach($values as $id => $value)
             $this->mconfig->{$id} = $value;
 
         $this->module->save_config();
-
-        return; // Omit redirect not very usefull        
+        
+        // Omit redirect not very usefull
+        return; 
+                
         if ($this->module->module_type() === 'theme')
             UrlFactory::craft('theme.admin')->redirect();
             
         UrlFactory::craft('module.admin')->redirect();
     }
 };
-
-?>

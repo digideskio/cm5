@@ -228,7 +228,16 @@ class Form_Validator
 	 */
 	public static function isUrl($error = "This is not valid url address.")
 	{
-		return self::matchRegex('#((http|https|ftp)://([\w-\d]+\.)+[\w-\d]+)(/[\w~,;\-\./?%&+\#=]*)?#', $error);		
+		return self::matchRegex('#^((http|https|ftp)://([\w-\d]+\.)+[\w-\d]+)(/[\w~,;\-\./?%&+\#=]*)?$#', $error);		
+	}
+
+	/**
+	 * Valid only if it is a valid simple color.
+	 * @param string $error The error message in case of failure.
+	 */
+	public static function isSimpleColor($error = "This is not valid color.")
+	{
+		return self::matchRegex('/^#[a-zA-Z0-9]{6}$/', $error);		
 	}
 	
 	/**
@@ -237,7 +246,7 @@ class Form_Validator
 	 */
 	public static function isEmail($error = "This is not valid email address.")
 	{
-		return self::matchRegex('/([a-zA-Z0-9\-\.])+@([a-zA-Z0-9\-\.])+/', $error);		
+		return self::matchRegex('/^([a-zA-Z0-9\-\.])+@([a-zA-Z0-9\-\.])+$/', $error);		
 	}
 	
 	

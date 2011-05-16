@@ -80,7 +80,9 @@ class Layout_Admin extends Layout
         $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
-        $this->get_document()->add_ref_js(surl('/static/js/jscolor.js.php'));
+        //$this->get_document()->add_ref_js(surl('/static/js/jscolor.js.php'));
+        $this->get_document()->add_ref_css(surl('/static/js/jqMiniColors/jquery.miniColors.css'));
+        $this->get_document()->add_ref_js(surl('/static/js/jqMiniColors/jquery.miniColors.min.js'));
 
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
@@ -107,6 +109,11 @@ class Layout_Admin extends Layout
                 )
             )
         );
+        etag('script html_escape_off', '
+        	$(document).ready(function(){
+        		$("input[type=color]").miniColors();
+        	});
+        ');
         
         $this->set_default_container($def_content);
 
@@ -128,4 +135,3 @@ class Layout_Admin extends Layout
         $this->deactivate();
     }
 }
-?>

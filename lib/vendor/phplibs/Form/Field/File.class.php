@@ -85,7 +85,7 @@ class Form_Field_File extends Form_Field_Input
 		} else {
 			$t->attr('name', $this->getHtmlFullName($namespace));
 		}
-		return $t;
+		return tag('label', tag('span', $this->options['label']), $t);
 	}
 }
 

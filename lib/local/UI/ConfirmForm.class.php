@@ -21,31 +21,29 @@
  *      Sque - initial API and implementation
  */
 
-class UI_ConfirmForm extends Output_HTML_Form
+class UI_ConfirmForm extends Form_Html
 {
     public function __construct($title, $message, $ok_button, $ok_action, $ok_action_args, $cancel_url)
     {
         $this->ok_action = $ok_action;
         $this->ok_action_args = $ok_action_args;
         
-        parent::__construct(array(
-            'msg' => array('type' => 'custom', 'value' => $message)
-            ),
+        parent::__construct(null,
             array('title' => $title,
-                'css' => array('ui-form', 'ui-form-confirm'),
+                'attribs' => array('class' => 'form form-confirm'),
 		        'buttons' => array(
-		            'delete' => array('display' => $ok_button),
-		            'cancel' => array('display' =>'Cancel', 'type' => 'button',
-		                'onclick' => "window.location='" . $cancel_url . "'")
+		            'delete' => array('label' => $ok_button),
+		            'cancel' => array('label' =>'Cancel', 'type' => 'button',
+		                'attribs' => array('onclick' => "window.location='" . $cancel_url . "'"))
                     )
                 )
         );
+        
+        $this->add(field_raw('msg', array('label' => '', 'value' => $message)));
     }
     
-    public function on_valid($values)
+    public function onProcessValid()
     {
         call_user_func_array($this->ok_action, $this->ok_action_args);
     }
 };
-
-?>

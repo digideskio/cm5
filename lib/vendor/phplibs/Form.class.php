@@ -127,14 +127,6 @@ class Form extends Form_Field_Container
 	}
 	
 	/**
-	 * Check if this form is valid.
-	 */
-	public function isValid()
-	{		
-		return $this->result_code == self::RESULT_VALID;
-	}
-	
-	/**
 	 * Notify all event listeners for this event
 	 * @param string $name The name of the event.
 	 * @param string $method_name The name of the object function.
@@ -166,6 +158,8 @@ class Form extends Form_Field_Container
 				// Multiple values for post-keys indexes
 				$move_indexes_right = function($files) use(& $move_indexes_right)
 				{
+					if (!is_array($files['name']))
+						return $files;
 					$results = array();
 					foreach($files['name'] as $index => $name) {
 						$reordered = array(

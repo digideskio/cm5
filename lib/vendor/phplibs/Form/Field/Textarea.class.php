@@ -37,6 +37,17 @@ class Form_Field_Textarea extends Form_Field_Html
 	}
 	
 	/**
+	 * Get supported constraints
+	 * (non-PHPdoc)
+	 * @see Form_Field_Html::getSupportedConstraints()
+	 */
+	public function getSupportedConstraints()
+	{
+		return array('required', 'maxlength', 'pattern');
+	}
+	
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see Form_Field_Input::render()
 	 * @return Output_HTMLTag html element.
@@ -50,7 +61,7 @@ class Form_Field_Textarea extends Form_Field_Html
 		if ($this->options->get('required'))
 			$t->attr('required', 'required');
 		
-		return $t;
+		return tag('label', tag('span', $this->options['label']), $t);
 	}
 }
 

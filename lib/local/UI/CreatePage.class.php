@@ -21,44 +21,43 @@
  *      Sque - initial API and implementation
  */
 
-class UI_CreatePage extends Output_HTML_Form
+class UI_CreatePage extends Form_Html
 {
     public function __construct($parent_id)
     {
-        if (($parent_id !== null) && (!Page::open($parent_id)))
+        if (($parent_id !== null) && (!Cm5_Model_Page::open($parent_id)))
             $parent_id = null;
-
         $this->parent_id = $parent_id;
-        parent::__construct(array(
-			'title' => array('display' => 'Title', 'value', 'regcheck' => '/^.{3,}$/',
-			    'onerror' => 'You must put a title on article'),
-			'slug' => array('display' => 'Slug', 'value', 'regcheck' => '/^[\w\-]{1,}$/',
-			    'onerror' => 'You must setup a slug for this article'),
-			'status' => array('display' => 'Status', 'type' => 'dropbox',
+        parent::__construct(null,
+        array('title' => 'Create page',
+            'attribs' => array('class' => 'form createpage'),
+		    'buttons' => array(
+		        'create' => array('label' =>'Create'),
+	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
+	                'onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
+                )
+            )
+        );
+        
+        $this->addMany(
+        	field_text('title', array('label' => 'Title', 'pattern' => '/^.{3,}$/')),
+			field_text('slug', array('label' => 'Slug', 'pattern' => '/^[\w\-]{1,}$/')),
+			field_select('status', array('label' => 'Status', 'type' => 'dropbox',
 			    'optionlist' => array(
 			        'published' => 'Published',
 			        'draft' => 'Draft'
 			    ),
 			    'value' => 'draft'
-			 )
-        ),
-        array('title' => 'Create page',
-            'css' => array('ui-form', 'ui-createpage-form'),
-		    'buttons' => array(
-		        'create' => array('display' =>'Create'),
-	            'cancel' => array('display' =>'Cancel', 'type' => 'button',
-	                'onclick' => "window.location='" . UrlFactory::craft('page.admin') . "'")
-                )
-            )
-        );
+			 ))
+		);
+
     }
 
-    public function on_valid($values)
+    public function onProcessValid()
     {   
+    	$values = $this->getValues();
         $values['parent_id'] = $this->parent_id;
         $p = CM5_Model_Page::create($values);
         UrlFactory::craft('page.edit', $p->id)->redirect();
     }
 };
-
-?>

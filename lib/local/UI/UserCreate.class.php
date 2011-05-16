@@ -21,43 +21,50 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserCreate extends Output_HTML_Form
+class UI_UserCreate extends Form_Html
 {
     public function __construct()
     {
         $groups = array();
-        foreach(CM5_Model_Group::open_all() as $g)
-            $groups[$g->groupname] = $g->groupname;
+        
 
-        parent::__construct(array(
-			'username' => array('display' => 'Username', 'regcheck' => '/^[a-z0-9_\-]+$/',
-			    'onerror' => 'Username can have lower case letters, numbers, dash and underscore.'),
-			'password' => array('display' => 'Password', 'regcheck' => '/^.{3,}$/', 'type' => 'password',
-			    'onerror' => 'Password must be at least 3 characters long.'),
-			'password2' => array('display' => ' ', 'type' => 'password'),
-			'groups' => array('display' => 'Groups', 
-			    'type' => 'checklist', 'optionlist' => $groups)
-        ),
-        array('title' => 'Create new user',
-            'css' => array('ui-form'),
+        parent::__construct(null, array('title' => 'Create new user',
+            'attribs' => array('class' => 'form'),
 		    'buttons' => array(
-		        'create' => array('display' => 'Create'),
-		        'cancel' => array('display' => 'Cancel', 'type' => 'button',
+		        'create' => array('label' => 'Create'),
+		        'cancel' => array('label' => 'Cancel', 'type' => 'button',
 		            'onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'")
                 )
             )
         );
+        
+        $this->addMany(
+			field_text('username', array('label' => 'Username', 'pattern' => '/^[a-z0-9_\-]+$/',
+				'required' => true, 'hint' => 'Permitted letters are lower case letters, numbers, dash and underscore.')),
+			field_password('password', array('label' => 'Password', 'pattern' => '/^.{3,}$/',
+				'required' => true)),
+			field_password('password2', array('label' => '', 'required' => true, 'hint' => 'At least 3 letters long.')),
+			field_set('groups', array('label' => 'Groups'))
+		);
+		foreach(CM5_Model_Group::open_all() as $g)
+			$this->get('groups')->add(field_checkbox('group', array('label' => $g, 'value' => $g)));
+        
     }
     
-    public function on_post()
+    public function onProcessPost()
     {
-        if ($this->get_field_value('password') != $this->get_field_value('password2'))
-            $this->invalidate_field('password2', 'Passwords do not match.');
+    	if ($this->get('username')->isValid()) {
+    		if (CM5_Model_User::open($this->get('username')->getValue()))
+    			$this->get('username')->invalidate('There is already a user with that username.');
+    	}
+        if ($this->get('password')->getValue() != $this->get('password2')->getValue())
+            $this->get('password2')->invalidate('Passwords do not match.');
     }
 
-    public function on_valid($values)
+    public function onProcessValid()
     {
-
+    	$values = $this->getValues();
+    	
         $u = CM5_Model_User::create(array(
             'username' => $values['username'],
             'password' => sha1($values['password']),
@@ -70,18 +77,14 @@ class UI_UserCreate extends Output_HTML_Form
             return;
         }
 
-        // Create memberships
-        foreach($values['groups'] as $group => $enabled)
-        {
-            if ($enabled)
-                CM5_Model_Membership::create(array(
-                    'username' => $values['username'],
-                    'groupname' => $group
-                ));
-        }
+	    // Create memberships
+		foreach($values['groups']['group'] as $group) {
+			CM5_Model_Membership::create(array(
+				'username' => $values['username'],
+				'groupname' => $group
+			));
+		}
         
         UrlFactory::craft('user.admin')->redirect();
     }
 };
-
-?>

@@ -82,7 +82,7 @@ class CM5_Model_Page extends DB_Record
     public function delete_move_orphans()
     {
         // Move all childs to this node's parent
-        Page::raw_query()
+        static::raw_query()
             ->update()
             ->set('parent_id', $this->parent_id)
             ->where('parent_id = ?')

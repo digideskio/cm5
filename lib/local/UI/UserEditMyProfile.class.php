@@ -21,59 +21,49 @@
  *      Sque - initial API and implementation
  */
 
-class UI_UserEditMyProfile extends Output_HTML_Form
+class UI_UserEditMyProfile extends Form_Html
 {
     public function __construct($u)
     {
         $this->user = $u;
-        
-        $groups = array();
-        foreach(Group::open_all() as $g)
-            $groups[$g->groupname] = $g->groupname;
-        
-        $groupselected = array();
-        foreach($u->groups->all() as $g)
-            $groupselected[$g->groupname] = true;
 
-        parent::__construct(array(
-            'old-password' => array('display' => 'Current password', 'type' => 'password'),
-			'password' => array('display' => 'New password', 'type' => 'password',
-			    'onerror' => 'Password must be at least 3 characters long.'),
-			'password2' => array('display' => ' ', 'type' => 'password')
-        ),
-        array('title' => 'Edit user "' . $u->username . '"',
-            'css' => array('ui-form'),
+        parent::__construct(null, array('title' => 'Change your profile',
+            'attribs' => array('class' => 'form'),
 		    'buttons' => array(
-		        'save' => array('display' => 'Save'),
-		        'cancel' => array('display' => 'Cancel', 'type' => 'button',
-		            'onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'")
+		        'save' => array('label' => 'Save'),
+		        'cancel' => array('label' => 'Cancel', 'type' => 'button',
+		            'attribs' => array('onclick' => "window.location='" . (string)UrlFactory::craft('user.admin') . "'"))
                 )
             )
         );
+        $this->addMany(
+            field_password('old-password', array('label' => 'Current password')),
+			field_password('password', array('label' => 'New password', 'pattern' => '/^.{3,}$/')),
+			field_password('password2', array('label' => '', 'hint' => 'Password must be at least 3 characters long.'))
+        );
     }
     
-    public function on_post()
+    public function onProcessPost()
     {
-        $currentpass = $this->get_field_value('old-password');
+        $currentpass = $this->get('old-password')->getValue();
         if (!Authn_Realm::get_backend()->authenticate($this->user->username, $currentpass))
         {
-            $this->invalidate_field('old-password', 'You gave wrong password');
+            $this->get('old-password')->invalidate('You gave wrong password');
         }
-        $pass1 = $this->get_field_value('password');
-        $pass2 = $this->get_field_value('password2');
+        $pass1 = $this->get('password')->getValue();
+        $pass2 = $this->get('password2')->getValue();
         
         if ((empty($pass1)) || (empty($pass2)) ||
             ($pass1 != $pass2))
-                $this->invalidate_field('password2', 'You must write two times the same NEW password.');
+                $this->get('password2')->invalidate('You must write two times the same NEW password.');
     }
 
-    public function on_valid($values)
+    public function onProcessValid()
     {
+    	$values = $this->getValues();
         if (!empty($values['password']))
             $this->user->password = sha1($values['password']);
         $this->user->save();
         UrlFactory::craft('user.admin')->redirect();
     }
 };
-
-?>

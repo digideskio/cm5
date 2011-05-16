@@ -51,6 +51,7 @@ class Form_Field_Select extends Form_Field_Html
 		foreach($this->getOptionList() as $value => $label) {
 			if (!is_array($label) ) {
 				$values[$value] = $label;
+				continue;
 			}
 			
 			foreach($label as $value => $label)
@@ -111,7 +112,7 @@ class Form_Field_Select extends Form_Field_Html
 			}
 			$this->renderOption($opt_key, $opt_text)->appendTo($select);
 		}
-		return $select;
+		return tag('label', tag('span', $this->options['label']), $select);
 	}
 }
 

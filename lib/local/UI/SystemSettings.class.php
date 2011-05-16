@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-class UI_SystemSettings extends Output_HTML_Form
+class UI_SystemSettings extends Form_Html
 {
     public function __construct()
     {
@@ -32,36 +32,42 @@ class UI_SystemSettings extends Output_HTML_Form
         foreach($zone_identifiers as $zone)
             $tzones[$zone] = $zone;
             
-        parent::__construct(array(
-            'site-title' => array('display' => 'Site title:', 'value' => $config->site->title),
-            'site-timezone' => array('display' => 'Timezone:', 'type' => 'dropbox', 'optionlist' => $tzones,
-                'value' => $config->site->timezone),
-            'email-administrator' => array('display' => "Administrator's mail:", 'value' => $config->email->administrator,
-                'hint' => 'The mail that will receive notifications for the site.'),
-            'email-sender' => array('display' => "Sender mail address:", 'value' => $config->email->sender,
-                'hint' => 'The sender of the site notifications.')
-            ),
+        parent::__construct(null,
             array('title' => 'System settings',
-                'css' => array('ui-form'),
+                'attribs' => array('class' => 'form'),
 		        'buttons' => array(
-		            'save' => array('display' => 'Save')
+		            'save' => array('label' => 'Save')
                 )
+            )
+        );
+        
+        $this->addMany(
+        	field_set('site', array('label' => 'General'))->addMany(
+        		field_text('title', array('label' => 'Site title:', 'value' => $config->site->title)),
+        		field_select('timezone', array('label' => 'Timezone:', 'optionlist' => $tzones,
+                'value' => $config->site->timezone))
+        	),
+        	field_set('email', array('label' => 'Email notifications.'))->addMany(
+            	field_email('administrator', array('label' => "Administrator's mail:", 'value' => $config->email->administrator,
+                'hint' => 'The mail that will receive notifications for the site.')),
+            	field_email('sender', array('label' => "Sender mail address:", 'value' => $config->email->sender,
+                	'hint' => 'The sender of the site notifications.'))
             )
         );
     }
     
-    public function on_valid($values)
+    public function onProcessValid()
     {
+    	$values = $this->getValues();
+    	
         $config = GConfig::get_writable_copy();
-        $config->site->title = $values['site-title'];
-        $config->site->timezone = $values['site-timezone'];
-        $config->email->administrator = $values['email-administrator'];
-        $config->email->sender = $values['email-sender'];
+        foreach($values['site'] as $k => $v)
+        	$config->site->{$k} = $v;
+       	foreach($values['email'] as $k => $v)
+        	$config->email->{$k} = $v;
         
         GConfig::update($config);
         CM5_Logger::get_instance()->notice("System settings have been changed.");
         UrlFactory::craft('system.settings')->redirect();
     }
 };
-
-?>
