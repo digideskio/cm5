@@ -44,5 +44,3 @@ class Uri
             array('href' => $this->resource));
     }
 }
-
-?>

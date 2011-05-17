@@ -75,9 +75,9 @@ class Layout_Admin extends Layout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = GConfig::get_instance()->site->title . ' | Admin panel';
+        $this->get_document()->title = CM5_Config::get_instance()->site->title . ' | Admin panel';
         $this->get_document()->add_ref_css(surl('/static/css/admin.css'));
-        $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.2.min.js'));
+        $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.4.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
         $this->get_document()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
         //$this->get_document()->add_ref_js(surl('/static/js/jscolor.js.php'));
@@ -87,7 +87,7 @@ class Layout_Admin extends Layout
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', 
-                tag('a target="_blank"', GConfig::get_instance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
+                tag('a target="_blank"', CM5_Config::get_instance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
             tag('div id="login-info"'),
             tag('div id="main-menu"')
         );

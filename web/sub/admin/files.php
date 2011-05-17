@@ -47,7 +47,7 @@ function edit_file($id)
     Layout::open('admin')->activate();
     if (!($u = CM5_Model_Upload::open($id)))
         not_found();
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | File: {$u->filename} > Edit";
         
     $frm = new CM5_Form_UploadEdit($u);
@@ -60,7 +60,7 @@ function delete_file($id)
     Layout::open('admin')->activate();
     if (!($u = CM5_Model_Upload::open($id)))
         not_found();
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | File: {$u->filename} > Delete";
     $frm = new CM5_Form_Confirm(
         "Delete \"{$u->filename}\"",
@@ -86,6 +86,6 @@ function show_files()
             ->add_class('button')
             ->add_class('download')
     )->add_class('panel uploads');
-    $tab = new UI_UploadsGrid(CM5_Model_Upload::open_query()->order_by('id', 'DESC')->execute());
+    $tab = new CM5_Widget_UploadsGrid(CM5_Model_Upload::open_query()->order_by('id', 'DESC')->execute());
     etag('div',  $tab->render());
 }

@@ -38,6 +38,7 @@ class CM5_Form_Confirm extends Form_Html
     {
         $this->ok_action = $ok_action;
         $this->ok_action_args = $ok_action_args;
+        $this->message = $message;
         
         parent::__construct(null,
             array('title' => $title,
@@ -49,8 +50,11 @@ class CM5_Form_Confirm extends Form_Html
                     )
                 )
         );
-        
-        $this->add(field_raw('msg', array('label' => '', 'value' => $message)));
+    }
+    
+    public function configure()
+    {
+    	$this->add(field_raw('msg', array('label' => '', 'value' => $this->message)));
     }
     
     public function onProcessValid()

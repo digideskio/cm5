@@ -64,7 +64,7 @@ class DefaultThemeLayout extends CM5_ThemeLayout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = GConfig::get_instance()->site->title;
+        $this->get_document()->title = CM5_Config::get_instance()->site->title;
         $this->get_document()->add_ref_css(surl('/themes/default/css/default.css'));
         
         if ($this->get_config()->{"favicon-url"})
@@ -72,7 +72,7 @@ class DefaultThemeLayout extends CM5_ThemeLayout
         
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
-            tag('h1', GConfig::get_instance()->site->title),
+            tag('h1', CM5_Config::get_instance()->site->title),
             tag('div id="main-menu"')
         );
         etag('div id="main"',

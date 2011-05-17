@@ -28,13 +28,6 @@ class CM5_Form_SystemSettings extends Form_Html
 {
     public function __construct()
     {
-        $config = GConfig::get_instance();
-        
-        $zone_identifiers = DateTimeZone::listIdentifiers();
-        $tzones = array();
-        foreach($zone_identifiers as $zone)
-            $tzones[$zone] = $zone;
-            
         parent::__construct(null,
             array('title' => 'System settings',
                 'attribs' => array('class' => 'form'),
@@ -43,8 +36,17 @@ class CM5_Form_SystemSettings extends Form_Html
                 )
             )
         );
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+    	$config = CM5_Config::get_instance();
+    	$zone_identifiers = DateTimeZone::listIdentifiers();
+        $tzones = array();
+        foreach($zone_identifiers as $zone)
+            $tzones[$zone] = $zone;
+            
+		$this->addMany(
         	field_set('site', array('label' => 'General'))->addMany(
         		field_text('title', array('label' => 'Site title:', 'value' => $config->site->title)),
         		field_select('timezone', array('label' => 'Timezone:', 'optionlist' => $tzones,
@@ -63,13 +65,13 @@ class CM5_Form_SystemSettings extends Form_Html
     {
     	$values = $this->getValues();
     	
-        $config = GConfig::get_writable_copy();
+        $config = CM5_Config::get_writable_copy();
         foreach($values['site'] as $k => $v)
         	$config->site->{$k} = $v;
        	foreach($values['email'] as $k => $v)
         	$config->email->{$k} = $v;
         
-        GConfig::update($config);
+        CM5_Config::update($config);
         CM5_Logger::get_instance()->notice("System settings have been changed.");
         UrlFactory::craft('system.settings')->redirect();
     }

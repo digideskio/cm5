@@ -96,4 +96,3 @@ class Output_DateFormat
         return substr($this->date_obj->format('F'), 0, 3) . $this->date_obj->format(' d, Y');
     }
 }
-?>

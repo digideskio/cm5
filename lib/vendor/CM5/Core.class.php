@@ -152,7 +152,7 @@ class CM5_Core
         }
         
         // Initialize selected theme
-        $this->modules[GConfig::get_instance()->site->theme]->init();
+        $this->modules[CM5_Config::get_instance()->site->theme]->init();
     }
     
     /**
@@ -217,14 +217,14 @@ class CM5_Core
         	return false;
         }
         
-        $conf = GConfig::get_writable_copy();
+        $conf = CM5_Config::get_writable_copy();
         $conf->enabled_modules = implode(',',
             array_merge(
                 array($nickname),
                 explode(',', $conf->enabled_modules)
             )
         );
-        GConfig::update($conf);        
+        CM5_Config::update($conf);        
         CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
         
         // Reset cache as a module may leave trash
@@ -242,14 +242,14 @@ class CM5_Core
         
         $m->on_disable();
             
-        $conf = GConfig::get_writable_copy();
+        $conf = CM5_Config::get_writable_copy();
         $conf->enabled_modules = implode(',',
             array_diff(
                 explode(',', $conf->enabled_modules),
                 array($nickname)
             )
         );
-        GConfig::update($conf);        
+        CM5_Config::update($conf);        
         CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
         
         // Reset cache as a module may leave trash
@@ -432,7 +432,7 @@ class CM5_Core
             }
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
-            Layout::open('default')->get_document()->title = $p->title . ' | ' . GConfig::get_instance()->site->title;
+            Layout::open('default')->get_document()->title = $p->title . ' | ' . CM5_Config::get_instance()->site->title;
             etag('div class="article"',
                 tag('h1 class="title"', $p->title),
                 tag('div html_escape_off', $p->body)

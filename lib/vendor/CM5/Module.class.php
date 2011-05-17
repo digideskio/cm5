@@ -48,7 +48,7 @@ abstract class CM5_Module extends CM5_Configurable
 	 */
     public function is_enabled()
     {
-        return in_array($this->config_nickname(), explode(',', GConfig::get_instance()->enabled_modules));
+        return in_array($this->config_nickname(), explode(',', CM5_Config::get_instance()->enabled_modules));
     }
 	
 	/**

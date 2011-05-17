@@ -27,7 +27,7 @@ Stupid::chain_reaction();
 function view_settings()
 {
     Layout::open('admin')->activate();
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | System settings";
         
     $frm = new CM5_Form_SystemSettings();

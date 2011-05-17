@@ -21,8 +21,10 @@
  *      Sque - initial API and implementation
  */
 
-//! Global configuration helper
-class GConfig
+/**
+ * CM5 Global configuration helper
+ */
+class CM5_Config
 {
     //! The file to be used to save/load configuration
     public static $config_file = null;
@@ -30,7 +32,9 @@ class GConfig
     //! Default configuraiton
     public static $default_config = array();
     
-    //! Load configuration from file
+    /**
+     * Load configuration from file
+     */
     public static function load_config()
     {
         $config = new Zend_Config(self::$default_config, true);
@@ -39,19 +43,28 @@ class GConfig
         Registry::set('config', $config);
     }
     
-    //! Get the instance of global config
+    /**
+     * Get the singleton instance of CM5_Config
+     * @return Zend_Config
+     */
     public static function get_instance()
     {
         return Registry::get('config');
     }
     
-    //! Get a writable copy of the configuration
+    /**
+     * Get a writtable copy of configuration file.
+     * @return Zend_Config
+     */
     public static function get_writable_copy()
     {
         return new Zend_Config(self::get_instance()->toArray(), true);
     }
     
-    //! Update configuration
+    /**
+     * Update configuration file based on a new config pack
+     * @param Zend_Config $config
+     */
     public static function update(Zend_Config $config)
     {
         if (!is_writable(self::$config_file))

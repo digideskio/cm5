@@ -32,7 +32,7 @@ class CM5_Form_Login extends Form_Html
         $this->redirect_url = $redirect_url;
 
         parent::__construct(null, array(
-        	'title' => GConfig::get_instance()->site->title . ' Login',
+        	'title' => CM5_Config::get_instance()->site->title . ' Login',
             'attribs' => array('class' => 'form login'),
 		    'buttons' => array(
 		        'login' => array('label' =>'Login'),
@@ -41,8 +41,11 @@ class CM5_Form_Login extends Form_Html
                 )
             )
         );
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+		$this->addMany(
         	field_text('user', array('label' => 'Username', 'required' => true, 'autofocus' => true)),
         	field_password('pass', array('label' => 'Password', 'required' => true))
         );

@@ -91,6 +91,11 @@ class Form extends Form_Field_Container
 		$this->name = $name;
 		$this->options = new Options($options,
 			array('enctype' => null));
+
+		if (method_exists($this, 'configure'))
+			$this->configure();
+			
+		$this->notifyEvent('initialized', 'onInitialzied');
 	}
 	
 	/**
@@ -136,7 +141,7 @@ class Form extends Form_Field_Container
 	{
 		if (method_exists($this, $method_name))
 			call_user_func_array(array($this, $method_name), $extra_arguments);
-		static::events()->notify('process.get',
+		static::events()->notify($name,
 			array_merge(array('form' => $this), $extra_arguments));
 	}
 	

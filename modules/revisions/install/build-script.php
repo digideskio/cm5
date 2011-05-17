@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS `{$dbprefix}mod_revisions_revs` (
 	`new_body` MEDIUMTEXT,
     `author` varchar(50) NOT NULL,
 	`created_at` DATETIME,
+	`ip` VARCHAR(45) NOT NULL,
+	`summary` VARCHAR(256) NOT NULL,
 	PRIMARY KEY(`id`)
 )ENGINE=InnoDB
 DEFAULT CHARSET='UTF8';

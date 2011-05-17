@@ -30,7 +30,7 @@ Stupid::chain_reaction();
 function show_log()
 {
     Layout::open('admin')->activate();
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | System log";
         
     // Filter control panel
@@ -86,7 +86,7 @@ function show_log()
     $log_query = CM5_Model_Log::open_query()->order_by('id', 'DESC');
     foreach($filters_enabled as $id)
         $log_query->where('priorityName = ?', 'OR')->push_exec_param($id);
-    $log = new UI_LogGrid($log_query->execute());
+    $log = new CM5_Widget_LogGrid($log_query->execute());
     etag('div', $log->render());
 }
 
@@ -94,7 +94,7 @@ function clear_log()
 {
     Layout::open('admin')->activate();
 
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | Clear log";
         
     $frm = new CM5_Form_Confirm(

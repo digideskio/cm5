@@ -59,7 +59,7 @@ abstract class CM5_Theme extends CM5_Module
      */
     public function on_save_config()
     {
-        if (GConfig::get_instance()->site->theme == $this->config_nickname())
+        if (CM5_Config::get_instance()->site->theme == $this->config_nickname())
             CM5_Core::get_instance()->invalidate_page_cache(null);
     }
 }

@@ -76,11 +76,11 @@ abstract class CM5_Configurable
             return $this->config;
 
         // Read configuration from global config
-        $gconfig = GConfig::get_instance();
+        $CM5_Config = CM5_Config::get_instance();
         $nickname = $this->config_nickname();
-        if (isset($gconfig->module->$nickname))
+        if (isset($CM5_Config->module->$nickname))
             $this->config = new Zend_Config(
-                array_merge($this->default_config(), $gconfig->module->$nickname->toArray()), true);
+                array_merge($this->default_config(), $CM5_Config->module->$nickname->toArray()), true);
         else
             $this->config = new Zend_Config($this->default_config(), true);
 
@@ -92,9 +92,9 @@ abstract class CM5_Configurable
      */
     public function save_config()
     {
-        $gconfig = GConfig::get_writable_copy();
-        $gconfig->module->{$this->config_nickname()} = $this->config;
-        GConfig::update($gconfig);
+        $CM5_Config = CM5_Config::get_writable_copy();
+        $CM5_Config->module->{$this->config_nickname()} = $this->config;
+        CM5_Config::update($CM5_Config);
         
         $this->on_save_config();
     }

@@ -38,8 +38,11 @@ class CM5_Form_UploadCreate extends Form_Html
         		)
             )
         ));
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+		$this->addMany(
         	field_file('file', array('label' => 'File', 'multiple' => true, 'required' => true)),
         	field_textarea('description', array('label' => 'Description',
 				'hint' => 'Optional description for file',

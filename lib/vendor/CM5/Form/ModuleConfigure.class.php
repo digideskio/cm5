@@ -46,8 +46,12 @@ class CM5_Form_ModuleConfigure extends Form_Html
             )
         );
         
+    }
+    
+    public function configure()
+    {
         // Convert all config options to editable fields
-        foreach($module->config_options() as $name => $options) {
+        foreach($this->module->config_options() as $name => $options) {
         	$options['type'] = !isset($options['type'])?'text':$options['type'];
         	
         	if (in_array($options['type'], array('radio', 'checkbox'))) {
@@ -58,8 +62,7 @@ class CM5_Form_ModuleConfigure extends Form_Html
         	}
         	
         	$this->add(call_user_func('field_' . $options['type'], $name, $options));
-        }   
-        
+        }       	
     }
     
     public function onProcessValid()

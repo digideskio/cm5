@@ -35,7 +35,7 @@ class CM5_Model_Membership extends DB_Record
 {
     static public function get_table()
     {   
-        return GConfig::get_instance()->db->prefix . 'memberships';
+        return CM5_Config::get_instance()->db->prefix . 'memberships';
     }
 
     static public $fields = array(

@@ -40,17 +40,20 @@ class CM5_Form_UploadEdit extends Form_Html
 	                'onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
                 )
             )
-        );
-        
-        $this->addMany(
+        );      
+    }
+    
+    public function configure()
+    {
+		$this->addMany(
         	field_raw('oldfile', array('label' => '', 'value' =>
-                tag('span', tag('span class="filename"', $u->filename),
-                	tag('span class="size"', html_human_fsize($u->filesize, ''))))),
+                tag('span', tag('span class="filename"', $this->upload->filename),
+                	tag('span class="size"', html_human_fsize($this->upload->filesize, ''))))),
 			field_file('file', array('label' => 'File', 'multiple' => false, 'required' => false)),
 			field_textarea('description', array('display' => 'Description',
 			    'hint' => 'Optional description for file', 'type' => 'textarea',
-			    'value' => $u->description))
-        );        
+			    'value' => $this->upload->description))
+        );
     }
 
     public function onProcessValid()

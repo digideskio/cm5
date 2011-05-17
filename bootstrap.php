@@ -50,13 +50,13 @@ require_once __DIR__ . '/lib/vendor/phplibs/Output/html.lib.php';
 require_once __DIR__ . '/lib/urls.lib.php';
 
 // Load configuration file
-GConfig::$default_config = array(
+CM5_Config::$default_config = array(
     'module' => array(),
     'enabled_modules' => '',
 );
-GConfig::$config_file = __DIR__ . '/config.inc.php';
-GConfig::load_config();
-$config = GConfig::get_instance();
+CM5_Config::$config_file = __DIR__ . '/config.inc.php';
+CM5_Config::load_config();
+$config = CM5_Config::get_instance();
 
 // Database connection
 DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema, true);

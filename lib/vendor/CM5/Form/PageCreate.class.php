@@ -45,8 +45,11 @@ class CM5_Form_PageCreate extends Form_Html
                 )
             )
         );
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+		$this->addMany(
         	field_text('title', array('label' => 'Title', 'pattern' => '/^.{3,}$/')),
 			field_text('slug', array('label' => 'Slug', 'pattern' => '/^[\w\-]{1,}$/')),
 			field_select('status', array('label' => 'Status', 'type' => 'dropbox',
@@ -57,7 +60,6 @@ class CM5_Form_PageCreate extends Form_Html
 			    'value' => 'draft'
 			 ))
 		);
-
     }
 
     public function onProcessValid()

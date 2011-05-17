@@ -28,9 +28,6 @@ class CM5_Form_UserCreate extends Form_Html
 {
     public function __construct()
     {
-        $groups = array();
-        
-
         parent::__construct(null, array('title' => 'Create new user',
             'attribs' => array('class' => 'form'),
 		    'buttons' => array(
@@ -40,18 +37,24 @@ class CM5_Form_UserCreate extends Form_Html
                 )
             )
         );
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+    	$groups = array();
+		$this->addMany(
 			field_text('username', array('label' => 'Username', 'pattern' => '/^[a-z0-9_\-]+$/',
 				'required' => true, 'hint' => 'Permitted letters are lower case letters, numbers, dash and underscore.')),
+			
 			field_password('password', array('label' => 'Password', 'pattern' => '/^.{3,}$/',
 				'required' => true)),
+			
 			field_password('password2', array('label' => '', 'required' => true, 'hint' => 'At least 3 letters long.')),
+			
 			field_set('groups', array('label' => 'Groups'))
 		);
 		foreach(CM5_Model_Group::open_all() as $g)
 			$this->get('groups')->add(field_checkbox('group', array('label' => $g, 'value' => $g)));
-        
     }
     
     public function onProcessPost()

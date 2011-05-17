@@ -47,7 +47,7 @@ class CM5_Model_Page extends DB_Record
 {
     static public function get_table()
     {   
-        return GConfig::get_instance()->db->prefix . 'pages';
+        return CM5_Config::get_instance()->db->prefix . 'pages';
     }
 
     static public $fields = array(

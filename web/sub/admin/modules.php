@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Modules panel";
+Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . " | Modules panel";
 Stupid::add_rule('module_action',
     array('type' => 'url_path', 'chunk[3]' => '/@([\w\-]+)/', 'chunk[4]' => '/([\w\-]+)/')
 );
@@ -42,7 +42,7 @@ function show_modules()
 {
     Layout::open('admin')->activate();
 
-    $grid = new UI_ModulesGrid(CM5_Core::get_instance()->modules());
+    $grid = new CM5_Widget_ModulesGrid(CM5_Core::get_instance()->modules());
     etag('div',
         $grid->render()
     );
@@ -58,7 +58,7 @@ function module_action($module_name, $action)
     if (($action = $module->get_action($action)) === null)
         not_found();
 
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > {$action['display']}";
     Layout::open('admin')->get_submenu()->create_entry($module->info_property('title'));
     foreach($module->get_actions() as $a)
@@ -82,7 +82,7 @@ function module_configure($module_name)
     if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
 
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Configure";
         
     $frm = new CM5_Form_ModuleConfigure($module);
@@ -97,7 +97,7 @@ function module_enable($module_name)
     if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
         
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Enable";
         
     $frm = new CM5_Form_Confirm(
@@ -122,7 +122,7 @@ function module_disable($module_name)
     if (($module = CM5_Core::get_instance()->get_module($module_name)) === null)
         not_found();
         
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . 
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . 
         " | Module: {$module->info_property('title')} > Disable";
         
     $frm = new CM5_Form_Confirm(

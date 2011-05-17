@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Users panel";
+Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . " | Users panel";
 Stupid::add_rule('user_myprofile',
     array('type' => 'url_path', 'chunk[3]' => '/^\+myprofile$/')
 );
@@ -54,7 +54,7 @@ function edit_user($username)
     if (!($u = CM5_Model_User::open($username)))
         not_found();
         
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | User: {$u->username}";
+    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . " | User: {$u->username}";
     Layout::open('admin')->activate();
 
     $frm = new CM5_Form_UserEdit($u);
@@ -100,7 +100,7 @@ function show_users()
 {
     Layout::open('admin')->activate();
 
-    $grid = new UI_UsersGrid(CM5_Model_User::open_all());
+    $grid = new CM5_Widget_UsersGrid(CM5_Model_User::open_all());
     etag('div',
         $grid->render(),
         UrlFactory::craft('user.create')->anchor('Create user')

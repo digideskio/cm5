@@ -35,7 +35,7 @@ class CM5_Model_User extends DB_Record
 {
     static public function get_table()
     {   
-        return GConfig::get_instance()->db->prefix . 'users';
+        return CM5_Config::get_instance()->db->prefix . 'users';
     }
 
     static public $fields = array(

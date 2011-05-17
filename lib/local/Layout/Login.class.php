@@ -19,7 +19,6 @@
  *  
  */
 
-
 class Layout_Login extends Layout
 {
     
@@ -27,7 +26,7 @@ class Layout_Login extends Layout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = GConfig::get_instance()->site->title . ' | Admin panel';
+        $this->get_document()->title = CM5_Config::get_instance()->site->title . ' | Admin panel';
         $this->get_document()->add_ref_css(surl('/static/css/login.css'));
 
         etag('div id="wrapper"')->push_parent();
@@ -41,4 +40,3 @@ class Layout_Login extends Layout
         $this->deactivate();
     }
 }
-?>

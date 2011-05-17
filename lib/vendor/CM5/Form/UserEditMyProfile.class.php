@@ -42,12 +42,16 @@ class CM5_Form_UserEditMyProfile extends Form_Html
                 )
             )
         );
+    }
+    
+    public function configure()
+    {
         $this->addMany(
             field_password('old-password', array('label' => 'Current password')),
 			field_password('password', array('label' => 'New password', 'pattern' => '/^.{3,}$/')),
 			field_password('password2', array('label' => '', 'hint' => 'Password must be at least 3 characters long.'))
-        );
-    }
+        );    	
+    }    
     
     public function onProcessPost()
     {

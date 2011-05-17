@@ -35,25 +35,32 @@ class CM5_Module_Revisions extends CM5_Module
     
     public function enhance_edit_form(Event $e)
     {
-    	$div = $e->filtered_value;
     	$form = $e->arguments['form'];
-    	$page = $form->page;
-    	var_dump($page->revisions->all());
-    	$div->childs[0]->childs[3]->append();
+    	
+    	$form->add($set = field_set('revisions', array('label' => 'History')));
+    	$set->add($revs = field_raw('revisions', array('value' => tag('ul class="revisions"'))));
+
+    	foreach($form->getPage()->revisions->subquery()->order_by('created_at', 'DESC')->execute() as $r) {
+    		$revs->getValue()->append(tag('li',
+    			tag('span class="author"', $r->author),    			
+    			tag('span class="summary"', $r->summary),
+    			tag('span class="date"', date_exformat($r->created_at)->human_diff()),
+    			tag('span class="ip"', $r->ip)
+    		));
+    	}
     }
     
     //! Initialize module
     public function init()
     {
     	// Adding model add hooks also
-    	require __DIR__ . '/lib/Revision.class.php';
-    	
-    	CM5_Form_PageEdit::events()->connect('post-render', array($this, 'enhance_edit_form'));
+    	require __DIR__ . '/lib/Revision.class.php';    	
+    	CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhance_edit_form'));
     }
     
     public function on_enable()
     {
-		$dbprefix = GConfig::get_instance()->db->prefix;
+		$dbprefix = CM5_Config::get_instance()->db->prefix;
 		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/install/build-script.php')))
 			while (DB_Conn::get_link()->next_result());    	
     }

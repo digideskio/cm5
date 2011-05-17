@@ -43,6 +43,10 @@ class CM5_Form_PageDelete extends Form_Html
                 )
         );
         
+    }
+    
+    public function configure()
+    {
 		$this->addMany(
 			field_radio('mode', array('label' => 'Delete this page and all subpages', 'value' => 'delete-all')),
 			field_radio('mode', array('label' => 'Move all subchilds to parent', 'value' => 'move-to-parent')),

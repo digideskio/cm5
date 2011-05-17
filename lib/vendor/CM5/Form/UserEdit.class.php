@@ -42,23 +42,25 @@ class CM5_Form_UserEdit extends Form_Html
                 )
             )
         );
-        
-        $this->addMany(
+    }
+    
+    public function configure()
+    {
+       $this->addMany(
 			field_password('password', array('label' => 'Reset password', 'pattern' => '/^.{3,}$/')),
 			field_password('password2', array('label' => '', 'pattern' => '/^.{3,}$/',
 				'hint' => 'Password must be at least 3 characters long.')),
-			field_checkbox('enabled', array('label' => 'Enabled', 'checked' => $u->enabled, 'value' => true)),
+			field_checkbox('enabled', array('label' => 'Enabled', 'checked' => $this->user->enabled, 'value' => true)),
 			field_set('groups', array('label' => 'Groups'))
         );
 
         $enabledgroups = array();
-        foreach($u->groups->all() as $g)
+        foreach($this->user->groups->all() as $g)
             $enabledgroups[] = $g->groupname;
         foreach(CM5_Model_Group::open_all() as $g) {
         	$checked = in_array($g->groupname, $enabledgroups);
         	$this->get('groups')->add(field_checkbox('group', array('label' => $g, 'value' => $g, 'checked' => $checked)));
         }
-        
     }
     
     public function onProcessPost()

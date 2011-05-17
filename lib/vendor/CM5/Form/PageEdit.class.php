@@ -37,7 +37,7 @@ class CM5_Form_PageEdit_Field_Slug extends Form_Field_Input
         $url = implode('/', array_slice($fullurl, 0, -1)) . '/';
 		return tag('table',
 			tag('tr',
-				tag('td', $url),
+				tag('td', $url)->attr('style', 'white-space: pre;'),
 				tag('td', parent::renderInput($options)))
 		);
 	}
@@ -70,14 +70,16 @@ class CM5_Form_PageEdit extends Form_Html
 		    'buttons' => array(
 		    	'save' => array('label' =>'Save')
 			)
-        ));        
-        
+        ));
+    }
+    
+    public function configure() {    
         $this->addMany(
-        	field_text('title', array('label' => '', 'value' => $page->title)),
+        	field_text('title', array('label' => '', 'value' => $this->page->title)),
         	new CM5_Form_PageEdit_Field_Slug('slug', array(
         		'label' => '',
         		'page' => $this->page,
-        		'value' => $page->slug,
+        		'value' => $this->page->slug,
         		'pattern' => '/^[\w\-]{1,}$/')),
         	field_select('status', array('label' => 'Status','optionlist' => array(
 			        'published' => 'Published',
@@ -90,14 +92,14 @@ class CM5_Form_PageEdit extends Form_Html
 			field_textarea('body', array(
 				'label' => '',
 				'multiline'=> true,
-				'value' => $page->body,
+				'value' => $this->page->body,
 			    'attribs' => array('id' => 'bodyeditor')
 				))
 		);
         
-		if ($page->system) {
+		if ($this->page->system) {
             unset($this->fields['slug'], $this->fields['title'], $this->fields['status']);
-            $this->options['title'] = "Edit \"{$page->title}\" page";
+            $this->options['title'] = "Edit \"{$this->page->title}\" page";
         }
     }
     

@@ -27,7 +27,7 @@ class Layout_FailOver extends Layout
     {   
         $this->activate();
         $doc = $this->get_document();    
-        $this->get_document()->title = GConfig::get_instance()->site->title;
+        $this->get_document()->title = CM5_Config::get_instance()->site->title;
 
         etag('div id="main"',
             $def_content = 
@@ -37,4 +37,3 @@ class Layout_FailOver extends Layout
         $this->deactivate();
     }
 }
-?>

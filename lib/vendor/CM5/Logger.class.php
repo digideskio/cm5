@@ -88,10 +88,10 @@ class CM5_Logger
         
         // Mail writer
         $mail = new Zend_Mail();
-        $mail->setFrom(GConfig::get_instance()->email->sender)
-             ->addTo(GConfig::get_instance()->email->administrator);
+        $mail->setFrom(CM5_Config::get_instance()->email->sender)
+             ->addTo(CM5_Config::get_instance()->email->administrator);
         $mail_writer = new Zend_Log_Writer_Mail($mail);
-        $mail_writer->setSubjectPrependText(GConfig::get_instance()->site->title . ' | Needs your attention.');
+        $mail_writer->setSubjectPrependText(CM5_Config::get_instance()->site->title . ' | Needs your attention.');
         
         $mail_format = "User: %user%\nIp: %ip%\nTime: %timestamp%\nType: %priorityName% (%priority%)\n\nMessage: %message%" . PHP_EOL;
         $mail_formatter = new Zend_Log_Formatter_Simple($mail_format);

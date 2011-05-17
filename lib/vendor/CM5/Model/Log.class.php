@@ -38,7 +38,7 @@ class CM5_Model_Log extends DB_Record
 {
     static public function get_table()
     {   
-        return GConfig::get_instance()->db->prefix . 'log';
+        return CM5_Config::get_instance()->db->prefix . 'log';
     }
 
     static public $fields = array(
