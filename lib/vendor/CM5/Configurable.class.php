@@ -34,18 +34,18 @@ abstract class CM5_Configurable
      * Implement with objects configuration nickname
      * @return string The unique nickname of this object.
      */
-    abstract public function config_nickname();
+    abstract public function getConfigNickname();
         
     /**
-     * Get an array with configuration options
-     * @return array Associative array with the following fields.
+     * Get an array with configurable fields.
+     * @return array Associative array with the following subfields.
      *  - @b name The name of this option
      *  - @b display The display to be shown 
      *  - @b type The type of the option (text, select, checkbox)
      *  - @b options If the type is option based
      *  .
      */
-    public function config_options()
+    public function getConfigurableFields()
     {
         return array();
     }
@@ -54,7 +54,7 @@ abstract class CM5_Configurable
      * Default configuration of the module
      * @return array Associative array with default configuration of the module.
      */
-    public function default_config()
+    public function getDefaultConfiguration()
     {
         return array();
     }
@@ -66,41 +66,41 @@ abstract class CM5_Configurable
     private $config = null;
     
     /**
-     * Get the object configuration
+     * Load configuration for this module from CM5_Config and return it
      * @return Zend_Config Configuration object of this object
      */
-    public function get_config()
+    public function getConfig()
     {
         // Return instance object
         if ($this->config !== null)
             return $this->config;
 
-        // Read configuration from global config
-        $CM5_Config = CM5_Config::get_instance();
-        $nickname = $this->config_nickname();
+        // Load configuration from global config
+        $CM5_Config = CM5_Config::getInstance();
+        $nickname = $this->getConfigNickname();
         if (isset($CM5_Config->module->$nickname))
             $this->config = new Zend_Config(
-                array_merge($this->default_config(), $CM5_Config->module->$nickname->toArray()), true);
+                array_merge($this->getDefaultConfiguration(), $CM5_Config->module->$nickname->toArray()), true);
         else
-            $this->config = new Zend_Config($this->default_config(), true);
+            $this->config = new Zend_Config($this->getDefaultConfiguration(), true);
 
         return $this->config;
     }
     
     /**
-     * Save the actual configuration
+     * Save the actual configuration at CM5_Config
      */
-    public function save_config()
+    public function saveConfig()
     {
-        $CM5_Config = CM5_Config::get_writable_copy();
-        $CM5_Config->module->{$this->config_nickname()} = $this->config;
+        $CM5_Config = CM5_Config::getWritableCopy();
+        $CM5_Config->module->{$this->getConfigNickname()} = $this->config;
         CM5_Config::update($CM5_Config);
         
-        $this->on_save_config();
+        $this->onSaveConfig();
     }
     
     /**
      * Override this function if you want extra work on after saving configuration
      */
-    public function on_save_config(){}
+    public function onSaveConfig(){}
 }

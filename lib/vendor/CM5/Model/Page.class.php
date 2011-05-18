@@ -47,7 +47,7 @@ class CM5_Model_Page extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'pages';
+        return CM5_Config::getInstance()->db->prefix . 'pages';
     }
 
     static public $fields = array(
@@ -101,7 +101,7 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
     $r->uri = $r->full_path();
     
     // Log event
-    CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
+    CM5_Logger::getInstance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
 });
 
 CM5_Model_Page::events()->connect('op.pre.create', function($e) {
@@ -119,7 +119,7 @@ CM5_Model_Page::events()->connect('op.post.create', function($e) {
     $r = $e->arguments["record"];
 
     // Log event
-    CM5_Logger::get_instance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
+    CM5_Logger::getInstance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
 
     // Update uri
     $r->uri = $r->full_path();
@@ -132,7 +132,7 @@ CM5_Model_Page::events()->connect('op.pre.delete', function($e) {
 
     $r = $e->arguments["record"];
         
-    CM5_Logger::get_instance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
+    CM5_Logger::getInstance()->notice("Page ({$r->id}) - \"{$r->title}\" was deleted.");
 });
 
 CM5_Model_Page::one_to_many('CM5_Model_Page', 'parent', 'subpages');

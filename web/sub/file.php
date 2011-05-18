@@ -56,7 +56,7 @@ function check_client_cache($lastmodified)
 function dump_file_by_id($id)
 {
     if (!($f = CM5_Model_Upload::open($id)))
-        not_found();
+        throw new Exception404();
 
     // Check cache control
     check_client_cache($f->lastmodified);
@@ -71,7 +71,7 @@ function dump_file_by_name($name)
 {
     $files = CM5_Model_Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($name);
     if (count($files) !== 1)
-        not_found();
+        throw new Exception404();
     
     dump_file_by_id($files[0]['id']);
 }
@@ -79,7 +79,7 @@ function dump_file_by_name($name)
 function image_thumbnail_by_id($id)
 {
     if (!($f = CM5_Model_Upload::open($id)))
-        not_found();
+        throw new Exception404();
 
     // Check cache control
     check_client_cache($f->lastmodified);
@@ -94,7 +94,7 @@ function image_thumbnail_by_name($name)
 {
     $files = CM5_Model_Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($name);
     if (count($files) !== 1)
-        not_found();
+        throw new Exception404();
     
     image_thumbnail_by_id($files[0]['id']);
 }

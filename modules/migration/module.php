@@ -43,7 +43,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
     
     public function on_valid($values)
     {
-        Layout::open('admin')->deactivate();
+        Layout::getActive()->deactivate();
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($archive = $dom->createElement("cms_archive"));
@@ -52,7 +52,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
         // Meta
         $archive->appendChild($meta = $dom->createElement('meta'));
         $meta->appendChild($title = $dom->createElement('title'));
-        $title->appendChild(new DomText(CM5_Config::get_instance()->site->title));
+        $title->appendChild(new DomText(CM5_Config::getInstance()->site->title));
         $meta->appendChild($base_url = $dom->createElement('base_url'));
         $base_url->appendChild(new DomText((empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . surl('/')));
         
@@ -89,8 +89,7 @@ class CM5_Module_Migration_ExportForm extends Output_HTML_Form
             }
         }
     
-        $filename = str_replace(' ', '_', CM5_Config::get_instance()->site->title) . '-backup-' . date_create()->format('Y-m-d_H-i');
-        error_log($filename);
+        $filename = str_replace(' ', '_', CM5_Config::getInstance()->site->title) . '-backup-' . date_create()->format('Y-m-d_H-i');
         header('Content-Type: application/x-gzip');
         header("Content-Disposition: attachment; filename=$filename.xml.gz");
         echo gzencode($dom->saveXML()); 
@@ -178,7 +177,7 @@ class CM5_Module_Migration_ImportForm extends Output_HTML_Form
         $this->archive = simplexml_load_string(gzdecode($archive->get_data()));
         
         $current_pages = array(0 => '+ Root');        
-        foreach(CM5_Core::get_instance()->get_tree() as $p)
+        foreach(CM5_Core::getInstance()->getTree() as $p)
             $this->add_page($p, $current_pages);
 
         parent::__construct(
@@ -389,7 +388,7 @@ class CM5_Module_Migration_FixLinks extends Output_HTML_Form
 class CM5_Module_Migration extends CM5_Module
 {
     //! The name of the module
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'migration',
@@ -399,7 +398,7 @@ class CM5_Module_Migration extends CM5_Module
     }
     
     //! Initialize module
-    public function init()
+    public function onInitialize()
     {
         $this->declare_action('import', 'Import', 'request_import');
         $this->declare_action('export', 'Export', 'request_export');
@@ -411,7 +410,7 @@ class CM5_Module_Migration extends CM5_Module
         if (($fid = Net_HTTP_RequestParam::get('fid')) !== null)
         {
             if (($f = CM5_Model_Upload::open($fid)) === false)
-                not_found();
+                throw new Exception404();
             $frm = new CM5_Module_Migration_ImportForm($f, $fid);
             etag('div', $frm->render());
         }
@@ -421,7 +420,7 @@ class CM5_Module_Migration extends CM5_Module
             etag('div', $frm->render());
             if ($frm->upload_id !== null)
             {
-                $url = UrlFactory::craft('module.action', $this->info_property('nickname'), 'import') . '?fid=' . $frm->upload_id;
+                $url = UrlFactory::craft('module.action', $this->getMetaInfoEntry('nickname'), 'import') . '?fid=' . $frm->upload_id;
                 Net_HTTP_Response::redirect($url);
             }
         }

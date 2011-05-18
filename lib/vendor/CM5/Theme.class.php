@@ -34,9 +34,13 @@ abstract class CM5_Theme extends CM5_Module
      * Return the CM5_ThemeLayout class
      * @return string The name of the class.
      */
-    abstract public function get_layout_class();
- 
-    public function module_type()
+    abstract public function getLayoutClass();
+    
+    /**
+     * (non-PHPdoc)
+     * @see CM5_Module::getModuleType()
+     */
+    public function getModuleType()
     {
         return 'theme';
     }
@@ -44,23 +48,23 @@ abstract class CM5_Theme extends CM5_Module
     /**
      * Automatic initialization of the theme
      * (non-PHPdoc)
-     * @see lib/local/CM5/CM5_Module::init()
+     * @see CM5_Module::onInitialize()
      */
-    public function init()
+    public function onInitialize()
     {
-        $theme_class = $this->get_layout_class();
-        if (!eval("return isset($theme_class::\$theme_nickname);"))
+        $theme_class = $this->getLayoutClass();
+        if (!isset($theme_class::$theme_nickname))
             throw new RuntimeException('Theme Layout class must have static property "theme_nickname"!');
-        Layout::assign('default', $theme_class);
+        $theme_class::getInstance();
     }
     
     /**
      * Usually when theme settings are changed, cache must be invalidated.
      */
-    public function on_save_config()
+    public function onSaveConfig()
     {
-        if (CM5_Config::get_instance()->site->theme == $this->config_nickname())
-            CM5_Core::get_instance()->invalidate_page_cache(null);
+        if (CM5_Config::getInstance()->site->theme == $this->getConfigNickname())
+            CM5_Core::getInstance()->invalidatePageCache(null);
     }
 }
 

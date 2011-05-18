@@ -35,7 +35,7 @@ class CM5_Model_User extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'users';
+        return CM5_Config::getInstance()->db->prefix . 'users';
     }
 
     static public $fields = array(
@@ -49,7 +49,7 @@ CM5_Model_User::events()->connect('op.post.create', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
-    CM5_Logger::get_instance()->notice("User \"{$u->username}\" was created.");
+    CM5_Logger::getInstance()->notice("User \"{$u->username}\" was created.");
 });
 
 CM5_Model_User::events()->connect('op.pre.delete', function($e) {
@@ -59,7 +59,7 @@ CM5_Model_User::events()->connect('op.pre.delete', function($e) {
         ->where("username = ?")
         ->execute($u->username);
         
-    CM5_Logger::get_instance()->notice("User \"{$u->username}\" was deleted.");
+    CM5_Logger::getInstance()->notice("User \"{$u->username}\" was deleted.");
 });
 
 CM5_Model_User::events()->connect('op.pre.save', function($e) {
@@ -68,10 +68,10 @@ CM5_Model_User::events()->connect('op.pre.save', function($e) {
    
     // Log event
     if (in_array("password", array_keys($e->arguments["old_values"])))
-    	CM5_Logger::get_instance()->notice("User \"{$u->username}\" changed password.");
+    	CM5_Logger::getInstance()->notice("User \"{$u->username}\" changed password.");
     if ((in_array("enabled", array_keys($e->arguments["old_values"])))
     		&& ($e->arguments["old_values"]["enabled"] != $u->enabled))
-    	CM5_Logger::get_instance()->notice("User \"{$u->username}\" was " . ($u->enabled?"enabled":"disabled") . ".");
+    	CM5_Logger::getInstance()->notice("User \"{$u->username}\" was " . ($u->enabled?"enabled":"disabled") . ".");
 });
 
 CM5_Model_User::one_to_many('CM5_Model_Page', 'user', 'articles');

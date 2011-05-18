@@ -32,7 +32,7 @@ class CM5_Form_Login extends Form_Html
         $this->redirect_url = $redirect_url;
 
         parent::__construct(null, array(
-        	'title' => CM5_Config::get_instance()->site->title . ' Login',
+        	'title' => CM5_Config::getInstance()->site->title . ' Login',
             'attribs' => array('class' => 'form login'),
 		    'buttons' => array(
 		        'login' => array('label' =>'Login'),
@@ -57,12 +57,12 @@ class CM5_Form_Login extends Form_Html
         $pass = $this->get('pass')->getValue();
         if (Authn_Realm::authenticate($user, $pass))
         {
-            CM5_Logger::get_instance()->info("User \"{$user}\" logged on.");
+            CM5_Logger::getInstance()->info("User \"{$user}\" logged on.");
             Net_HTTP_Response::redirect($this->redirect_url);
         }
         else
         {
-            CM5_Logger::get_instance()->err("User \"{$user}\" tried to login unsuccesfully.");
+            CM5_Logger::getInstance()->err("User \"{$user}\" tried to login unsuccesfully.");
             $this->get('pass')->invalidate('The username or password you entered is incorrect.');
         }
     }

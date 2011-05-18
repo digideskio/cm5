@@ -20,17 +20,15 @@
  */
 
 
-Layout::open('login')->activate();
-Layout::open('login')->get_document()->add_meta('noindex', array('name' => 'robots'));
+CM5_Layout_Login::getInstance()->activateSlot();
+CM5_Layout_Login::getInstance()->getDocument()->add_meta('noindex', array('name' => 'robots'));
 
 // Get the reference url to redirect back
 function reference_url()
 {
     $path_chunks = explode('/', $_SERVER['PATH_INFO']);
-    $path_chunks =  array_filter($path_chunks,
-    create_function('$c',
-        'return (($c != "+login") && ($c != "+logout"));')
-    );
+    $path_chunks =  array_filter($path_chunks, function($c)
+    	{ return (($c != "+login") && ($c != "+logout")); });
     $cleaned_path = implode('/', $path_chunks);
     return url($cleaned_path?$cleaned_path:'/');
 }
@@ -39,7 +37,7 @@ function reference_url()
 // Logout user if there is someone logged on
 Stupid::add_rule(function(){
         $user = Authn_Realm::get_identity()->id();
-        CM5_Logger::get_instance()->info("User \"{$user}\" logged off.");
+        CM5_Logger::getInstance()->info("User \"{$user}\" logged off.");
         Authn_Realm::clear_identity(); Net_HTTP_Response::redirect(reference_url());
 	},
     array('type' => 'url_path', 'chunk[-1]' => '/\+logout/'));
@@ -52,4 +50,4 @@ if (! Authn_Realm::has_identity())
     etag('div', $form->render());
 }
 else
-Net_HTTP_Response::redirect(reference_url());
+	Net_HTTP_Response::redirect(reference_url());

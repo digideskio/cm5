@@ -174,4 +174,3 @@ class Cache_File extends Cache
 		return true;		
 	}
 }
-?>

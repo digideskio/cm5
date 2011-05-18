@@ -35,7 +35,7 @@ class CM5_Model_Membership extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'memberships';
+        return CM5_Config::getInstance()->db->prefix . 'memberships';
     }
 
     static public $fields = array(
@@ -49,7 +49,7 @@ CM5_Model_Membership::events()->connect('op.post.create', function($e) {
     $m = $e->arguments["record"];
    
     // Log event
-    CM5_Logger::get_instance()->notice("User \"{$m->username}\" joined group \"{$m->groupname}\".");
+    CM5_Logger::getInstance()->notice("User \"{$m->username}\" joined group \"{$m->groupname}\".");
 });
 
 CM5_Model_Membership::events()->connect('op.pre.delete', function($e) {
@@ -57,5 +57,5 @@ CM5_Model_Membership::events()->connect('op.pre.delete', function($e) {
     $m = $e->arguments["record"];
    
     // Log event
-    CM5_Logger::get_instance()->notice("User \"{$m->username}\" parted group \"{$m->groupname}\".");
+    CM5_Logger::getInstance()->notice("User \"{$m->username}\" parted group \"{$m->groupname}\".");
 });

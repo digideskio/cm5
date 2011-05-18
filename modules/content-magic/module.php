@@ -21,10 +21,10 @@
  *      Sque - initial API and implementation
  */
 
-class CM5_Module_Contents extends CM5_Module
+class CM5_Module_ContentMagic extends CM5_Module
 {
     //! The name of the module
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'content-magic',
@@ -34,9 +34,9 @@ class CM5_Module_Contents extends CM5_Module
     }
     
     //! Initialize module
-    public function init()
+    public function onInitialize()
     {
-        $c = CM5_Core::get_instance();
+        $c = CM5_Core::getInstance();
         $c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
         $c->events()->connect('page.post-render', array($this, 'event_post_render'));
     }
@@ -71,7 +71,7 @@ class CM5_Module_Contents extends CM5_Module
         if (empty($matches['url']))
             return;
                 
-        $r->add_header('Location: ' . $matches['url']);
+        $r->addHeader('Location: ' . $matches['url']);
 
     }
     
@@ -93,4 +93,4 @@ class CM5_Module_Contents extends CM5_Module
     }
 }
 
-CM5_Module_Contents::register();
+CM5_Module_ContentMagic::register();

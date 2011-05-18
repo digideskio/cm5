@@ -23,8 +23,6 @@
 
 /**
  * Base class to implement theme layout
- * @author sque
- *
  */
 class CM5_ThemeLayout extends Layout
 {
@@ -38,11 +36,11 @@ class CM5_ThemeLayout extends Layout
      * Get the configuration of this theme
      * @return Zend_Config The configuration of this theme.
      */
-    public function get_config()
+    public function getConfig()
     {
         if ($this->module_config !== null)
             return $this->module_config;
-        return CM5_Core::get_instance()->get_module(get_static_var(get_class($this), 'theme_nickname'))->get_config();
+        return CM5_Core::getInstance()->getModule(static::$theme_nickname)->getConfig();
     }
 }
 

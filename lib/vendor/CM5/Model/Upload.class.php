@@ -43,7 +43,7 @@ class CM5_Model_Upload extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'uploads';
+        return CM5_Config::getInstance()->db->prefix . 'uploads';
     }
 
     static public $fields = array(
@@ -75,7 +75,7 @@ class CM5_Model_Upload extends DB_Record
             self::$thumb_cache->delete($this->id);
             
         // Check if it is image
-        if (($info = getimagesize(CM5_Config::get_instance()->site->upload_folder .'/' . $this->store_file)) === false)
+        if (($info = getimagesize(CM5_Config::getInstance()->site->upload_folder .'/' . $this->store_file)) === false)
             return;
             
         if (! in_array($info[2], array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)))
@@ -110,7 +110,7 @@ class CM5_Model_Upload extends DB_Record
     
     static function create_from_upload(UploadedFile $upload)
     {   
-        $upload_folder = CM5_Config::get_instance()->site->upload_folder;
+        $upload_folder = CM5_Config::getInstance()->site->upload_folder;
 
         
         // Calculate save_path
@@ -146,7 +146,7 @@ class CM5_Model_Upload extends DB_Record
     
     public function update_upload(UploadedFile $upload)
     {
-        $upload_folder = CM5_Config::get_instance()->site->upload_folder;
+        $upload_folder = CM5_Config::getInstance()->site->upload_folder;
         
         // Get mime type
         $data = file_get_contents($upload->getTempname());
@@ -187,7 +187,7 @@ class CM5_Model_Upload extends DB_Record
     
     function get_store_path()
     {
-    	return CM5_Config::get_instance()->site->upload_folder . '/' . $this->store_file;
+    	return CM5_Config::getInstance()->site->upload_folder . '/' . $this->store_file;
     }
     
     function get_data()
@@ -211,7 +211,7 @@ class CM5_Model_Upload extends DB_Record
                 exit;
             }
         }
-        $img = new Image(CM5_Config::get_instance()->site->upload_folder . '/' . $this->store_file);
+        $img = new Image(CM5_Config::getInstance()->site->upload_folder . '/' . $this->store_file);
         $thumb = $img->resize(80,80)->data(array('quality' => '91', 'format' => IMAGETYPE_PNG));
         
         if (self::$thumb_cache)
@@ -222,7 +222,7 @@ class CM5_Model_Upload extends DB_Record
     }
 }
 
-CM5_Model_Upload::$thumb_cache = new Cache_File(CM5_Config::get_instance()->site->cache_folder, 'thumb_');
+CM5_Model_Upload::$thumb_cache = new Cache_File(CM5_Config::getInstance()->site->cache_folder, 'thumb_');
 CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
 
     $r = $e->arguments["record"];
@@ -244,20 +244,20 @@ CM5_Model_Upload::events()->connect('op.post.create', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
-    CM5_Logger::get_instance()->info("File \"{$u->filename}\" was uploaded.");
+    CM5_Logger::getInstance()->info("File \"{$u->filename}\" was uploaded.");
 });
 
 CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
-    CM5_Logger::get_instance()->notice("File \"{$u->filename}\" was deleted.");
+    CM5_Logger::getInstance()->notice("File \"{$u->filename}\" was deleted.");
 });
 
 CM5_Model_Upload::events()->connect('op.post.save', function($e) {
     $u = $e->arguments["record"];
 
     // Log event
-    CM5_Logger::get_instance()->info("File \"{$u->filename}\" was changed.");
+    CM5_Logger::getInstance()->info("File \"{$u->filename}\" was changed.");
 });
 

@@ -283,7 +283,7 @@ if (! is_cm5_directory($target))
  * Target CM5 installation version
  * @var array
  */
-$target_version = get_cm5_version($target);
+$targetVersion = get_cm5_version($target);
 
 /**
  * Source CM5 package folder
@@ -304,15 +304,15 @@ if ($target == $source )
 	die("You cannot upgrade the source. Source and target must be different.\n");
 
 // Compare target source version
-if (compare_version($target_version, $source_version) >= 0 )
+if (compare_version($targetVersion, $source_version) >= 0 )
 	die("You can only upgrade to a newer version.\n");
 
 /*--- DATA IS OK, LETS WORK -- */
 	
 // Output Header 
 echo "\nCM5 \033[31;1m↑\033[0mupgrade\033[31;1m↑\033[0m " . ($simulated?'(simulated)':'') . "\n";
-echo "Version: [" . version_to_str($target_version) . "] => [" . version_to_str($source_version) . "] ";
-if (is_upgrade_supported($target_version, $source_version)) {
+echo "Version: [" . version_to_str($targetVersion) . "] => [" . version_to_str($source_version) . "] ";
+if (is_upgrade_supported($targetVersion, $source_version)) {
 	echo "\033[32;1msupported\033[0m.\n";
 } else {
 	echo "\033[31;1mNOT SUPPORTED\033[0m.\n";

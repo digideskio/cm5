@@ -20,12 +20,10 @@
  */
 
 
-if ($dl = Layout::open('default'))
-    $dl->activate();
-else
-    $dl = Layout::open('failover')->activate();
+if (!Layout::getActive())
+    CM5_Layout_FailOver::getInstance()->activateSlot();
 
-$dl->get_document()->title = 'Not Found: ' . $_SERVER['REQUEST_URI'];
+CM5_Layout_FailOver::getInstance()->getDocument()->title = 'Not Found: ' . $_SERVER['REQUEST_URI'];
 
 header("HTTP/1.1 404 Not Found");
 

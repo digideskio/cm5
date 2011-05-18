@@ -87,7 +87,7 @@ class CM5_Core
         
         // Register page changes to invalidate cache
         $invalidate_func = function($e) {
-        	CM5_Core::get_instance()->invalidate_page_cache($e->arguments['record']);
+        	CM5_Core::getInstance()->invalidatePageCache($e->arguments['record']);
         };
         CM5_Model_Page::events()->connect('op.post.save', $invalidate_func);
         CM5_Model_Page::events()->connect('op.post.delete', $invalidate_func);
@@ -100,7 +100,7 @@ class CM5_Core
      * and must be invalidated too.
      * @param CM5_Model_Page $page The page that gets invalidated
      */
-    public function invalidate_page_cache($page)
+    public function invalidatePageCache($page)
     {
         $this->cache->delete_all();
         $this->events()->notify('page.cache-delete', array('page' => $page));
@@ -109,7 +109,7 @@ class CM5_Core
     /**
      * Scan modules folder and load them all
      */
-    public function load_modules()
+    public function loadModules()
     {
         $this->modules_loaded = true;
         
@@ -132,7 +132,7 @@ class CM5_Core
     /**
      * Scan modules folder and load them all
      */
-    public function load_themes()
+    public function loadThemes()
     {
         $this->themes_loaded = true;
         
@@ -150,31 +150,37 @@ class CM5_Core
             }
             closedir($dh);
         }
-        
-        // Initialize selected theme
-        $this->modules[CM5_Config::get_instance()->site->theme]->init();
     }
     
     /**
-     * Register a module at the core
+     * Get frontend theme
+     * @return CM5_Theme
+     */
+    public function getSelectedTheme()
+    {
+    	return $this->modules[CM5_Config::getInstance()->site->theme];
+    }
+    
+    /**
+     * Register a module at the core.
      * @param CM5_Module $module The instance of the module to register
      */
-    public function register_module(CM5_Module $module)
+    public function registerModule(CM5_Module $module)
     {   
-        $minfo = $module->info();
+        $minfo = $module->getMetaInfo();
         $this->modules[$minfo['nickname']] = $module;
-        if ($module->is_enabled())
-            $module->init();
+        if ($module->isEnabled())
+            $module->onInitialize();
     }
    
     /**
      * Get the list with all registered modules
      * @return array Array of loaded modules.
      */
-    public function modules()
+    public function getModules()
     {
         if (!$this->modules_loaded)
-            $this->load_modules();
+            $this->loadModules();
         return $this->modules;
     }
     
@@ -182,11 +188,11 @@ class CM5_Core
      * Get the list with all registred themes
      * @return array Array of loaded themes. 
      */
-    public function theme_modules()
+    public function getThemeModules()
     {
         if (!$this->themes_loaded)
-            $this->load_themes();
-        return array_filter($this->modules, create_function('$e', ' return ($e->module_type() == "theme"); '));
+            $this->loadThemes();
+        return array_filter($this->modules, function($e) { return ($e->getModuleType() == "theme"); });
     }
     
     /**
@@ -194,10 +200,10 @@ class CM5_Core
      * @param string $nickname The nickname of the module
      * @return CM5_Module The module or NULL if it is not found.
      */
-    public function get_module($nickname)
+    public function getModule($nickname)
     {
         if (!$this->modules_loaded)
-            $this->load_modules();
+            $this->loadModules();
         if (!isset($this->modules[$nickname]))
             return null;
         return $this->modules[$nickname];
@@ -207,17 +213,17 @@ class CM5_Core
      * Enable module
      * @param string $nickname The nickname of the module
      */
-    public function enable_module($nickname)
+    public function enableModule($nickname)
     {
-        if (($m = $this->get_module($nickname)) == null)
+        if (($m = $this->getModule($nickname)) == null)
             return false;
 
-        if ($m->on_enable() === false) {
-        	CM5_Logger::get_instance()->err("Module \"{$m->info_property('title')}\" could not be enabled.");
+        if ($m->onEnable() === false) {
+        	CM5_Logger::getInstance()->err("Module \"{$m->getMetaInfoEntry('title')}\" could not be enabled.");
         	return false;
         }
         
-        $conf = CM5_Config::get_writable_copy();
+        $conf = CM5_Config::getWritableCopy();
         $conf->enabled_modules = implode(',',
             array_merge(
                 array($nickname),
@@ -225,24 +231,24 @@ class CM5_Core
             )
         );
         CM5_Config::update($conf);        
-        CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been enabled.");
+        CM5_Logger::getInstance()->notice("Module \"{$m->getMetaInfoEntry('title')}\" has been enabled.");
         
-        // Reset cache as a module may leave trash
-        $this->invalidate_page_cache(null);
+        // Reset cache as a module mayisenabled leave trash
+        $this->invalidatePageCache(null);
     }
     
     /**
      * Disable module
      * @param string $nickname The nickname of the module
      */
-    public function disable_module($nickname)
+    public function disableModule($nickname)
     {
-        if (($m = $this->get_module($nickname)) == null)
+        if (($m = $this->getModule($nickname)) == null)
             return false;
         
-        $m->on_disable();
+        $m->onDisable();
             
-        $conf = CM5_Config::get_writable_copy();
+        $conf = CM5_Config::getWritableCopy();
         $conf->enabled_modules = implode(',',
             array_diff(
                 explode(',', $conf->enabled_modules),
@@ -250,10 +256,10 @@ class CM5_Core
             )
         );
         CM5_Config::update($conf);        
-        CM5_Logger::get_instance()->notice("Module \"{$m->info_property('title')}\" has been disabled.");
+        CM5_Logger::getInstance()->notice("Module \"{$m->getMetaInfoEntry('title')}\" has been disabled.");
         
         // Reset cache as a module may leave trash
-        $this->invalidate_page_cache(null);
+        $this->invalidatePageCache(null);
     }
     
     /**
@@ -277,7 +283,7 @@ class CM5_Core
      * @param Cache $cache_engine The cache engine to be used by the CMS.
      * @return CM5_Core The actual initialized instance.
      */
-    static public function init(Cache $cache_engine)
+    static public function initialize(Cache $cache_engine)
     {        
         // Create instance
         return self::$instance = new CM5_Core($cache_engine);
@@ -287,7 +293,7 @@ class CM5_Core
      * Get the running instance of core
      * @return CM5_Core The actual singleton instance.
      */
-    static public function get_instance()
+    static public function getInstance()
     {
         if (self::$instance == null)
             throw new RuntimeException('You must run Core::init() before using CMS');
@@ -298,7 +304,7 @@ class CM5_Core
      * Get version of CMS
      * @return array Associative array with all parts of version
      */ 
-    public function get_version()
+    public function getVersion()
     {
         return $this->version;
     }
@@ -308,7 +314,7 @@ class CM5_Core
      * This action is automatically cached.
      * @return array Associative array with all pages starting from root level. 
      */ 
-    public function get_tree()
+    public function getTree()
     {
         // Read from cache
         $pages = $this->cache->get('pages-tree', $succ);
@@ -366,10 +372,14 @@ class CM5_Core
             
     }
     
-    //! Get a page sub tree
-    public function get_subtree($page_id)
+    /**
+     * Get a sub tree from the whole tree based on the page_id.
+     * @param integer $page_id
+     * @return array With the subtree or null if not found.
+     */
+    public function getSubTree($page_id)
     {
-        $tree = $this->get_tree();
+        $tree = $this->getTree();
         foreach($tree as $page)
         {
             $ret = $this->find_page_in_tree($page_id, $page);
@@ -390,7 +400,6 @@ class CM5_Core
     {
         if ($url === null)
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
-        // 2ms out! CM5_Logger::get_instance()->debug('Serving web page ' . $url);
         
         // Check cache first for response
         $response = $this->cache->get('url-' . $url, $succ);
@@ -401,10 +410,10 @@ class CM5_Core
         }
         
         // Initialize modules
-        self::$instance->load_modules();
+        self::$instance->loadModules();
 
         // Initialize themes
-        self::$instance->load_themes();
+        self::$instance->loadThemes();
         
         $response = new CM5_Response();
                 
@@ -415,7 +424,8 @@ class CM5_Core
         if (!$stop_propagation)
         {  
             // Check for CMS pages
-            Layout::open('default')->activate();
+            $selected_layout = $this->getSelectedTheme()->getLayoutClass();
+        	$selected_layout::getInstance()->activateSlot();
             
             if ($url == '')
                 $p = CM5_Model_Page::open(1);   // Home page
@@ -427,18 +437,18 @@ class CM5_Core
                     ->execute($url);
 
                 if (!$p)
-                    not_found();
+                    throw new Exception404();
                 $p = $p[0];
             }
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
-            Layout::open('default')->get_document()->title = $p->title . ' | ' . CM5_Config::get_instance()->site->title;
+            $selected_layout::getInstance()->getDocument()->title = $p->title . ' | ' . CM5_Config::getInstance()->site->title;
             etag('div class="article"',
                 tag('h1 class="title"', $p->title),
                 tag('div html_escape_off', $p->body)
             );
-            Layout::open('default')->deactivate();
-            $response->document = Layout::open('default')->get_document()->render();
+            $selected_layout::getInstance()->deactivate();
+            $response->document = $selected_layout::getInstance()->getDocument()->render();
 
             // Trigger post render
             $this->events->filter('page.post-render', $response, array('url' => $url, 'page' => $p));

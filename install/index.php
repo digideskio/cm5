@@ -48,8 +48,8 @@ $fn_htaccess = __DIR__ . '/../.htaccess';
 
 $dl = new Layout('debug');
 $dl->activate();
-$dl->get_document()->add_ref_css(surl('/../static/debug/debug.css'));
-$dl->get_document()->title = 'Installation';
+$dl->getDocument()->add_ref_css(surl('/../static/debug/debug.css'));
+$dl->getDocument()->title = 'Installation';
 
 etag('h2', 'CM5');
 etag('h3', 'Installation process');

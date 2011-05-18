@@ -19,15 +19,25 @@
  *  
  */
 
-
-// Enable XHTML Mode
-Output_HTMLTag::$default_render_mode = 'html';
-
-Layout::assign('admin', 'Layout_Admin');
-Layout::assign('failover', 'Layout_FailOver');
-Layout::assign('login', 'Layout_Login');
-
-function not_found()
+/**
+ * Layout for login interface.
+ */
+class CM5_Layout_Login extends Layout
 {
-    require_once __DIR__ . '/not_found.php';
+    protected function onInitialize()
+    {   
+        $this->activateSlot();
+        $doc = $this->getDocument();    
+        $this->getDocument()->title = CM5_Config::getInstance()->site->title . ' | Admin panel';
+        $this->getDocument()->add_ref_css(surl('/static/css/login.css'));
+
+        etag('div id="wrapper"')->push_parent();
+        etag('div id="main"',             
+            $def_content = tag('div id="content"')
+        );
+                
+        $this->setSlot('default', $def_content);
+
+        $this->deactivate();
+    }
 }

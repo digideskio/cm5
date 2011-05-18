@@ -49,22 +49,26 @@ require_once __DIR__ . '/lib/vendor/phplibs/Output/html.lib.php';
 // Load urls library
 require_once __DIR__ . '/lib/urls.lib.php';
 
+// Preload enviroment
+require_once __DIR__ . '/lib/vendor/phplibs/DB/Conn.class.php';
+require_once __DIR__ . '/lib/vendor/CM5/Core.class.php';
+
 // Load configuration file
 CM5_Config::$default_config = array(
     'module' => array(),
     'enabled_modules' => '',
 );
 CM5_Config::$config_file = __DIR__ . '/config.inc.php';
-CM5_Config::load_config();
-$config = CM5_Config::get_instance();
+CM5_Config::load();
+$config = CM5_Config::getInstance();
 
 // Database connection
 DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema, true);
 DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
-    create_function('$e', ' error_log( $e->arguments["message"]); 
-    CM5_Logger::get_instance()->crit($e->arguments["message"]);'));
+    function($e){ error_log( $e->arguments["message"]); 
+    CM5_Logger::getInstance()->crit($e->arguments["message"]); });
 //DB_Conn::events()->connect('stmt.executed',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
 
@@ -73,5 +77,4 @@ date_default_timezone_set($config->site->timezone);
 
 // Initialize CMS
 $cache_engine = new Cache_File($config->site->cache_folder, 'pages_');
-
-CM5_Core::init($cache_engine);
+CM5_Core::initialize($cache_engine);

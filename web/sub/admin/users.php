@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . " | Users panel";
+CM5_Layout_Admin::getInstance()->getDocument()->title = CM5_Config::getInstance()->site->title . " | Users panel";
 Stupid::add_rule('user_myprofile',
     array('type' => 'url_path', 'chunk[3]' => '/^\+myprofile$/')
 );
@@ -42,9 +42,6 @@ Stupid::chain_reaction();
 function user_myprofile()
 {
     $user = CM5_Model_User::open(Authn_Realm::get_identity()->id());
-        
-    Layout::open('admin')->activate();
-
     $frm = new CM5_Form_UserEditMyProfile($user);
     etag('div', $frm->render());
 }
@@ -52,10 +49,9 @@ function user_myprofile()
 function edit_user($username)
 {
     if (!($u = CM5_Model_User::open($username)))
-        not_found();
+        throw new Exception404();
         
-    Layout::open('admin')->get_document()->title = CM5_Config::get_instance()->site->title . " | User: {$u->username}";
-    Layout::open('admin')->activate();
+    Layout::getActive()->getDocument()->title = CM5_Config::getInstance()->site->title . " | User: {$u->username}";
 
     $frm = new CM5_Form_UserEdit($u);
     etag('div', $frm->render());
@@ -64,9 +60,8 @@ function edit_user($username)
 function delete_user($username)
 {
     if (!($u = CM5_Model_User::open($username)))
-        not_found();
+        throw new Exception404();
         
-    Layout::open('admin')->activate();
     if ($username == Authn_Realm::get_identity()->id())
     {
         etag('h2 class="error"', 'You cannot delete your self, login with another user before deleting this user.');
@@ -90,16 +85,12 @@ function delete_user($username)
 
 function create_user()
 {
-    Layout::open('admin')->activate();
-    
     $frm = new CM5_Form_UserCreate();
     etag('div', $frm->render());
 }
 
 function show_users()
 {
-    Layout::open('admin')->activate();
-
     $grid = new CM5_Widget_UsersGrid(CM5_Model_User::open_all());
     etag('div',
         $grid->render(),

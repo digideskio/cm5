@@ -24,7 +24,7 @@
 class CM5_Module_Revisions extends CM5_Module
 {
     //! The name of the module
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'revisions',
@@ -33,7 +33,7 @@ class CM5_Module_Revisions extends CM5_Module
         );
     }
     
-    public function enhance_edit_form(Event $e)
+    public function enhanceEditForm(Event $e)
     {
     	$form = $e->arguments['form'];
     	
@@ -48,19 +48,22 @@ class CM5_Module_Revisions extends CM5_Module
     			tag('span class="ip"', $r->ip)
     		));
     	}
+    	
+    	// Add needed dependancies
+    	//Layout::getActive()->getDocument()->add_ref_css(surl('/modules/revisions/static/css/extra-admin.css'));
     }
     
     //! Initialize module
-    public function init()
+    public function onInitialize()
     {
     	// Adding model add hooks also
     	require __DIR__ . '/lib/Revision.class.php';    	
-    	CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhance_edit_form'));
+    	CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhanceEditForm'));
     }
     
-    public function on_enable()
+    public function onEnable()
     {
-		$dbprefix = CM5_Config::get_instance()->db->prefix;
+		$dbprefix = CM5_Config::getInstance()->db->prefix;
 		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/install/build-script.php')))
 			while (DB_Conn::get_link()->next_result());    	
     }

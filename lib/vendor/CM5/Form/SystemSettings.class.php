@@ -40,7 +40,7 @@ class CM5_Form_SystemSettings extends Form_Html
     
     public function configure()
     {
-    	$config = CM5_Config::get_instance();
+    	$config = CM5_Config::getInstance();
     	$zone_identifiers = DateTimeZone::listIdentifiers();
         $tzones = array();
         foreach($zone_identifiers as $zone)
@@ -65,14 +65,14 @@ class CM5_Form_SystemSettings extends Form_Html
     {
     	$values = $this->getValues();
     	
-        $config = CM5_Config::get_writable_copy();
+        $config = CM5_Config::getWritableCopy();
         foreach($values['site'] as $k => $v)
         	$config->site->{$k} = $v;
        	foreach($values['email'] as $k => $v)
         	$config->email->{$k} = $v;
         
         CM5_Config::update($config);
-        CM5_Logger::get_instance()->notice("System settings have been changed.");
+        CM5_Logger::getInstance()->notice("System settings have been changed.");
         UrlFactory::craft('system.settings')->redirect();
     }
 };

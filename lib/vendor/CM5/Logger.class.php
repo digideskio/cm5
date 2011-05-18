@@ -77,7 +77,7 @@ class CM5_Logger
      * Get the instance of this logger
      * @return Zend_Log The actual loging engine.
      */ 
-    public static function get_instance()
+    public static function getInstance()
     {
         if (self::$logger !== null)
             return self::$logger;
@@ -88,10 +88,10 @@ class CM5_Logger
         
         // Mail writer
         $mail = new Zend_Mail();
-        $mail->setFrom(CM5_Config::get_instance()->email->sender)
-             ->addTo(CM5_Config::get_instance()->email->administrator);
+        $mail->setFrom(CM5_Config::getInstance()->email->sender)
+             ->addTo(CM5_Config::getInstance()->email->administrator);
         $mail_writer = new Zend_Log_Writer_Mail($mail);
-        $mail_writer->setSubjectPrependText(CM5_Config::get_instance()->site->title . ' | Needs your attention.');
+        $mail_writer->setSubjectPrependText(CM5_Config::getInstance()->site->title . ' | Needs your attention.');
         
         $mail_format = "User: %user%\nIp: %ip%\nTime: %timestamp%\nType: %priorityName% (%priority%)\n\nMessage: %message%" . PHP_EOL;
         $mail_formatter = new Zend_Log_Formatter_Simple($mail_format);

@@ -33,10 +33,10 @@ class CM5_Form_ModuleConfigure extends Form_Html
     public function __construct(CM5_Configurable $module)
     {
         $this->module = $module;
-        $this->mconfig = $module->get_config();
+        $this->mconfig = $module->getConfig();
 
         parent::__construct(null,
-        array('title' => 'Configure ' . ($this->module->module_type() == 'theme'?'theme':'module') . ': ' . $this->module->info_property('title'),
+        array('title' => 'Configure ' . ($this->module->getModuleType() == 'theme'?'theme':'module') . ': ' . $this->module->getMetaInfoEntry('title'),
             'attribs' => array('class' => 'form moduleconfig'),
 		    'buttons' => array(
 		        'upload' => array('label' =>'Save'),
@@ -51,7 +51,7 @@ class CM5_Form_ModuleConfigure extends Form_Html
     public function configure()
     {
         // Convert all config options to editable fields
-        foreach($this->module->config_options() as $name => $options) {
+        foreach($this->module->getConfigurableFields() as $name => $options) {
         	$options['type'] = !isset($options['type'])?'text':$options['type'];
         	
         	if (in_array($options['type'], array('radio', 'checkbox'))) {
@@ -72,12 +72,12 @@ class CM5_Form_ModuleConfigure extends Form_Html
         foreach($values as $id => $value)
             $this->mconfig->{$id} = $value;
 
-        $this->module->save_config();
+        $this->module->saveConfig();
         
         // Omit redirect not very usefull
         return; 
                 
-        if ($this->module->module_type() === 'theme')
+        if ($this->module->getModuleType() === 'theme')
             UrlFactory::craft('theme.admin')->redirect();
             
         UrlFactory::craft('module.admin')->redirect();

@@ -35,7 +35,7 @@ class CM5_Model_Group extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'groups';
+        return CM5_Config::getInstance()->db->prefix . 'groups';
     }
 
     static public $fields = array(

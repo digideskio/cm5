@@ -25,7 +25,7 @@ require_once(__DIR__ . '/layout.php');
 
 class DefaultTheme extends CM5_Theme
 {
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'default',
@@ -34,9 +34,8 @@ class DefaultTheme extends CM5_Theme
         );
     }
     
-    public function default_config()
+    public function getDefaultConfiguration()
     {
-        $version = CM5_Core::get_instance()->get_version();
         return array(
             'page-background-color' => '#4B484F',
             'article-background-color' => '#F6F5FF',
@@ -51,7 +50,7 @@ class DefaultTheme extends CM5_Theme
         );
     }
     
-    public function config_options()
+    public function getConfigurableFields()
     {
         return array(
             'page-background-color' => array('display' => 'Page background color:', 'type' => 'color'),
@@ -66,7 +65,7 @@ class DefaultTheme extends CM5_Theme
             'extra-css' => array('display' => 'Extra css to be included:', 'type' => 'textarea')
         );
     }
-    public function get_layout_class()
+    public function getLayoutClass()
     {
         return 'DefaultThemeLayout';
     }

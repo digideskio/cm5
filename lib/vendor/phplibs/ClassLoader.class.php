@@ -82,9 +82,9 @@ class ClassLoader
     {   
         foreach($this->directories as $directory)
         {
-            $file = $directory . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . $this->file_extension;
-            if (file_exists($file))
-                require $file;
+	            $file = $directory . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . $this->file_extension;
+	            if (file_exists($file))	            	
+	                require $file;
         }
     }    
 }

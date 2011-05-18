@@ -38,7 +38,7 @@ class CM5_Model_Log extends DB_Record
 {
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'log';
+        return CM5_Config::getInstance()->db->prefix . 'log';
     }
 
     static public $fields = array(
@@ -54,7 +54,7 @@ class CM5_Model_Log extends DB_Record
     static public function reset()
     {
         CM5_Model_Log::raw_query()->delete()->execute();
-        CM5_Logger::get_instance()->warn("Log was reseted.");
+        CM5_Logger::getInstance()->warn("Log was reseted.");
     }
 }
 

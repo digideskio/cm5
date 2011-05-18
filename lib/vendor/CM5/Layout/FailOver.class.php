@@ -19,32 +19,22 @@
  *  
  */
 
-
-//! Object to register handlers on destruction of this object
-class OnDestruct
+/**
+ * Layout for failover interface.
+ */
+class CM5_Layout_FailOver extends Layout
 {
-    //! Handlers
-    private $handlers = array();
+    protected function onInitialize()
+    {   
+        $this->activateSlot();
+        $doc = $this->getDocument();    
+        $this->getDocument()->title = CM5_Config::getInstance()->site->title;
 
-    //! Implement on destruction
-    public function __destruct()
-    {
-        foreach($this->handlers as $handle)
-        call_user_func($handle);
-    }
+        etag('div id="main"',
+            $def_content = 
+            tag('div id="content"')
+        );                
 
-    //! Register a new handler
-    public function register_handler($callable)
-    {
-        $this->handlers[] = $callable;
-    }
-
-    //! Unregister handler
-    public function unregister_handler($callable)
-    {
-        if (($key = array_search($callable, $this->handlers, true)) !== false)
-        unset($this->handlers[$key]);
+        $this->deactivate();
     }
 }
-
-?>

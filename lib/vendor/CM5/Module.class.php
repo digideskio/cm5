@@ -30,15 +30,15 @@
  */
 abstract class CM5_Module extends CM5_Configurable
 {
-    public function config_nickname()
+    public function getConfigNickname()
     {
-        return $this->info_property('nickname');
+        return $this->getMetaInfoEntry('nickname');
     }
 
     /**
      * @return string The type of the module
      */
-    public function module_type()
+    public function getModuleType()
     {
         return 'generic';
     }
@@ -46,9 +46,9 @@ abstract class CM5_Module extends CM5_Configurable
 	/**
 	 * Check if this module is currently enabled.
 	 */
-    public function is_enabled()
+    public function isEnabled()
     {
-        return in_array($this->config_nickname(), explode(',', CM5_Config::get_instance()->enabled_modules));
+        return in_array($this->getConfigNickname(), explode(',', CM5_Config::getInstance()->enabled_modules));
     }
 	
 	/**
@@ -56,31 +56,40 @@ abstract class CM5_Module extends CM5_Configurable
      * @return boolean If there was a problem you can return false to prevent
      * module from enabling it. 
      */
-    public function on_enable() {}
+    public function onEnable() {}
     
 	/**
      * Override to execute additional code when module is disabled
      */
-    public function on_disable() {}
+    public function onDisable() {}
     
     /**
-     * Must be implemented by modules to provide their information.
+     * Must be implemented by modules to provide their meta data information.
      * @return array Associative array with module info.
      */ 
-    abstract public function info();
+    abstract public function onRequestMetaInfo();
     
     /**
      * It will be executed when the module is initialized.
      */
-    abstract public function init();        
+    abstract public function onInitialize();        
     
     /**
-     * Helper function to get an entry from info()
+     * Get meta info
+     */
+    public function getMetaInfo()
+    {
+    	return array_merge(array('nickname' => get_called_class()),
+    		$this->onRequestMetaInfo());
+    }
+    
+    /**
+     * Helper function to get an entry from getMetaInfo()
      * @param string $name The name of the info property
      */
-    public function info_property($name)
+    public function getMetaInfoEntry($name)
     {
-        $minfo = $this->info();
+        $minfo = $this->getMetaInfo();
         if (!isset($minfo[$name]))
             return null;
         return $minfo[$name];
@@ -99,7 +108,7 @@ abstract class CM5_Module extends CM5_Configurable
      * @param callable $method A callable object to be executed to
      * process this action
      */
-    public function declare_action($name, $display, $method)
+    public function declareAction($name, $display, $method)
     {
         $class_name = get_class($this);
         if (!method_exists($this, $method))
@@ -115,13 +124,13 @@ abstract class CM5_Module extends CM5_Configurable
      * Get all actions of this module
      * @return array All the registered actions in one array.
      */
-    public function get_actions()
+    public function getActions()
     {
         return $this->user_actions;
     }
     
     //! Get an action
-    public function get_action($name)
+    public function getAction($name)
     {
         if (!isset($this->user_actions[$name]))
             return null;
@@ -129,13 +138,13 @@ abstract class CM5_Module extends CM5_Configurable
     }
     
     /**
-     * Helper function to register this module to core
-     * @see CM5_Core::register_module()
+     * Helper function to register this module to CM5_Core
+     * @see CM5_Core::registerModule()
      */
     public static function register()
     {
         $module_class = get_called_class();
-        CM5_Core::get_instance()->register_module( new $module_class() );
+        CM5_Core::getInstance()->registerModule( new $module_class() );
     }
 
 }

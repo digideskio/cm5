@@ -24,7 +24,7 @@
 class CM5_Module_GoogleAnalytics extends CM5_Module
 {
     //! The name of the module
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'google-analytics',
@@ -34,7 +34,7 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
     }
     
     //! Configuration options of this module
-    public function config_options()
+    public function getConfigurableFields()
     {
         return array(
             'property_id' => array('label' => 'Site property id as defined by google analytics.'),
@@ -43,7 +43,7 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
     }
     
     //! Get default configuration
-    public function default_config()
+    public function getDefaultConfiguration()
     {
         return array(
             'inform_admin' => false
@@ -51,16 +51,16 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
     }
     
     //! On configuration update we must invalidate cache
-    public function on_save_config()
+    public function onSaveConfig()
     {
-        CM5_Core::get_instance()->invalidate_page_cache(null);
+        CM5_Core::getInstance()->invalidatePageCache(null);
     }
     
     //! Initialize module
-    public function init()
+    public function onInitialize()
     {
-        $c = CM5_Core::get_instance();
-        if ($this->get_config()->property_id)
+        $c = CM5_Core::getInstance();
+        if ($this->getConfig()->property_id)
             $c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
     }
     
@@ -68,7 +68,7 @@ class CM5_Module_GoogleAnalytics extends CM5_Module
     public function event_pre_render($event)
     {
         $p = $event->filtered_value;
-        $p->body .= html_ga_code($this->get_config()->property_id, true);
+        $p->body .= html_ga_code($this->getConfig()->property_id, true);
     }
 }
 

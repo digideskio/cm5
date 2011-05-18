@@ -19,25 +19,27 @@
  *  
  */
 
-
-class Layout_Admin extends Layout
+/**
+ * Layout for admin interface.
+ */
+class CM5_Layout_Admin extends Layout
 {
     private $mainmenu = null;
 
     private $submenu = null;
     
-    public function get_mainmenu()
+    public function getMainMenu()
     {
         return $this->mainmenu;
     }
 
-    private function init_menu()
+    private function initializeMenu()
     {
         $this->mainmenu = new SmartMenu(array('class' => 'menu'));
         $this->events()->connect('pre-flush', function($event) {
             $layout = $event->arguments['layout'];
-            $layout->get_document()->get_body()->getElementById('main-menu')
-                ->append($layout->get_mainmenu()->render());
+            $layout->getDocument()->get_body()->getElementById('main-menu')
+                ->append($layout->getMainMenu()->render());
         });
 
         if (Authz::is_allowed('page', 'admin'))
@@ -56,7 +58,7 @@ class Layout_Admin extends Layout
             $this->mainmenu->create_link('Settings', url('/admin/settings'));
     }
     
-    public function get_submenu()
+    public function getSubmenu()
     {
         if ($this->submenu !== null)
             return $this->submenu;
@@ -64,31 +66,31 @@ class Layout_Admin extends Layout
         $this->submenu = new SmartMenu(array('class' => 'menu submenu'));
         $this->events()->connect('pre-flush', function($event) {
             $layout = $event->arguments['layout'];
-            $layout->get_document()->get_body()->getElementById('content')
-                ->prepend($layout->get_submenu()->render());
+            $layout->getDocument()->get_body()->getElementById('content')
+                ->prepend($layout->getSubmenu()->render());
         });;
         
         return $this->submenu;
     }
     
-    protected function __init_layout()
+    protected function onInitialize()
     {   
-        $this->activate();
-        $doc = $this->get_document();    
-        $this->get_document()->title = CM5_Config::get_instance()->site->title . ' | Admin panel';
-        $this->get_document()->add_ref_css(surl('/static/css/admin.css'));
-        $this->get_document()->add_ref_js(surl('/static/js/jquery-1.4.4.min.js'));
-        $this->get_document()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
-        $this->get_document()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
-        //$this->get_document()->add_ref_js(surl('/static/js/jscolor.js.php'));
-        $this->get_document()->add_ref_css(surl('/static/js/jqMiniColors/jquery.miniColors.css'));
-        $this->get_document()->add_ref_js(surl('/static/js/jqMiniColors/jquery.miniColors.min.js'));
+        $doc = $this->getDocument();    
+        $this->getDocument()->title = CM5_Config::getInstance()->site->title . ' | Admin panel';
+        $this->getDocument()->add_ref_css(surl('/static/css/admin.css'));
+        $this->getDocument()->add_ref_js(surl('/static/js/jquery-1.4.4.min.js'));
+        $this->getDocument()->add_ref_js(surl('/static/js/jquery-ui-1.8.2.custom.min.js'));
+        $this->getDocument()->add_ref_js(surl('/static/js/jquery.ba-resize.min.js'));
+        //$this->getDocument()->add_ref_js(surl('/static/js/jscolor.js.php'));
+        $this->getDocument()->add_ref_css(surl('/static/js/jqMiniColors/jquery.miniColors.css'));
+        $this->getDocument()->add_ref_js(surl('/static/js/jqMiniColors/jquery.miniColors.min.js'));
 
+        $this->activateSlot();
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', 
-                tag('a target="_blank"', CM5_Config::get_instance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
-            tag('div id="login-info"'),
+                tag('a target="_blank"', CM5_Config::getInstance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
+            $loginfo = tag('div id="login-info"'),
             tag('div id="main-menu"')
         );
         etag('div id="main"',
@@ -96,7 +98,7 @@ class Layout_Admin extends Layout
             tag('div id="content"')
         );
         
-        $version = CM5_Core::get_instance()->get_version();
+        $version = CM5_Core::getInstance()->getVersion();
         etag('div id="footer"', 
             tag('ul',
                 tag('li',
@@ -115,10 +117,9 @@ class Layout_Admin extends Layout
         	});
         ');
         
-        $this->set_default_container($def_content);
+        $this->setSlot('default', $def_content);
 
-        // Initialize login info
-        $loginfo = $this->get_document()->get_body()->getElementById('login-info');
+        // Initialize login info        
         if (Authn_Realm::has_identity())
         {
             if ($_SERVER['QUERY_STRING'] == '')
@@ -130,8 +131,6 @@ class Layout_Admin extends Layout
                 tag('a', 'logout', array('href' => $logout_url))
             );
         }
-        // Search widgeet
-        $this->init_menu();
-        $this->deactivate();
+        $this->initializeMenu();
     }
 }

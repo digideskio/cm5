@@ -24,7 +24,7 @@
 class CM5_Module_SEO extends CM5_Module
 {
     //! The name of the module
-    public function info()
+    public function onRequestMetaInfo()
     {
         return array(
             'nickname' => 'seo',
@@ -34,9 +34,9 @@ class CM5_Module_SEO extends CM5_Module
     }
     
     //! Initialize module
-    public function init()
+    public function onInitialize()
     {
-        $c = CM5_Core::get_instance();
+        $c = CM5_Core::getInstance();
         $c->events()->connect('page.request', array($this, 'event_page_request'));
     }
     
@@ -85,23 +85,22 @@ class CM5_Module_SEO extends CM5_Module
         if ($event->arguments['url'] == '/sitemap.xml')
         {
             $event->filtered_value = true;
-            $response->add_header('Content-Type: text/xml');
+            $response->addHeader('Content-Type: text/xml');
             $response->document = $this->generate_sitemap();
         }
         else if ($event->arguments['url'] == '/sitemap.xsl')
         {
             $event->filtered_value = true;
-            $response->add_header('Content-Type: text/xml');
+            $response->addHeader('Content-Type: text/xml');
             $response->document = file_get_contents(__DIR__ . '/sitemap.xsl');
         }
         else if ($event->arguments['url'] == '/robots.txt')
         {
             $event->filtered_value = true;
-            $response->add_header('Content-Type: text/plain');
+            $response->addHeader('Content-Type: text/plain');
             $response->document = $this->generate_robots();
         }
     }
 }
 
 CM5_Module_SEO::register();
-?>

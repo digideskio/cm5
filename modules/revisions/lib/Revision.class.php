@@ -60,7 +60,7 @@ class CM5_Module_Revision extends DB_Record
 	
     static public function get_table()
     {   
-        return CM5_Config::get_instance()->db->prefix . 'mod_revisions_revs';
+        return CM5_Config::getInstance()->db->prefix . 'mod_revisions_revs';
     }
 	
 	public static $fields = array(

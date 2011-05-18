@@ -54,7 +54,7 @@ class CM5_Response
      * Add header in response
      * @param string $header The full header in the RFC format, ready to deliver.
      */
-    public function add_header($header)
+    public function addHeader($header)
     {
         $this->headers[] = $header;
     }

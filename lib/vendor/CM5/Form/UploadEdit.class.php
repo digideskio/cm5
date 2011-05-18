@@ -37,10 +37,10 @@ class CM5_Form_UploadEdit extends Form_Html
 		    'buttons' => array(
 		        'upload' => array('label' =>'Save'),
 	            'cancel' => array('label' =>'Cancel', 'type' => 'button',
-	                'onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
+	                'attribs' => array('onclick' => "window.location='" . UrlFactory::craft('upload.admin') . "'")
                 )
             )
-        );      
+        ));
     }
     
     public function configure()
@@ -60,7 +60,6 @@ class CM5_Form_UploadEdit extends Form_Html
     {
         if ($this->get('file')->getValue())
         {
-        	error_log('new file');
             // Update file
             $this->upload->update_upload($this->get('file')->getValue());
         }

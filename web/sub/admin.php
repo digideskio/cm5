@@ -22,7 +22,7 @@
  */
 
 // Deploy checks
-if (CM5_Config::get_instance()->site->deploy_checks)
+if (CM5_Config::getInstance()->site->deploy_checks)
 {
     if (is_writable(__DIR__ . '/config.inc.php'))
     {
@@ -49,7 +49,7 @@ $auth = new Authn_Backend_DB(array(
 Authn_Realm::set_backend($auth);
 Authn_Realm::set_session(
     new Authn_Session_Cache(
-        new Cache_File(CM5_Config::get_instance()->site->cache_folder, 'session_'),
+        new Cache_File(CM5_Config::getInstance()->site->cache_folder, 'session_'),
         new Net_HTTP_Cookie('cms-session', null, time()+(86400 * 15), surl('/'))
     )
 );
@@ -60,9 +60,7 @@ $roles = new Authz_Role_FeederDatabase(array(
     'role_name_field' => 'username',
     'parents_query' => CM5_Model_Membership::open_query()->where('username = ?'),
     'parent_name_field' => 'groupname',
-    'parent_name_filter_func' => create_function('$name',
-        '   return "@" . $name; '
-    )
+    'parent_name_filter_func' => function($name){ return "@" . $name; }
 ));
 Authz::set_resource_list($list = new Authz_ResourceList());
 Authz::set_role_feeder($roles);
@@ -102,7 +100,7 @@ Authz::allow('log', '@admin', 'view');
 Authz::allow('system.settings', '@admin', 'admin');
 
 // Load modules
-CM5_Core::get_instance()->modules();
+CM5_Core::getInstance()->loadModules();
 
 // Special handling for special urls
 Stupid::add_rule(function() {require(__DIR__ . '/../login.php'); },
@@ -148,7 +146,7 @@ Stupid::add_rule(function() { require_once(__DIR__ . '/admin/settings.php'); },
 );
 
 Stupid::add_rule(function(){
-		Layout::open('admin')->activate();
+		CM5_Layout_Admin::getInstance()->activateSlot();
 		$frm = new UI_TestForm(array());
 		$frm->render()->appendTo(Output_HTMLTag::get_current_parent());
 		exit;
@@ -161,6 +159,9 @@ Stupid::add_rule(function() { require_once(__DIR__ . '/admin/tools.php'); },
 );
 
 Stupid::set_default_action('default_admin_panel');
+
+// Enable admin layout and start
+CM5_Layout_Admin::getInstance()->activateSlot();
 Stupid::chain_reaction();
 
 function default_admin_panel()

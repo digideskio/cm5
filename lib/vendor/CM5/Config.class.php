@@ -35,7 +35,7 @@ class CM5_Config
     /**
      * Load configuration from file
      */
-    public static function load_config()
+    public static function load()
     {
         $config = new Zend_Config(self::$default_config, true);
         $config->merge(new Zend_Config(require self::$config_file));
@@ -47,7 +47,7 @@ class CM5_Config
      * Get the singleton instance of CM5_Config
      * @return Zend_Config
      */
-    public static function get_instance()
+    public static function getInstance()
     {
         return Registry::get('config');
     }
@@ -56,9 +56,9 @@ class CM5_Config
      * Get a writtable copy of configuration file.
      * @return Zend_Config
      */
-    public static function get_writable_copy()
+    public static function getWritableCopy()
     {
-        return new Zend_Config(self::get_instance()->toArray(), true);
+        return new Zend_Config(self::getInstance()->toArray(), true);
     }
     
     /**
@@ -80,6 +80,6 @@ class CM5_Config
         $conf_writer->write();
         
         // Update configuration
-        self::load_config();
+        self::load();
     }
 }

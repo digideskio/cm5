@@ -65,8 +65,10 @@ class DB_Conn
     */
     static public function events()
     {   
-        if (self::$events === NULL)
-            self::$events = new EventDispatcher(array(
+        if (self::$events !== NULL)
+        	return self::$events;
+
+        return self::$events = new EventDispatcher(array(
 	        	'connected',
 	        	'disconnected',
 	        	'error',
@@ -76,7 +78,6 @@ class DB_Conn
 	        	'stmt.executed',
 	        	'stmt.released',
             ));
-        return self::$events;
     }
 
     //! Initialize db connection

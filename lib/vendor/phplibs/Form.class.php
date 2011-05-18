@@ -55,11 +55,12 @@ class Form extends Form_Field_Container
 	/**
 	 * Get the event dispatcher corresponding to the call class.
 	 * Available events are:
-	 * 	- initialized: When a new form object is initialized.
-	 *  - process.get: When a GET is successfully processed
-	 *  - process.post: When a POST is successfully processed
-	 *  - process.valid: When a POST is processed and there was a valid result.
-	 *  - process.invalid: When a POST is processed and there was a invalid result.
+	 * 	- initialized: Notify a new form object is initialized.
+	 *  - process.get: Notify that a GET was successfully processed.
+	 *  - process.post: Notify that a POST was successfully processed
+	 *  - process.valid: Notify that a POST is processed with valid result.
+	 *  - process.invalid: Notify that a POST is processed with invalid result.
+	 *  - processed: Notify that process was finished.
 	 * @return EventDispatcher Object with events for the form
 	 * 	class that was called from.
 	 * @note You can also overide the equivalent function if you have
@@ -70,6 +71,7 @@ class Form extends Form_Field_Container
 		$class_name = get_called_class();
 		if (isset(self::$event_dispatchers[$class_name]))
 			return self::$event_dispatchers[$class_name];
+
 		return self::$event_dispatchers[$class_name] = new EventDispatcher(array(
 			'initialized',
 			'processed',
@@ -141,8 +143,10 @@ class Form extends Form_Field_Container
 	{
 		if (method_exists($this, $method_name))
 			call_user_func_array(array($this, $method_name), $extra_arguments);
-		static::events()->notify($name,
-			array_merge(array('form' => $this), $extra_arguments));
+		
+		if (isset(self::$event_dispatchers[get_called_class()]))
+			static::events()->notify($name,
+				array_merge(array('form' => $this), $extra_arguments));
 	}
 	
 	/**
