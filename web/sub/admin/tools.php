@@ -30,6 +30,7 @@ Stupid::add_rule('pages_tree',
     array('type' => 'url_path', 'chunk[3]' => '/^pages_tree$/')
 );
 Stupid::set_default_action('default_tools');
+Layout::getActive()->deactivate();
 Stupid::chain_reaction();
 
 function tool_translit()

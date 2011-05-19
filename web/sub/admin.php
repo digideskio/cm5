@@ -100,6 +100,7 @@ Authz::allow('log', '@admin', 'view');
 Authz::allow('system.settings', '@admin', 'admin');
 
 // Load modules
+CM5_Core::getInstance()->switchBackendWorkingContext();
 CM5_Core::getInstance()->loadModules();
 
 // Special handling for special urls

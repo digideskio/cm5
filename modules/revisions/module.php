@@ -21,52 +21,12 @@
  *      Sque - initial API and implementation
  */
 
-class CM5_Module_Revisions extends CM5_Module
-{
-    //! The name of the module
-    public function onRequestMetaInfo()
-    {
-        return array(
-            'nickname' => 'revisions',
-            'title' => 'Revisions Tracking',
-            'description' => 'Add support for creating pages revisions.'
-        );
-    }
-    
-    public function enhanceEditForm(Event $e)
-    {
-    	$form = $e->arguments['form'];
-    	
-    	$form->add($set = field_set('revisions', array('label' => 'History')));
-    	$set->add($revs = field_raw('revisions', array('value' => tag('ul class="revisions"'))));
+require_once __DIR__ . '/lib/Revisions.class.php';
 
-    	foreach($form->getPage()->revisions->subquery()->order_by('created_at', 'DESC')->execute() as $r) {
-    		$revs->getValue()->append(tag('li',
-    			tag('span class="author"', $r->author),    			
-    			tag('span class="summary"', $r->summary),
-    			tag('span class="date"', date_exformat($r->created_at)->human_diff()),
-    			tag('span class="ip"', $r->ip)
-    		));
-    	}
-    	
-    	// Add needed dependancies
-    	//Layout::getActive()->getDocument()->add_ref_css(surl('/modules/revisions/static/css/extra-admin.css'));
-    }
-    
-    //! Initialize module
-    public function onInitialize()
-    {
-    	// Adding model add hooks also
-    	require __DIR__ . '/lib/Revision.class.php';    	
-    	CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhanceEditForm'));
-    }
-    
-    public function onEnable()
-    {
-		$dbprefix = CM5_Config::getInstance()->db->prefix;
-		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/install/build-script.php')))
-			while (DB_Conn::get_link()->next_result());    	
-    }
-}
-
-CM5_Module_Revisions::register();
+return array(
+	'class' => 'CM5_Module_Revisions',
+	'nickname' => 'revisions',
+	'title' => 'Revisions Tracking',
+	'description' => 'Add support for creating pages revisions.',
+	'context' => 'backend'
+);

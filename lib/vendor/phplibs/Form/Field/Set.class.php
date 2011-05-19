@@ -59,6 +59,7 @@ class Form_FieldSet extends Form_Field_Container
 		etag('fieldset')->attr('name', $html_name)->push_parent();
 		if (!empty($this->options['label']))
 			etag('legend', $this->options['label']);
+		etag('ul class="fields"')->push_parent();
 		$this->walkFields(function($field, $index) use($html_name){
 			etag('li')->attr('data-name', $field->getName())->push_parent();
 			
@@ -74,7 +75,7 @@ class Form_FieldSet extends Form_Field_Container
 				etag('span class="hint"', $field->options['hint']);
 			Output_HTMLTag::pop_parent();
 		});
-		Output_HTMLTag::pop_parent();
+		Output_HTMLTag::pop_parent(2);
 	}
 }
 

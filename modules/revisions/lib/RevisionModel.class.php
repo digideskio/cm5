@@ -22,7 +22,7 @@
  */
 
 
-class CM5_Module_Revision extends DB_Record
+class CM5_Module_RevisionModel extends DB_Record
 {
 	public static $next_summary = null;
 	
@@ -79,8 +79,8 @@ class CM5_Module_Revision extends DB_Record
 	);
 }
 
-CM5_Model_Page::one_to_many('CM5_Module_Revision', 'page', 'revisions');
-CM5_Model_User::one_to_many('CM5_Module_Revision', 'user', 'revisions');
+CM5_Model_Page::one_to_many('CM5_Module_RevisionModel', 'page', 'revisions');
+CM5_Model_User::one_to_many('CM5_Module_RevisionModel', 'user', 'revisions');
 
 CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 	$p = $e->arguments["record"];
@@ -109,6 +109,6 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 		$rev["author"] = Authn_Realm::get_identity()->id();
 		$rev['summary'] = CM5_Module_Revision::get_next_summary($summary_changed_fields);
 		$rev['ip'] = $_SERVER['REMOTE_ADDR'];
-		CM5_Module_Revision::create($rev);
+		CM5_Module_RevisionModel::create($rev);
 	}
 });

@@ -20,15 +20,16 @@
  */
 
 
-if (!Layout::getActive())
-    CM5_Layout_FailOver::getInstance()->activateSlot();
-
 CM5_Layout_FailOver::getInstance()->getDocument()->title = 'Not Found: ' . $_SERVER['REQUEST_URI'];
 
 header("HTTP/1.1 404 Not Found");
 
+if (Layout::getActive() == null)
+    CM5_Layout_FailOver::getInstance()->activateSlot();
+
 etag('div class="not-found"',
-tag('h1 class="error"', "Not Found: \"{$_SERVER['REQUEST_URI']}\" "),
-tag('p', 'Sorry we were unable to find any information about this url. ')
+	tag('h1 class="error"', "Not Found: \"{$_SERVER['REQUEST_URI']}\" "),
+	tag('p', 'Sorry we were unable to find any information about this url. ')
 );
-exit;
+
+Layout::getActive()->flush();

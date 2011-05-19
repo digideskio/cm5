@@ -40,7 +40,7 @@ class Event
 
     //! Construct event object
     public function __construct($name, $type, $arguments = array())
-    {   
+    {
     	$this->name = $name;
 	    $this->arguments = $arguments;
 	    $this->type = $type;

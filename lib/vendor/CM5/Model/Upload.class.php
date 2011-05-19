@@ -114,8 +114,8 @@ class CM5_Model_Upload extends DB_Record
             $mime_type = $mime;
         return $mime_type;*/
     }
-    
-    /**
+	
+	/**
      * Construct an upload from data
      * @param UploadedFile $upload
      */
@@ -160,7 +160,8 @@ class CM5_Model_Upload extends DB_Record
     static function createFromUploaded(UploadedFile $upload)
     {   
         $upload_folder = CM5_Config::getInstance()->site->upload_folder;
-       
+
+        
         // Calculate save_path
         $path_count = 0;
         $data = file_get_contents($upload->getTempName());

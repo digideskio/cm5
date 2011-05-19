@@ -32,12 +32,10 @@ class CM5_Form_Login extends Form_Html
         $this->redirect_url = $redirect_url;
 
         parent::__construct(null, array(
-        	'title' => CM5_Config::getInstance()->site->title . ' Login',
+        	'title' => 'Login @ ' . CM5_Config::getInstance()->site->title,
             'attribs' => array('class' => 'form login'),
 		    'buttons' => array(
 		        'login' => array('label' =>'Login'),
-		        'back' => array('label' => 'Back', 'type' => 'button',
-		        	'attribs' => array('onclick' => "window.location='{$redirect_url}'"))
                 )
             )
         );

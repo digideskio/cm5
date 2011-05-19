@@ -66,9 +66,9 @@ $config = CM5_Config::getInstance();
 DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema, true);
 DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
-DB_Conn::events()->connect('error',
+/*DB_Conn::events()->connect('error',
     function($e){ error_log( $e->arguments["message"]); 
-    CM5_Logger::getInstance()->crit($e->arguments["message"]); });
+    CM5_Logger::getInstance()->crit($e->arguments["message"]); });*/
 //DB_Conn::events()->connect('stmt.executed',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
 

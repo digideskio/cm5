@@ -68,6 +68,11 @@ class CM5_Core
      */ 
     protected $cache = null;
     
+    /**
+     * The working context of this 
+     */
+    protected $working_context = 'frontend';
+    
     //! Construct core
     /**
      * @param $cache The caching engine to be used from CMS
@@ -84,14 +89,32 @@ class CM5_Core
         
         // Save caching engine
         $this->cache = $cache;
-        
-        // Register page changes to invalidate cache
-        $invalidate_func = function($e) {
-        	CM5_Core::getInstance()->invalidatePageCache($e->arguments['record']);
-        };
-        CM5_Model_Page::events()->connect('op.post.save', $invalidate_func);
-        CM5_Model_Page::events()->connect('op.post.delete', $invalidate_func);
-        CM5_Model_Page::events()->connect('op.post.create', $invalidate_func);
+    }
+    
+    /**
+     * Get current working context
+     */
+    public function getWorkingContext()
+    {
+    	return $this->working_context;
+    }
+    
+    /**
+     * Switch to backend working context
+     */
+    public function switchBackendWorkingContext()
+    {
+    	if ($this->working_context !== 'backend'){
+			// Register page changes to invalidate cache
+        	$invalidate_func = function($e) {
+        		CM5_Core::getInstance()->invalidatePageCache($e->arguments['record']);
+	        };
+	        CM5_Model_Page::events()->connect('op.post.save', $invalidate_func);
+	        CM5_Model_Page::events()->connect('op.post.delete', $invalidate_func);
+	        CM5_Model_Page::events()->connect('op.post.create', $invalidate_func);
+	        
+	        $this->working_context = 'backend';
+    	}
     }
     
     /**
@@ -107,26 +130,36 @@ class CM5_Core
     }
     
     /**
+     * Load modules from a folder
+     */
+    private function loadModulesFromFolder($modules_folder, $filename)
+    {
+		// Load modules
+        if ($dh = opendir($modules_folder)) {
+            while (($file = readdir($dh)) !== false) {
+                if (($file[0] == '.') || (!is_dir($modules_folder . '/' . $file)))
+                    continue;
+                
+                if (is_file($modules_folder . '/' . $file . '/' . $filename)) {
+                    $module_i = require_once($modules_folder . '/' . $file . '/' . $filename);
+                    if (!isset($module_i['class'], $module_i['nickname'])) {
+                    	CM5_Logger::getInstance()->err('Error loading module "' . $file . '". ' . $filename . ' did not return properly.');
+                    	continue;
+                    }
+                    $module = new $module_i['class']($module_i['nickname'], $module_i);
+                    $this->registerModule($module);                    
+                }
+            }
+            closedir($dh);
+        }    	
+    }
+    /**
      * Scan modules folder and load them all
      */
     public function loadModules()
     {
         $this->modules_loaded = true;
-        
-        // Load modules
-        $modules_folder = __DIR__ . '/../../../modules';
-        if ($dh = opendir($modules_folder))
-        {
-            while (($file = readdir($dh)) !== false)
-            {
-                if (($file == '.') || ($file == '..') || (!is_dir($modules_folder . '/' . $file)))
-                    continue;
-                    
-                if (is_file($modules_folder . '/' . $file . '/module.php'))
-                    require_once($modules_folder . '/' . $file . '/module.php');
-            }
-            closedir($dh);
-        }
+        $this->loadModulesFromFolder(__DIR__ . '/../../../modules', 'module.php');
     }
     
     /**
@@ -135,21 +168,7 @@ class CM5_Core
     public function loadThemes()
     {
         $this->themes_loaded = true;
-        
-        // Load themes
-        $themes_folder = __DIR__ . '/../../../themes';
-        if ($dh = opendir($themes_folder))
-        {
-            while (($file = readdir($dh)) !== false)
-            {
-                if (($file == '.') || ($file == '..') || (!is_dir($themes_folder . '/' . $file)))
-                    continue;
-                    
-                if (is_file($themes_folder . '/' . $file . '/theme.php'))
-                    require_once($themes_folder . '/' . $file . '/theme.php');
-            }
-            closedir($dh);
-        }
+        $this->loadModulesFromFolder(__DIR__ . '/../../../themes', 'theme.php');
     }
     
     /**
@@ -170,7 +189,7 @@ class CM5_Core
         $minfo = $module->getMetaInfo();
         $this->modules[$minfo['nickname']] = $module;
         if ($module->isEnabled())
-            $module->onInitialize();
+        	$module->initialize($this->working_context);
     }
    
     /**
