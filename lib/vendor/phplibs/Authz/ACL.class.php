@@ -96,7 +96,7 @@ class Authz_ACL
 
         foreach($this->aces as $ace)
         {
-            if ($ace->get_action() !== $action)
+            if ($ace->getAction() !== $action)
                 continue;
 
             if ($ace->get_role() == $role)

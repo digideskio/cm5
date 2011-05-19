@@ -51,13 +51,13 @@ function module_action($module_name, $action)
 	if (($module = CM5_Core::getInstance()->getModule($module_name)) === null)
 		throw new Exception404();
 
-	if (($action = $module->get_action($action)) === null)
+	if (($action = $module->getAction($action)) === null)
 		throw new Exception404();
 
 	Layout::getActive()->getDocument()->title = CM5_Config::getInstance()->site->title .
         " | Module: {$module->getMetaInfoEntry('title')} > {$action['display']}";
 	Layout::getActive()->getSubmenu()->create_entry($module->getMetaInfoEntry('title'));
-	foreach($module->get_actions() as $a)
+	foreach($module->getActions() as $a)
 	{
 		CM5_Layout_Admin::getInstance()->getSubmenu()->create_link(
 		$a['display'],

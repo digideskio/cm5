@@ -65,21 +65,30 @@ class CM5_Model_Page extends DB_Record
         'order'
     );
     
-    public function full_path()
+    /**
+     * Get the relative URL for this page.
+     */
+    public function getRelativeUrl()
     {
         if (!($p = $this->parent))
             return '/' . $this->slug;
-        return $p->full_path() . '/' . $this->slug;
+        return $p->getRelativeUrl() . '/' . $this->slug;
     }
     
-    public function delete_all()
+    /**
+     * Delete this page and all subpages
+     */
+    public function deleteAll()
     {
         foreach($this->subpages->all() as $p)
-            $p->delete_all();
+            $p->deleteAll();
         $this->delete();
     }
     
-    public function delete_move_orphans()
+    /**
+     * Delete this page and move orphans to parent.
+     */
+    public function deleteAndMoveOrphans()
     {
         // Move all childs to this node's parent
         static::raw_query()
@@ -98,7 +107,7 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
     $r->lastmodified = new DateTime();
     
     // Update uri
-    $r->uri = $r->full_path();
+    $r->uri = $r->getRelativeUrl();
     
     // Log event
     CM5_Logger::getInstance()->info("Page ({$r->id}) - \"{$r->title}\" was changed.");
@@ -122,7 +131,7 @@ CM5_Model_Page::events()->connect('op.post.create', function($e) {
     CM5_Logger::getInstance()->info("Page ({$r->id}) - \"{$r->title}\" was created.");
 
     // Update uri
-    $r->uri = $r->full_path();
+    $r->uri = $r->getRelativeUrl();
     $r->save();
 });
 

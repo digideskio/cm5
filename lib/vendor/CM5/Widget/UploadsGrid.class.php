@@ -86,7 +86,9 @@ class CM5_Widget_UploadsGrid extends Output_HTML_Grid
 			array('src' => UrlFactory::craft('upload.thumb', $record))
 			);
 
-			$res .= tag('span class="url"', (string)UrlFactory::craft('upload.view', $record));
+			$res .= tag('input readonly="readonly" class="url"',
+				array('value' => (string)UrlFactory::craft('upload.view', $record),
+					'size' => strlen((string)UrlFactory::craft('upload.view', $record))));
 			$res .= UrlFactory::craft('upload.view', $record)->anchor('link')->add_class('download');
 			$res .= tag('p', $record->description);
 			return $res;

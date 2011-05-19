@@ -24,13 +24,13 @@
 Stupid::add_rule('image_thumbnail_by_id',
     array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/@(\d+)/')
 );
-Stupid::add_rule('dump_file_by_id',
+Stupid::add_rule('dumpFile_by_id',
     array('type' => 'url_path', 'chunk[2]' => '/@(\d+)/')
 );
 Stupid::add_rule('image_thumbnail_by_name',
     array('type' => 'url_path', 'chunk[2]' => '/^\+thumb$/', 'chunk[3]' => '/^([^@]{1,255})$/')
 );
-Stupid::add_rule('dump_file_by_name',
+Stupid::add_rule('dumpFile_by_name',
     array('type' => 'url_path', 'chunk[2]' => '/^([^@]{1,255})$/')
 );
 
@@ -53,7 +53,7 @@ function check_client_cache($lastmodified)
     }
 }
 
-function dump_file_by_id($id)
+function dumpFile_by_id($id)
 {
     if (!($f = CM5_Model_Upload::open($id)))
         throw new Exception404();
@@ -64,16 +64,16 @@ function dump_file_by_id($id)
     // Add expire header
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
     
-    $f->dump_file();
+    $f->dumpFile();
 }
 
-function dump_file_by_name($name)
+function dumpFile_by_name($name)
 {
     $files = CM5_Model_Upload::raw_query()->select(array('id'))->where('filename = ?')->execute($name);
     if (count($files) !== 1)
         throw new Exception404();
     
-    dump_file_by_id($files[0]['id']);
+    dumpFile_by_id($files[0]['id']);
 }
 
 function image_thumbnail_by_id($id)
@@ -87,7 +87,7 @@ function image_thumbnail_by_id($id)
     // Add expire header
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $f->lastmodified->format('U')) . ' GMT' );
     
-    $f->dump_thumb();
+    $f->dumpThumb();
 }
 
 function image_thumbnail_by_name($name)

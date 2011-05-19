@@ -96,7 +96,7 @@ function page_editor_form($id)
 
     header('Content-type: text/html; charset=UTF-8');
 	$frm = new CM5_Form_PageEdit($p);
-    echo $frm->render();
+    echo $frm->render();    
 }
 
 function page_editor()
@@ -107,6 +107,7 @@ function page_editor()
    
     show_pages_tree(null);
     etag('div id="page_editor"');
+    etag('div', array('style' => 'clear: both;'));
 }
 
 function delete_page($page_id)

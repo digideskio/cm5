@@ -61,7 +61,7 @@ class CM5_Form_UploadEdit extends Form_Html
         if ($this->get('file')->getValue())
         {
             // Update file
-            $this->upload->update_upload($this->get('file')->getValue());
+            $this->upload->updateFromUploaded($this->get('file')->getValue());
         }
         $this->upload->description = $this->get('description')->getValue();
         $this->upload->save();

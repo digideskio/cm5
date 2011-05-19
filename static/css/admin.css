@@ -52,7 +52,7 @@ a:hover {
 }
 
 #main-menu{
-    background-color: #d20000;
+    background-color: #7B9348;
     border-bottom: 1px solid #454545;
 }
 
@@ -62,12 +62,12 @@ a:hover {
 
 #content{
     min-height: 550px;
-    padding: 1px 5px;
+    padding: 10px 10px;
 }
 
 #login-info{
     position: absolute;
-    top: 25px;
+    top: 30px;
     right: 15px;
     font-size: 0.85em;
 }
@@ -85,7 +85,7 @@ a:hover {
     clear: both;
     text-align: left;
     border-top: 1px solid #454545;
-    background-color: #d20000;
+    background-color: #7B9348;
     padding: 2px 10px;
     color: #b2b2b2;
     font-size: 0.8em;
@@ -183,22 +183,26 @@ a:hover {
 .menu
 {
     margin: 0px 15px;
-    padding: 2px;
-	font: 12pt Monospace, "Courrier New";
+    padding: 0px;	
 }
 
 .menu li{
-    display: inline;
+    display: inline-block;
     margin: 0px 5px;
     padding: 0px;
 
 }
 .menu li a{
-    padding: 5px;
+	display: block;
+    padding: 3px 5px;
+    font: 9pt Verdana;
+    font-weight: bold;
+    color: #e5e5e5;
 }
 
 .menu li.selected a{
 	color: #eaea22;
+	background-color: black;
 }
 
 /* 2nd lvl menus */
@@ -217,15 +221,15 @@ a:hover {
 
 /* submenu */
 .submenu{
-    margin: 0px;
+    margin: -10px -10px 20px -10px;
     padding: 4px 0px;
     border-bottom: 1px solid #656565;
-    background-color: #EAEA22;
+    background-color: #C4C200;
     font-size: 0.8em;
     color: #232323;
 }
 
-.submenu a{
+.submenu li a{
     color: #232323;
     border: 1px solid transparent;
 }
@@ -261,6 +265,7 @@ a:hover {
     border-radius: 5px;
     border: 1px solid #898989;
     position: relative;
+    box-shadow: 0px 0px 8px #454545;
 }
 
 #pages_tree .resort{
@@ -355,6 +360,7 @@ a:hover {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     border: 1px solid #898989;
+    box-shadow: 0px 0px 8px #454545;
 }
 
 .form .title{
@@ -387,7 +393,7 @@ a:hover {
     margin: 3px 7px 4px 5px;
 }
 
-.form input[type=text], .form input[type=password], .form textarea, .form input[type=color]{
+.form input[type=text], .form input[type=password], .form textarea, .form input[type=color], .form input[type=email], .form input[type=url]{
     border: 1px solid black;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -405,7 +411,7 @@ a:hover {
     height: 16px;
 }
 
-.form input[type=text]:focus, .form textarea{
+.form input[type=text]:focus, .form textarea:focus, .form input[type=email]:focus, .form input[type=url]:focus{
     background-color: white;
     border: 1px solid #d20000;
 }
@@ -453,14 +459,14 @@ a:hover {
     width: auto;
 }
 
-.form.page-editor input[type=submit]{
+input[type=submit], input[type=button]{
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	-moz-box-shadow: 0px 0px 2px #343434;
 	box-shadow: 1px 1px 2px #343434;
 	-webkit-box-shadow: 1px 1px 2px #343434;
-	padding: 2px 20px;
+	padding: 2px 10px;
 	font: 11pt "Trebuchet MS";
 	border: 1px solid #9a9a9a;	
 	text-shadow: 1px 1px 2px #323232;
@@ -468,31 +474,75 @@ a:hover {
 	margin-right: 5px; 
 }
 
-.form.page-editor input[type=submit], .form.page-editor input[type=submit][disabled]{
+input[type=submit], input[type=submit][disabled], input[type=button], input[type=button][disabled]{
 	background: -webkit-gradient(
 	    linear,
 	    left bottom,
 	    left top,
-	    color-stop(0.79, rgb(128,128,128)),
-	    color-stop(1, rgb(207,207,207))
+	    color-stop(0.09, #7E7E76),
+	    color-stop(1, #B6BB9B)
 	);
 	background: -moz-linear-gradient(
 	    center bottom,
-	    rgb(128,128,128) 79%,
-	    rgb(207,207,207) 100%
+	    #7E7E76 9%,
+	    #B6BB9B 100%
 	);
 	color: #d3d3d3;
 }
+input[type=submit]{
+	background: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.09, #516229),
+	    color-stop(1, #88B133)
+	);
+	background: -moz-linear-gradient(
+	    center bottom,
+	    #516229 9%,
+	    #88B133 100%
+	);
+	color: #d3d3d3;
+	padding: 2px 20px;
+}
 
-.form.page-editor input[type=submit][disabled]{
+input[type=submit][disabled], input[type=button][disabled]{
 	color: #878787;	
 	text-shadow: none;
 }
 
-.form.page-editor input[type=submit]:hover{
-	border-color: #666666;
+input[type=button]:hover {
 	color: white;
-	text-shadow: 1px 1px 2px #222222;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0.09, #7E7E76),
+	    color-stop(1, #B6BB9B)
+	);
+	background: -moz-linear-gradient(
+	    center top,
+	    #7E7E76 9%,
+	    #B6BB9B 100%
+	);
+	color: #d3d3d3;
+}
+
+input[type=submit]:hover{
+	/*border-color: #666666;*/
+	color: white;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0.09, #516229),
+	    color-stop(1, #88B133)
+	);
+	background: -moz-linear-gradient(
+	    center top,
+	    #516229 9%,
+	    #88B133 100%
+	);
 	
 }
 	
@@ -526,6 +576,10 @@ a:hover {
 .form-moduleconfig{
     width: 800px ;
 }
+
+.form.confirm {
+	margin-top: 40px;
+}
 /** ui-grid **/
 .ui-grid{
     margin: 5px auto;
@@ -535,6 +589,7 @@ a:hover {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     border: 1px solid #898989;
+    box-shadow: 0px 0px 8px #474747;
 }
 
 .ui-grid table{
@@ -644,7 +699,7 @@ a:hover {
 }
 
 .ui-grid-uploads .url{
-    background-color: #858585;
+    background-color: #A0A0A0;
     border: 1px solid #565656;
     padding: 2px 5px;
     margin: 3px auto;
@@ -657,7 +712,7 @@ a:hover {
 }
 
 .ui-grid-log .priority.notice{
-    background-color: #7c7634 !important;
+    background-color: #928D4B !important;
     color: white !important;
 }
 
@@ -667,7 +722,7 @@ a:hover {
 }
 
 .ui-grid-log .priority.err, .ui-grid-log .priority.crit, .ui-grid-log .priority.alert, .ui-grid-log .priority.emerg{
-    background-color: #f51919 !important;
+    background-color: #B71313 !important;
     color: white !important;
 }
 
@@ -721,6 +776,14 @@ a:hover {
     padding-left: 16px;
 }
 
+/** buttons **/
+.button.strong {
+	background-color: #454545;
+}
+.button.strong:hover {
+	background-color: black;
+}
+
 .button.add, .button.delete, .button.edit, .button.download, .button.light-on, .button.light-off{
     padding: 5px 10px 5px 24px;
     background-position: 5px center;
@@ -760,7 +823,7 @@ a:hover {
 }
 
 /** Uploads panel **/
-.panel.uploads{
+.panel.uploads, .panel.users{
     padding: 5px 5px;
 }
 /** Log filters **/

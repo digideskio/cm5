@@ -42,7 +42,7 @@ class CM5_Form_Confirm extends Form_Html
         
         parent::__construct(null,
             array('title' => $title,
-                'attribs' => array('class' => 'form form-confirm'),
+                'attribs' => array('class' => 'form confirm'),
 		        'buttons' => array(
 		            'delete' => array('label' => $ok_button),
 		            'cancel' => array('label' =>'Cancel', 'type' => 'button',

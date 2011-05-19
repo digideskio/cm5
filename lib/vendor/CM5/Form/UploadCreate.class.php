@@ -64,7 +64,7 @@ class CM5_Form_UploadCreate extends Form_Html
     public function onProcessValid()
     {
     	foreach($this->get('file')->getValue() as $upload) {
-	        $up = CM5_Model_Upload::create_from_upload($upload);
+	        $up = CM5_Model_Upload::createFromUploaded($upload);
 	        $up->description = $this->get('description')->getValue();
 	        $up->save();
 	        

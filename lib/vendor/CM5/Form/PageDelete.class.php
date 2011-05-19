@@ -59,11 +59,11 @@ class CM5_Form_PageDelete extends Form_Html
     	$values = $this->getValue(); 
         if ($values['mode'][0] == 'delete-all')
         {
-            $this->page->delete_all();
+            $this->page->deleteAll();
         }
         else if ($values['mode'][0] == 'move-to-parent')
         {
-            $this->page->delete_move_orphans();
+            $this->page->deleteAndMoveOrphans();
         }
         else {
         	var_dump($this->get('mode')->getValue());

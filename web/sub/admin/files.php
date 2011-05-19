@@ -80,8 +80,7 @@ function show_files()
 {
 	etag('div',
 		UrlFactory::craft('upload.create')->anchor('Upload a new file')
-			->add_class('button')
-			->add_class('download')
+			->add_class('button download strong')
 	)->add_class('panel uploads');
 	$tab = new CM5_Widget_UploadsGrid(CM5_Model_Upload::open_query()->order_by('id', 'DESC')->execute());
 	etag('div',  $tab->render());

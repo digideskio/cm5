@@ -97,7 +97,7 @@ class Form extends Form_Field_Container
 		if (method_exists($this, 'configure'))
 			$this->configure();
 			
-		$this->notifyEvent('initialized', 'onInitialzied');
+		$this->notifyEvent('initialized', 'onInitialized');
 	}
 	
 	/**

@@ -93,9 +93,10 @@ function show_users()
 {
     $grid = new CM5_Widget_UsersGrid(CM5_Model_User::open_all());
     etag('div',
-        $grid->render(),
-        UrlFactory::craft('user.create')->anchor('Create user')
-            ->add_class('button')
-            ->add_class('add')
+    	tag('div class="panel"',        
+        	UrlFactory::craft('user.create')->anchor('Create user')
+            	->add_class('button add strong')
+        )->add_class('users'),
+        $grid->render()
     );
 }

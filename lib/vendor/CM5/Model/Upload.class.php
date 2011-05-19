@@ -63,7 +63,10 @@ class CM5_Model_Upload extends DB_Record
     
     static public $thumb_cache = null;
     
-    private function update_image_info()
+    /**
+     * Update image metadata
+     */
+    private function updateImageInfo()
     {
         $this->is_image = false;
         $this->image_width = null;
@@ -88,7 +91,11 @@ class CM5_Model_Upload extends DB_Record
         $this->save();
     }
     
-    private static function data_mime($data)
+    /**
+     * Helper function to extract mime from data
+     * @param string $data
+     */
+    private static function getMimeFromData($data)
     {
         $fname = tempnam(sys_get_temp_dir(), 'dd');
         file_put_contents($fname, $data);
@@ -108,11 +115,52 @@ class CM5_Model_Upload extends DB_Record
         return $mime_type;*/
     }
     
-    static function create_from_upload(UploadedFile $upload)
+    /**
+     * Construct an upload from data
+     * @param UploadedFile $upload
+     */
+    static function createFromData($data, $filename)
     {   
         $upload_folder = CM5_Config::getInstance()->site->upload_folder;
-
+       
+        // Calculate save_path
+        $path_count = 0;
+        $datasum = sha1($data);
+        $store_file = $datasum . '.dat';
         
+        // Get mime type
+        $mime_type = self::getMimeFromData($data);
+
+        while(file_exists($upload_folder . '/' . $store_file))
+            $store_file = '/' . $datasum . '.' . ($path_count += 1) . '.dat';
+
+        // Save data
+        file_put_contents($upload_folder . '/' . $store_file, $data);      
+
+        // Save entry
+        $up = CM5_Model_Upload::create(array(
+            'filename' => $filename,
+            'filesize' => strlen($data),
+            'store_file' => $store_file,
+            'sha1_sum' => $datasum,
+            'mime' => $mime_type,
+            'lastmodified' => new DateTime()
+        ));
+        
+        // Check if it is image
+        $up->updateImageInfo();
+        
+        return $up;
+    }
+    
+    /**
+     * Construct an upload from UploadedFile
+     * @param UploadedFile $upload
+     */
+    static function createFromUploaded(UploadedFile $upload)
+    {   
+        $upload_folder = CM5_Config::getInstance()->site->upload_folder;
+       
         // Calculate save_path
         $path_count = 0;
         $data = file_get_contents($upload->getTempName());
@@ -120,7 +168,7 @@ class CM5_Model_Upload extends DB_Record
         $store_file = $datasum . '.dat';
         
         // Get mime type
-        $mime_type = self::data_mime($data);
+        $mime_type = self::getMimeFromData($data);
 
         while(file_exists($upload_folder . '/' . $store_file))
             $store_file = '/' . $datasum . '.' . ($path_count += 1) . '.dat';
@@ -139,22 +187,26 @@ class CM5_Model_Upload extends DB_Record
         ));
         
         // Check if it is image
-        $up->update_image_info();
+        $up->updateImageInfo();
         
         return $up;
     }
     
-    public function update_upload(UploadedFile $upload)
+    /**
+     * Update data from UploadedFile
+     * @param UploadedFile $upload
+     */
+    public function updateFromUploaded(UploadedFile $upload)
     {
         $upload_folder = CM5_Config::getInstance()->site->upload_folder;
         
         // Get mime type
         $data = file_get_contents($upload->getTempname());
-        $mime_type = self::data_mime($data);
+        $mime_type = self::getMimeFromData($data);
             
         // Overwrite old file
-        unlink($this->get_store_path());
-        $upload->move($this->get_store_path());        
+        unlink($this->getStoragePath());
+        $upload->move($this->getStoragePath());        
         
         // Save to database
         $this->filesize = strlen($data);
@@ -164,10 +216,28 @@ class CM5_Model_Upload extends DB_Record
         $this->save();
         
         // Update image information
-        $this->update_image_info();
+        $this->updateImageInfo();
+    }
+    /**
+     * Get the path where actual file is store
+     */
+    function getStoragePath()
+    {
+    	return CM5_Config::getInstance()->site->upload_folder . '/' . $this->store_file;
     }
     
-    function dump_file()
+    /**
+     * Get the data of this file
+     */
+    function getData()
+    {
+        return file_get_contents($this->getStoragePath());
+    }
+    
+    /**
+     * Dump file to output;
+     */
+    function dumpFile()
     {   
         $dispo = 'inline';    
 
@@ -182,20 +252,14 @@ class CM5_Model_Upload extends DB_Record
             $dispo = 'attachment';
             
         header("Content-Disposition: {$dispo}; filename={$this->filename}");
-        echo $this->get_data();
+        echo $this->getData();
     }
     
-    function get_store_path()
-    {
-    	return CM5_Config::getInstance()->site->upload_folder . '/' . $this->store_file;
-    }
-    
-    function get_data()
-    {
-        return file_get_contents($this->get_store_path());
-    }
-    
-    function dump_thumb()
+
+    /**
+     * Dump the thumbnail of this upload
+     */
+    function dumpThumb()
     {
         if (!$this->is_image)
             return;
@@ -232,7 +296,7 @@ CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
         CM5_Model_Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
-    unlink($r->get_store_path());
+    unlink($r->getStoragePath());
 });
 
 CM5_Model_Upload::events()->connect('op.pre.create', function($e) {
