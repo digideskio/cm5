@@ -717,5 +717,9 @@ class DB_Record
 	{	// Initialize static
 		$this->model = self::init_model(get_class($this));
 	}
+	
+	public function to_array()
+	{
+		return $this->fields_data;
+	}
 }
-?>

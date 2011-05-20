@@ -22,7 +22,7 @@ class Form_FieldSet extends Form_Field_Container
 	public function __construct($name, $options)
 	{
 		$this->name = $name;
-		$this->options = new Options($options, array('label' => $this->name));
+		$this->options = new Options($options, array('label' => $this->name, 'attribs' => array()));
 	}
 	
 	/**
@@ -56,7 +56,7 @@ class Form_FieldSet extends Form_Field_Container
 				? $options['namespace'] . "[{$this->getName()}]"
 				: $this->getName();
 		
-		etag('fieldset')->attr('name', $html_name)->push_parent();
+		etag('fieldset', $this->options['attribs'])->attr('name', $html_name)->push_parent();
 		if (!empty($this->options['label']))
 			etag('legend', $this->options['label']);
 		etag('ul class="fields"')->push_parent();

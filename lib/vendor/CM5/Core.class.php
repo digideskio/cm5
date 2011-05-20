@@ -424,7 +424,7 @@ class CM5_Core
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
         
         // Check cache first for response
-        $response = $this->cache->get('url-' . $url, $succ);
+        $response = $this->cache->get('url-' . $_SERVER['REQUEST_URI'], $succ);
         if ($succ)
         {
             $response->show();
@@ -481,6 +481,6 @@ class CM5_Core
         
         // Add cache hook
         if ($response->cachable)
-            $this->cache->set('url-' . $url, $response, 600);
+            $this->cache->set('url-' . $_SERVER['REQUEST_URI'], $response, 600);
     }
 }

@@ -1,87 +1,167 @@
-<?php 
+<?php
 /*
  *  This file is part of CM5 <http://code.0x0lab.org/p/cm5>.
- *  
+ *
  *  Copyright (c) 2010 Sque.
- *  
+ *
  *  CM5 is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published 
+ *  it under the terms of the GNU General Public License as published
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  CM5 is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with CM5.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  *  Contributors:
  *      Sque - initial API and implementation
  */
 
 class CM5_Module_Revisions extends CM5_Module
 {
-    public function enhanceEditForm(Event $e)
-    {
-    	$form = $e->arguments['form'];
-    	
-    	$form->add($set = field_set('revisions', array('label' => 'History')));
-    	$set->add($revs = field_raw('revisions', array('value' => tag('ul class="revisions"'))));
+	private $revisioned_page = null;
 
-    	foreach($form->getPage()->revisions->subquery()->order_by('created_at', 'DESC')->execute() as $r) {
-    		$revs->getValue()->append(tag('li',
-    			tag('span class="author"', $r->author),    			
-    			tag('span class="summary"', $r->summary),
-    			tag('span class="date"', date_exformat($r->created_at)->human_diff()),
-    			tag('span class="ip"', $r->ip),
-    			tag('a class="navigate" target="_blank"', 'view', array('href' => url($form->getPage()->getRelativeUrl()) . '?revision=' . $r->id))
-    		));
-    	}
-    	
-    	$form->options['buttons']['preview'] = array('label' => 'preview', 'type' => 'submit');
-    }
-    
-    //! Initialize module
-    public function onInitialize()
-    {
-    	// Adding model add hooks also
-    	require __DIR__ . '/RevisionModel.class.php';    	
-    	
-    	if (CM5_Core::getInstance()->getWorkingContext() == 'backend') {
-	    	// Add needed dependancies for the backend
-	    	
-    		CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhanceEditForm'));
-	    	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_css(surl('/modules/revisions/static/extra-admin.css'));
-    	} else {
-    		CM5_Core::getInstance()->events()->connect('page.pre-render', array($this, 'onPagePreRender'));
-    	}
-    }
-    
-    public function onPagePreRender(Event $event)
-    {
-    	$page = $event->filtered_value;
-    	
-    	// Skip caching
-    	if (isset($_GET['revision']))
-    		$event->arguments['response']->cachable = false;
-    		
-		// TODO: add security check here for authenticated users only.
-    	if ((!($rev = CM5_Module_RevisionModel::open($_GET['revision']))) ||
-    		($rev->page_id != $page->id))
-    		return;
+	public function getConfigurableFields()
+	{
+		return array(
+			'summary-mandatory' => 
+				array('label' => 'Prohibit saving pages without a summary report.', 'type' => 'checkbox')
+		);
+	}
+	
+	public function getDefaultConfiguration()
+	{
+		return array(
+			'summary-mandatory' => true
+		);
+	}
+	
+	/**
+	 * Event handler for initialized@PageEdit
+	 * @param Event $e
+	 */
+	public function pageEditInitialized(Event $e)
+	{
+		$form = $e->arguments['form'];
 
-    	error_log("Loaded revision " . $rev->id);
-    	
-    	// Load this revision to page object    	
-    	$rev->storeCopyToPage($page);
-    }
-    
-    public function onEnable()
-    {
+		$expanded_class = $this->getConfig()->{'summary-mandatory'}? ' expand':'';
+		$form->add($set = field_set('revisions', array('label' => 'Versioning', 'attribs' => 
+			array('class' => 'collapsable' . $expanded_class))));
+		$set->add(field_text('summary',
+			array('label' => '', 'attribs' => array('placeholder' => 'Write few words describing what have you changed.'),
+				'required' => $this->getConfig()->{'summary-mandatory'})));
+		$set->add($revs = field_raw('revisions', array('value' => tag('ul class="history"'))));
+		$first = true;
+		
+		foreach($form->getPage()->revisions->subquery()->order_by('created_at', 'DESC')->execute() as $r) {
+			$revs->getValue()->append($li = tag('li',
+				tag('a', 'revert', array('data-url' => url($form->getPage()->getRelativeUrl()) . '?revision=' . $r->id))
+					->add_class('button edit'),
+				tag('a target="_blank"', 'view', array('href' => url($form->getPage()->getRelativeUrl()) . '?revision=' . $r->id))
+					->add_class('button navigate'),	
+				tag('span class="date"', date_exformat($r->created_at)->human_diff())
+			));
+
+			if ($r->type == 'auto')
+				$li->add_class('auto')
+					->append(tag('span class="auto"', 'auto'));
+					
+			$li->append(
+				tag('span class="summary"', $r->summary),
+				tag('span class="author"', $r->author),
+				tag('span class="ip"', $r->ip)
+			)->add_class($first?'current':'');
+			
+			
+			$first = false;
+		}
+	}
+
+	/**
+	 * Event handler for process.post@PageEdit
+	 * @param Event $e
+	 */
+	public function pageEditProcessPost(Event $e)
+	{
+		$form = $e->arguments['form'];
+		if ($summary = $form->get('revisions')->get('summary')->getValue()) {
+			CM5_Module_RevisionModel::setNextSummary($summary);
+		}
+	}
+
+	//! Initilaize for backend
+	public function initializeBackend()
+	{
+		// Add needed dependancies for the backend
+		CM5_Form_PageEdit::events()->connect('initialized', array($this, 'pageEditInitialized'));
+		CM5_Form_PageEdit::events()->connect('process.post', array($this, 'pageEditProcessPost'));
+		CM5_Layout_Admin::getInstance()->getDocument()->add_ref_css(surl('/modules/revisions/static/revisions.css'));
+		CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/modules/revisions/static/revisions.js'));
+	}
+	
+	//! Initialize for frontend
+	public function initializeFrontend()
+	{
+		CM5_Core::getInstance()->events()->connect('page.pre-render', array($this, 'onPagePreRender'));
+		CM5_Core::getInstance()->events()->connect('page.post-render', array($this, 'onPagePostRender'));
+	}
+
+	//! Initialize module
+	public function onInitialize()
+	{
+		// Adding model add hooks also
+		require __DIR__ . '/RevisionModel.class.php';
+		 
+		if (CM5_Core::getInstance()->getWorkingContext() == 'backend')
+			$this->initializeBackend();
+		else
+			$this->initializeFrontend();
+	}
+
+	public function onPagePreRender(Event $event)
+	{
+		if (!isset($_GET['revision']))
+			return;
+
+		// Skip caching
+		$page = $event->filtered_value;
+		$event->arguments['response']->cachable = false;
+
+		require_once __DIR__ . '/../../../web/authnz.php';
+		if (!Authn_Realm::has_identity())
+			return;
+			
+		if ((!($rev = CM5_Module_RevisionModel::open($_GET['revision']))) ||
+			($rev->page_id != $page->id))
+				return; // Page_id - rev_id do not match
+		 
+		// Load this revision to page object
+		$rev->storeCopyToPage($page);
+		$this->revisioned_page = $page;
+	}
+	
+	public function onPagePostRender(Event $event)
+	{
+		$response = $event->filtered_value;
+		$page = $event->arguments['page'];
+		if ($page !== $this->revisioned_page)
+			return;	// This is not a known page
+
+		// If it is a an xml request return json
+		if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+			header('Content-Type: application/json');
+			$response->document = json_encode($page->to_array());
+		}
+	}
+
+	public function onEnable()
+	{
 		$dbprefix = CM5_Config::getInstance()->db->prefix;
 		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/../install/build-script.php')))
-			while (DB_Conn::get_link()->next_result());    	
-    }
+		while (DB_Conn::get_link()->next_result());
+	}
 }

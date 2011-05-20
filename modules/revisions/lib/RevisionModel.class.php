@@ -29,7 +29,7 @@ class CM5_Module_RevisionModel extends DB_Record
 	/**
 	 * Set the next revision summary text
 	 */
-	public function setNextSummary($text)
+	public static function setNextSummary($text)
 	{
 		self::$next_summary = $text;
 	}
@@ -38,7 +38,7 @@ class CM5_Module_RevisionModel extends DB_Record
 	 * Get nexts revisions summary text
 	 * @param string $changed_fields For auto generation of summary.
 	 */
-	public function getNextSummary($changed_fields)
+	public static function getNextSummary($changed_fields)
 	{
 		if (($text = self::$next_summary) == null) {
 			// autogenerate
@@ -76,6 +76,7 @@ class CM5_Module_RevisionModel extends DB_Record
 		'created_at' => array('type' => 'datetime'),
 		'ip',
 		'summary',
+		'type'
 	);
 	
 	/**
@@ -106,7 +107,6 @@ class CM5_Module_RevisionModel extends DB_Record
 			->order_by('id', 'DESC')
 			->limit(1)
 			->execute($this->page_id, $this->id);
-		error_log(var_export($older, true));
 		if (count($older) == 1)
 			return $older[0][$new_field];
 		$newer = self::raw_query()
@@ -140,6 +140,7 @@ CM5_Model_Page::events()->connect('op.post.create', function($e) {
 		'created_at' => new DateTime(),
 		'author' => Authn_Realm::get_identity()->id(),
 		'summary' => 'Page was created.',
+		'type' => 'user',
 		'ip' => $_SERVER['REMOTE_ADDR']
 	));
 
@@ -172,6 +173,7 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 		$rev["author"] = Authn_Realm::get_identity()->id();
 		$rev['summary'] = CM5_Module_RevisionModel::getNextSummary($summary_changed_fields);
 		$rev['ip'] = $_SERVER['REMOTE_ADDR'];
+		$rev['type'] = 'user';
 		CM5_Module_RevisionModel::create($rev);
 	}
 });

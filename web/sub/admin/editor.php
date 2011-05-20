@@ -101,8 +101,9 @@ function page_editor_form($id)
 
 function page_editor()
 {
-	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));
-    CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));    
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));    
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/ckeditor/config.js'));
     CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
    
     show_pages_tree(null);

@@ -180,7 +180,7 @@ a:hover {
 
 .button.pressed{
     color: #f2a122;
-    background-color: #454545;
+    background-color: #292828;
 }
 
 .button:active{
@@ -434,7 +434,7 @@ a:hover {
 
 .form .hint, .form .error{
     display: block;
-    color: #b3b3b3;
+    color: #929292;
     font-size: 9pt;
 }
 

@@ -62,6 +62,12 @@
 			return (pdiv.hasClass('dirty') || ((editor) && (pdiv.data('cm5_editor').editor.checkDirty())));
 		};
 		
+		var reset_editor_dirty = function(){
+			var pdiv = $('#page_editor').removeClass('dirty');
+			var editor = pdiv.data('cm5_editor').editor;
+			editor.resetDirty();
+		};
+		
 		// Reset page guard
 		var reset_page_guard = function() {
 			$('#page_editor').removeClass('dirty');
@@ -139,12 +145,18 @@
 		};
 		
 		// ENTRY POINT
-		return this.each(function() {
+		var response = undefined;
+		this.each(function() {
 			var pdiv = $(this);
 			
 			if (cmd == 'loadpage')
 				window.location = 'editor#' + id;
-			else {
+			else if (cmd == 'isdirty') {
+				response = is_editor_dirty();
+				return false;
+			} else if (cmd == 'resetdirty') {
+				reset_editor_dirty();
+			} else {
 				// initilization
 				pdiv.data('cm5_editor', {
 					page_id: null,
@@ -172,6 +184,7 @@
 			}
 
 		});
+		return response;
 	};
 })(jQuery);
 
