@@ -34,25 +34,32 @@ class CM5_Widget_UsersGrid extends Output_HTML_Grid
 		$this->users = $users;
 		parent::__construct(
 		array(
-			'enabled' => array('caption' => 'Enabled', 'customdata' => 'true'),
+			'status' => array('caption' => 'Status', 'customdata' => 'true'),
 			'username' => array('caption' => 'Username'),
 			'groups' => array('caption' => 'Groups', 'customdata' => true),
 			'tools' => array('caption' => 'Tools', 'customdata' => 'true'),
 		),
 		array(
+			'css' => array('ui-grid', 'users')
 		),
 		$this->users
 		);
 	}
 
-	public function on_custom_data($col_id, $row_id, $user)
+	public function on_custom_data($col_id, $row_id, $user, $tr)
 	{
-		if ($col_id == 'enabled')
+		if ($col_id == 'status')
 		{
-			$check = tag('input type="checkbox" disabled="disabled"');
+			/*$check = tag('input type="checkbox" disabled="disabled"');
 			if ($user->enabled)
 			$check->attr('checked', 'true');
-			return $check;
+			return $check;*/
+			if ($user->enabled) {
+				return 'enabled';
+			} else {
+				$tr->add_class('disabled');
+				return 'disabled';
+			}
 		}
 		else if ($col_id == 'groups')
 		{

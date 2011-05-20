@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
 
-ul.fields {
+
+
+fieldset.revisions ul.history {
 	list-style-type: none;
 }

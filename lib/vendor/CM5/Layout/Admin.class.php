@@ -89,7 +89,7 @@ class CM5_Layout_Admin extends Layout
         etag('div id="wrapper"')->push_parent();
         etag('div id="header"',
             tag('h1', 
-                tag('a target="_blank"', CM5_Config::getInstance()->site->title . ' ')->attr('href', url('/')), tag('span', 'admin panel')),
+                tag('a target="_blank"', CM5_Config::getInstance()->site->title)->attr('href', url('/')), tag('span', 'admin panel')),
             $loginfo = tag('div id="login-info"'),
             tag('div id="main-menu"')
         );

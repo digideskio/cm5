@@ -28,5 +28,4 @@ return array(
 	'nickname' => 'revisions',
 	'title' => 'Revisions Tracking',
 	'description' => 'Add support for creating pages revisions.',
-	'context' => 'backend'
 );

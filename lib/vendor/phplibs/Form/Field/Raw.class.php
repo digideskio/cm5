@@ -48,10 +48,9 @@ class Form_Field_Raw extends Form_Field_Html
 	 */
 	public function render($options)
 	{
-		if ($this->options['escape'])
-			return tag('div', $this->getValue());
-		else
-			return tag('div html_escape_off', $this->getValue());
+		return ($this->getValue() instanceof Output_HTMLTag)
+			?$this->getValue()
+			:tag('div ' . (!$this->options['escape']?' html_escape_off':''), (string)$this->getValue());
 	}
 }
 

@@ -35,9 +35,12 @@ class CM5_Module_Revisions extends CM5_Module
     			tag('span class="author"', $r->author),    			
     			tag('span class="summary"', $r->summary),
     			tag('span class="date"', date_exformat($r->created_at)->human_diff()),
-    			tag('span class="ip"', $r->ip)
+    			tag('span class="ip"', $r->ip),
+    			tag('a class="navigate" target="_blank"', 'view', array('href' => url($form->getPage()->getRelativeUrl()) . '?revision=' . $r->id))
     		));
     	}
+    	
+    	$form->options['buttons']['preview'] = array('label' => 'preview', 'type' => 'submit');
     }
     
     //! Initialize module
@@ -46,10 +49,33 @@ class CM5_Module_Revisions extends CM5_Module
     	// Adding model add hooks also
     	require __DIR__ . '/RevisionModel.class.php';    	
     	
-    	CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhanceEditForm'));
+    	if (CM5_Core::getInstance()->getWorkingContext() == 'backend') {
+	    	// Add needed dependancies for the backend
+	    	
+    		CM5_Form_PageEdit::events()->connect('initialized', array($this, 'enhanceEditForm'));
+	    	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_css(surl('/modules/revisions/static/extra-admin.css'));
+    	} else {
+    		CM5_Core::getInstance()->events()->connect('page.pre-render', array($this, 'onPagePreRender'));
+    	}
+    }
+    
+    public function onPagePreRender(Event $event)
+    {
+    	$page = $event->filtered_value;
     	
-    	// Add needed dependancies
-    	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_css(surl('/modules/revisions/static/extra-admin.css'));
+    	// Skip caching
+    	if (isset($_GET['revision']))
+    		$event->arguments['response']->cachable = false;
+    		
+		// TODO: add security check here for authenticated users only.
+    	if ((!($rev = CM5_Module_RevisionModel::open($_GET['revision']))) ||
+    		($rev->page_id != $page->id))
+    		return;
+
+    	error_log("Loaded revision " . $rev->id);
+    	
+    	// Load this revision to page object    	
+    	$rev->storeCopyToPage($page);
     }
     
     public function onEnable()

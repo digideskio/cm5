@@ -283,8 +283,11 @@ class CM5_Core
     
     /**
      * Get the dispatcher for the events emmited by the core.
-     * @param string $nickname The nickname of the module
-     * @return EventDispatcher The dispatcher for the core.
+     * @return EventDispatcher Supported events are:
+     * - page.request: Filter when request comes and no decision has been taken.
+     * - page.pre-render: Filter before rendering a page
+     * - page.post-render: Filter after rendering the page
+	 * - page.cache-delete: Notify that the cache of a page has been invalidated.
      */
     public function events()
     {

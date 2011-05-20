@@ -66,7 +66,10 @@ try{
 }catch (Exception404 $e) {
 	require __DIR__ . '/web/not_found.php';
 }catch (Exception $e) {
-	header('501 Internal server error HTTP/1.1');
+	header('HTTP/1.1 501 Internal server error ');
+	etag('h2', $e->getMessage());
+	if (Layout::getActive())
+		Layout::getActive()->flush();
 	exit;
 }
 

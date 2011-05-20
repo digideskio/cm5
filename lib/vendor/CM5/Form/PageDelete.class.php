@@ -66,7 +66,6 @@ class CM5_Form_PageDelete extends Form_Html
             $this->page->deleteAndMoveOrphans();
         }
         else {
-        	var_dump($this->get('mode')->getValue());
         	return;
         }
         UrlFactory::craft('page.admin')->redirect();

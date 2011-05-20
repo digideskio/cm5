@@ -32,9 +32,7 @@ class Form_Html extends Form
      */
 	public function __construct($name, $options)
 	{
-		parent::__construct($name);
-		$this->options->extend($options,
-			array(
+		$options = array_merge(array(
 				'action' => '',
 				'nobrowservalidation' => false,
 				'buttons' => array(
@@ -43,15 +41,17 @@ class Form_Html extends Form
 				),
 				'method' => 'post',
 				'attribs' => array()
-			));
-		
-		foreach($this->options['buttons'] as $bid => $but) {
-			$this->options['buttons'][$bid] = array_merge(array(
+			),$options);
+
+		foreach($options['buttons'] as $bid => $but) {
+			$options['buttons'][$bid] = array_merge(array(
 					'label' => $bid,
 					'type' => 'submit',
 					'attribs' => array()
-				),$this->options['buttons'][$bid]);
+				),$options['buttons'][$bid]);
 		}
+		parent::__construct($name, $options);
+
 	}
 	
 	/**

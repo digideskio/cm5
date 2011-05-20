@@ -29,7 +29,7 @@ class CM5_Module_RevisionModel extends DB_Record
 	/**
 	 * Set the next revision summary text
 	 */
-	public function set_next_summary($text)
+	public function setNextSummary($text)
 	{
 		self::$next_summary = $text;
 	}
@@ -38,7 +38,7 @@ class CM5_Module_RevisionModel extends DB_Record
 	 * Get nexts revisions summary text
 	 * @param string $changed_fields For auto generation of summary.
 	 */
-	public function get_next_summary($changed_fields)
+	public function getNextSummary($changed_fields)
 	{
 		if (($text = self::$next_summary) == null) {
 			// autogenerate
@@ -77,10 +77,73 @@ class CM5_Module_RevisionModel extends DB_Record
 		'ip',
 		'summary',
 	);
+	
+	/**
+	 * write a copy of this destination to a page object
+	 * @param CM5_Model_Page $page
+	 */
+	public function storeCopyToPage(CM5_Model_Page $page)
+	{
+		$page->body = $this->getFieldValue('body');
+		$page->title = $this->getFieldValue('title');
+		$page->slug = $this->getFieldValue('slug');
+	}
+	
+	/**
+	 * Get the body data for this revision
+	 */
+	public function getFieldValue($field)
+	{
+		$new_field = 'new_' . $field;
+		$old_field = 'old_' . $field;
+		if ($this->$new_field != null)
+			return $this->$new_field;
+		$older = self::raw_query()
+			->select(array($new_field))
+			->where("new_{$field} IS NOT NULL")
+			->where('page_id = ?')
+			->where('id < ?')
+			->order_by('id', 'DESC')
+			->limit(1)
+			->execute($this->page_id, $this->id);
+		error_log(var_export($older, true));
+		if (count($older) == 1)
+			return $older[0][$new_field];
+		$newer = self::raw_query()
+			->select(array($old_field))
+			->where("old_$field IS NOT NULL")
+			->where('page_id = ?')
+			->where('id > ?')
+			->order_by('id', 'ASC')
+			->limit(1)
+			->execute($this->page_id, $this->id);
+		if (count($newer) == 1)
+			return $newer[0][$old_field];
+		
+		// Last is the value of the current page
+		return $this->page->{$field};
+	}
 }
 
 CM5_Model_Page::one_to_many('CM5_Module_RevisionModel', 'page', 'revisions');
 CM5_Model_User::one_to_many('CM5_Module_RevisionModel', 'user', 'revisions');
+
+
+CM5_Model_Page::events()->connect('op.post.create', function($e) {
+	$p = $e->arguments["record"];
+	
+	CM5_Module_RevisionModel::create(array(
+		'new_slug' => $p->slug,
+		'new_title' => $p->title,
+		'new_body' => $p->body,
+		'page_id' => $p->id,
+		'created_at' => new DateTime(),
+		'author' => Authn_Realm::get_identity()->id(),
+		'summary' => 'Page was created.',
+		'ip' => $_SERVER['REMOTE_ADDR']
+	));
+
+});
 
 CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 	$p = $e->arguments["record"];
@@ -107,7 +170,7 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 		$rev["page_id"] = $p->id;
 		$rev["created_at"] = new DateTime();
 		$rev["author"] = Authn_Realm::get_identity()->id();
-		$rev['summary'] = CM5_Module_Revision::get_next_summary($summary_changed_fields);
+		$rev['summary'] = CM5_Module_RevisionModel::getNextSummary($summary_changed_fields);
 		$rev['ip'] = $_SERVER['REMOTE_ADDR'];
 		CM5_Module_RevisionModel::create($rev);
 	}

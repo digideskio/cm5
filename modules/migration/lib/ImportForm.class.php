@@ -99,7 +99,6 @@ class CM5_Module_Migration_ImportForm extends Form_Html
                         $parent_id = $old_to_new_ids[(string)$p['parent_id']];
                     else
                     {
-                        var_dump('skipped', $p);
                         continue;
                     }
                 }

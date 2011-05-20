@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `{$dbprefix}mod_revisions_revs` (
 	`old_slug` varchar(256),
 	`old_body` MEDIUMTEXT,
 	`new_body` MEDIUMTEXT,
+	`type` ENUM('auto', 'user') NOT NULL DEFAULT 'auto',
     `author` varchar(50) NOT NULL,
 	`created_at` DATETIME,
 	`ip` VARCHAR(45) NOT NULL,
