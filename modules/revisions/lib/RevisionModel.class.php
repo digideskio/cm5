@@ -123,6 +123,23 @@ class CM5_Module_RevisionModel extends DB_Record
 		// Last is the value of the current page
 		return $this->page->{$field};
 	}
+	
+	public static function createPreview(CM5_Model_Page $p, $title, $slug, $body)
+	{
+		return self::create(array(
+			'new_slug' => $slug,
+			'old_slug' => $slug,
+			'new_title' => $title,
+			'old_title' => $title,
+			'new_body' => $body,
+			'old_body' => $body,
+			'page_id' => $p->id,
+			'created_at' => new DateTime(),
+			'author' => Authn_Realm::get_identity()->id(),
+			'summary' => 'Preview snapshot.',
+			'type' => 'preview',
+			'ip' => $_SERVER['REMOTE_ADDR']));
+	}
 }
 
 CM5_Model_Page::one_to_many('CM5_Module_RevisionModel', 'page', 'revisions');
@@ -174,6 +191,15 @@ CM5_Model_Page::events()->connect('op.pre.save', function($e) {
 		$rev['summary'] = CM5_Module_RevisionModel::getNextSummary($summary_changed_fields);
 		$rev['ip'] = $_SERVER['REMOTE_ADDR'];
 		$rev['type'] = 'user';
-		CM5_Module_RevisionModel::create($rev);
+		$rev = CM5_Module_RevisionModel::create($rev);
+		
+		// Delete all previews as they are not needed any more
+		CM5_Module_RevisionModel::raw_query()
+			->delete()
+			->where('page_id = ?')
+			->where('type = ?')
+			->where('id < ?')
+			->execute($p->id, 'preview', $rev->id);
 	}
+	
 });

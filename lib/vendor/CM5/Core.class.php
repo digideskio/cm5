@@ -81,6 +81,7 @@ class CM5_Core
     {
         // Create events
         $this->events = new EventDispatcher(array(
+        	'page.post-fetchdata',
             'page.pre-render',
             'page.post-render',
             'page.cache-delete',
@@ -285,6 +286,7 @@ class CM5_Core
      * Get the dispatcher for the events emmited by the core.
      * @return EventDispatcher Supported events are:
      * - page.request: Filter when request comes and no decision has been taken.
+     * - page.post-fetchdata: Filter on page after it was fetched from database.
      * - page.pre-render: Filter before rendering a page
      * - page.post-render: Filter after rendering the page
 	 * - page.cache-delete: Notify that the cache of a page has been invalidated.
@@ -462,6 +464,7 @@ class CM5_Core
                     throw new Exception404();
                 $p = $p[0];
             }
+            $this->events->filter('page.post-fetchdata', $p, array('url' => $url, 'response' => $response));
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
             $selected_layout::getInstance()->getDocument()->title = $p->title . ' | ' . CM5_Config::getInstance()->site->title;

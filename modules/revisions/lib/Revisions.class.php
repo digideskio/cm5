@@ -48,16 +48,21 @@ class CM5_Module_Revisions extends CM5_Module
 	{
 		$form = $e->arguments['form'];
 
+		// Change View to Preview
+		$form->get('preview')->setValue(str_replace('>View<', '>Preview<', $form->get('preview')->getValue()));
+		// Add Revisions
 		$expanded_class = $this->getConfig()->{'summary-mandatory'}? ' expand':'';
 		$form->add($set = field_set('revisions', array('label' => 'Versioning', 'attribs' => 
 			array('class' => 'collapsable' . $expanded_class))));
 		$set->add(field_text('summary',
 			array('label' => '', 'attribs' => array('placeholder' => 'Write few words describing what have you changed.'),
 				'required' => $this->getConfig()->{'summary-mandatory'})));
+		$set->add(field_hidden('type', array('label' => '', 'value' => 'user')));
+		
+		// Create history
 		$set->add($revs = field_raw('revisions', array('value' => tag('ul class="history"'))));
 		$first = true;
-		
-		foreach($form->getPage()->revisions->subquery()->order_by('created_at', 'DESC')->execute() as $r) {
+		foreach($form->getPage()->revisions->subquery()->where('type <> ?')->order_by('created_at', 'DESC')->execute('preview') as $r) {
 			$revs->getValue()->append($li = tag('li',
 				tag('a', 'revert', array('data-url' => url($form->getPage()->getRelativeUrl()) . '?revision=' . $r->id))
 					->add_class('button edit'),
@@ -88,8 +93,20 @@ class CM5_Module_Revisions extends CM5_Module
 	public function pageEditProcessPost(Event $e)
 	{
 		$form = $e->arguments['form'];
+		$values = $form->getValues();
 		if ($summary = $form->get('revisions')->get('summary')->getValue()) {
 			CM5_Module_RevisionModel::setNextSummary($summary);
+		}
+		
+		// Normalize values
+		$values['title'] = isset($values['title'])?$values['title']:null;
+		$values['slug'] = isset($values['slug'])?$values['slug']:null;
+		if ($values['revisions']['type'] == 'preview') {
+			$r = CM5_Module_RevisionModel::createPreview(
+				$form->getPage(), $values['title'], $values['slug'], $values['body']);
+			//header('Content-type: application/json');
+			//echo json_encode(array('revision' =>$r->id));
+			Net_HTTP_Response::redirect(url($form->getPage()->getRelativeUrl() . '?revision=' . $r->id));
 		}
 	}
 
@@ -106,7 +123,7 @@ class CM5_Module_Revisions extends CM5_Module
 	//! Initialize for frontend
 	public function initializeFrontend()
 	{
-		CM5_Core::getInstance()->events()->connect('page.pre-render', array($this, 'onPagePreRender'));
+		CM5_Core::getInstance()->events()->connect('page.post-fetchdata', array($this, 'onPagePostFetchData'));
 		CM5_Core::getInstance()->events()->connect('page.post-render', array($this, 'onPagePostRender'));
 	}
 
@@ -122,7 +139,7 @@ class CM5_Module_Revisions extends CM5_Module
 			$this->initializeFrontend();
 	}
 
-	public function onPagePreRender(Event $event)
+	public function onPagePostFetchData(Event $event)
 	{
 		if (!isset($_GET['revision']))
 			return;
@@ -133,11 +150,11 @@ class CM5_Module_Revisions extends CM5_Module
 
 		require_once __DIR__ . '/../../../web/authnz.php';
 		if (!Authn_Realm::has_identity())
-			return;
+			throw new Exception404();
 			
 		if ((!($rev = CM5_Module_RevisionModel::open($_GET['revision']))) ||
 			($rev->page_id != $page->id))
-				return; // Page_id - rev_id do not match
+				throw new Exception404(); // Page_id - rev_id do not match
 		 
 		// Load this revision to page object
 		$rev->storeCopyToPage($page);
