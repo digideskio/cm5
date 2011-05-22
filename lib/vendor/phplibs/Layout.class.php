@@ -65,7 +65,8 @@ class Layout
 		$this->setSlot('default', $this->document->get_body());
 
 		// Call initialize method
-		$this->onInitialize();
+		if (method_exists($this, 'onInitialize'))
+			$this->onInitialize();
 	}
 
 	/**

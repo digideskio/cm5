@@ -1,0 +1,76 @@
+/*
+ *  This file is part of CM5 <http://code.0x0lab.org/p/cm5>.
+ *  
+ *  Copyright (c) 2010 Sque.
+ *  
+ *  CM5 is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published 
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  CM5 is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with CM5.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  Contributors:
+ *      Sque - initial API and implementation
+ */
+
+
+#main-menu {
+	height: 30px;
+}
+
+#content {
+	/*margin: 15px auto;
+	width: 600px;
+	padding: 15px 20px;*/
+	
+}
+
+#content > .error, .finished{
+	margin: 15px auto;
+	width: 600px;
+	padding: 20px 50px;	
+	border-radius: 15px;
+	box-shadow: 0px 0px 5px #4a4a4a;
+    background-color: #282311;
+}
+#content > .error {
+	font-size: 1.3em;
+}
+.finished {
+	padding-bottom: 80px;
+	background: #282311 url('../css/images/checkmark.png') no-repeat right bottom;
+}
+/* General classes */
+.error{
+	color: #F85216;
+    font-weight: bold;
+}
+
+
+.notice {
+	border: 1px solid #8a8a8a;
+	background-color: #6D695C;
+	padding: 5px 15px;
+}
+.notice p{
+	color: #FFA900;
+}
+
+/* form installation */
+.form.installation {
+	width: 500px;
+}
+.form.installation input[type=text], .form.installation input[type=password]{
+	width: 99%;
+}
+
+.form.installation li{
+    margin-bottom: 13px;
+}

@@ -22,13 +22,12 @@
  */
 
 // Security check for install folder
-if (!file_exists(__DIR__ . '/install')) {
+if (file_exists(__DIR__ . '/install')) {
 	$install_url = dirname($_SERVER['SCRIPT_NAME']) . "/install";
 echo <<< EOF
 <h1>ERROR: remove "install" folder before continuing...</h1>
 If this is a fresh install visit: <a href="{$install_url}">install script</a>.<br/>
-Otherwise if installation is finished remove completly "install" folder so that 
-the site can start working
+Otherwise if installation is finished remove completly "install" folder from the web server.
 EOF;
 	exit;
 }

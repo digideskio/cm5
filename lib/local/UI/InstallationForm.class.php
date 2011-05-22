@@ -36,7 +36,7 @@ class UI_InstallationForm extends Form_Html
         foreach($zone_identifiers as $zone)
             $this->tzones[$zone] = $zone;
         parent::__construct(null, array(
-        	'title' => '', 'attribs' => array('class' => 'form installation'),
+        	'title' => 'Setup new CM5 installation.', 'attribs' => array('class' => 'form installation'),
 		    'buttons' => array(
 		        'Save' => array('label' =>'Install'),
                 )
@@ -44,17 +44,17 @@ class UI_InstallationForm extends Form_Html
         );
         
         $this->addMany(
-	        field_text('site-title', array('label' => 'Title', 'required' => true)),
-	        field_set('db', array('label' => tag('h4', 'Database Options')))
+	        field_text('site-title', array('label' => 'Title of site', 'required' => true)),
+	        field_set('db', array('label' => 'Database Options'))
 	        ->addMany(
-	        	field_text('host', array('label' => 'Host', 'required' => true)),
+	        	field_text('host', array('label' => 'Server host', 'required' => true)),
 	        	field_text('schema', array('label' => 'Database', 'required' => true)),
 	        	field_text('user', array('label' => 'Username', 'required' => true)),
 	        	field_password('pass', array('label' => 'Password', 'required' => true)),
 	        	field_text('prefix', array('label' => 'Tables prefix',
 	        		'hint' => 'You can set this to a custom string to avoid naming collision.')),
 	        	field_checkbox('build', array('label' => 'Execute database creation script',
-	        		'hint' => 'You can set this to a custom string to avoid naming collision.'))
+	        		'hint' => 'By checking this, database will be rebuilt.'))
 			),
 			field_select('timezone', array('label' => 'Default timezone', 'optionlist' => $this->tzones))
 		);	
