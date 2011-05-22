@@ -1,6 +1,8 @@
 @CHARSET "UTF-8";
 
-
+#page_editor li[data-name="status"] {
+    right: 100px !important;
+}
 
 fieldset[name=revisions] ul.history {
 	list-style-type: none;

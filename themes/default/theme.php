@@ -44,16 +44,16 @@ class CM5_Theme_Default extends CM5_Theme
 	public function getConfigurableFields()
 	{
 		return array(
-            'page-background-color' => array('display' => 'Page background color:', 'type' => 'color'),
-            'article-background-color' => array('display' => 'Article background color:', 'type' => 'color'),
-            'article-text-color' => array('display' => 'Article text color:', 'type' => 'color'),
-            'menu-background-color' => array('display' => 'Menu background color:', 'type' => 'color'),
-            'menu-text-color' => array('display' => 'Menu text color:', 'type' => 'color'),
-            'menu-selected-background-color' => array('display' => 'Menu selected background color:', 'type' => 'color'),
-            'menu-selected-text-color' => array('display' => 'Menu selected text color:', 'type' => 'color'),
-            'favicon-url' => array('display' => 'Favicon url:'),
-            'footer' => array('display' => 'Footer content:', 'type' => 'textarea'),
-            'extra-css' => array('display' => 'Extra css to be included:', 'type' => 'textarea')
+            'page-background-color' => array('label' => 'Page background color:', 'type' => 'color'),
+            'article-background-color' => array('label' => 'Article background color:', 'type' => 'color'),
+            'article-text-color' => array('label' => 'Article text color:', 'type' => 'color'),
+            'menu-background-color' => array('label' => 'Menu background color:', 'type' => 'color'),
+            'menu-text-color' => array('label' => 'Menu text color:', 'type' => 'color'),
+            'menu-selected-background-color' => array('label' => 'Menu selected background color:', 'type' => 'color'),
+            'menu-selected-text-color' => array('label' => 'Menu selected text color:', 'type' => 'color'),
+            'favicon-url' => array('label' => 'Favicon url:'),
+            'footer' => array('label' => 'Footer content:', 'type' => 'textarea'),
+            'extra-css' => array('label' => 'Extra css to be included:', 'type' => 'textarea')
 		);
 	}
 	public function getLayoutClass()

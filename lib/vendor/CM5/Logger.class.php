@@ -87,6 +87,7 @@ class CM5_Logger
         $db_writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::INFO));
         
         // Mail writer
+        CM5_Mailer::getInstance();
         $mail = new Zend_Mail();
         $mail->setFrom(CM5_Config::getInstance()->email->sender)
              ->addTo(CM5_Config::getInstance()->email->administrator);

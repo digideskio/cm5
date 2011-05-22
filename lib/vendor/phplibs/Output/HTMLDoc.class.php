@@ -114,8 +114,8 @@ class Output_HTMLDoc
 
     public function __construct()
     {
-        $this->body = new Output_HTMLTag('body');
-        $this->head = new Output_HTMLTag('head');
+        $this->body = new Output_HTMLTag(array('body'));
+        $this->head = new Output_HTMLTag(array('head'));
     }
 
     //! Get body Output_HTMLTag

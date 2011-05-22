@@ -27,11 +27,7 @@
  */
 function tag()
 {	
-    $args = func_get_args();
-    return call_user_func_array(
-        array(new ReflectionClass('Output_HTMLTag'), 'newInstance'),
-        $args
-    );
+    return new Output_HTMLTag(func_get_args());    
 }
 
 //! Create a tag and echo it
@@ -41,8 +37,7 @@ function tag()
  */
 function etag()
 {	
-    $args = func_get_args();
-    $tag = call_user_func_array('tag', $args);
+    $tag = new Output_HTMLTag(func_get_args());
     ob_clean();
     if (!$tag->append_to_default_parent())
         echo $tag;

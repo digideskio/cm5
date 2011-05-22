@@ -56,7 +56,32 @@ class CM5_Form_SystemSettings extends Form_Html
             	field_email('administrator', array('label' => "Administrator's mail:", 'value' => $config->email->administrator,
                 'hint' => 'The mail that will receive notifications for the site.')),
             	field_email('sender', array('label' => "Sender mail address:", 'value' => $config->email->sender,
-                	'hint' => 'The sender of the site notifications.'))
+                	'hint' => 'The sender of the site notifications.')),
+            	field_set('transport', array('label' => 'Transport'))->addMany(
+            		field_select('protocol', array('label' => 'Protocol to be used', 'value' => $config->email->transport->protocol,
+            			'optionlist' => array(
+            			'sendmail' => 'Sendmail',
+            			'smtp' => 'SMTP'
+            		))),
+            		field_text('host', array('label' => 'Host to send mails at.', 'hint' => 'Needed by smtp.',
+            			'value' => $config->email->transport->host)),
+            		field_number('port', array('label' => 'Port to connect at.', 'hint' => 'Leave it empty for default.',
+            			'min' => 0, 'max' => 65535, 'step' => 1, 'value' => $config->email->transport->port)),
+            		field_select('ssl', array('label' => 'Secure connection', 'value' => $config->email->transport->ssl,
+            			'optionlist' => array(
+            			'none' => 'None',
+            			'ssl' => 'SSL',
+            			'tls' => 'TLS'
+            		))),
+            		field_select('auth', array('label' => 'Authentication', 'value' => $config->email->transport->auth,
+            			'optionlist' => array(
+            			'plain' => 'Plain',
+            			'login' => 'Login',
+            			'crammd5' => 'Cram-MD5'
+            		))),
+            		field_text('username', array('label' => 'Username', 'value' => $config->email->transport->username)),
+            		field_text('password', array('label' => 'Password', 'value' => $config->email->transport->password))
+            	)
             )
         );
     }
@@ -68,8 +93,7 @@ class CM5_Form_SystemSettings extends Form_Html
         $config = CM5_Config::getWritableCopy();
         foreach($values['site'] as $k => $v)
         	$config->site->{$k} = $v;
-       	foreach($values['email'] as $k => $v)
-        	$config->email->{$k} = $v;
+       	$config->email = $values['email'];
         
         CM5_Config::update($config);
         CM5_Logger::getInstance()->notice("System settings have been changed.");

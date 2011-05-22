@@ -36,6 +36,11 @@ class CM5_Response
      * @var array
      */
     protected $headers = array();
+    
+    /**
+     * Extra data to store on this response
+     */
+    public $data = array(); 
 
     //! The HTMLDoc of this response object
     /**

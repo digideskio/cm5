@@ -422,15 +422,17 @@ class CM5_Core
      */
     public function serve($url = null)
     {
+    	$is_post = ($_SERVER['REQUEST_METHOD'] === 'POST');    	
         if ($url === null)
             $url = (isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/');
         
         // Check cache first for response
-        $response = $this->cache->get('url-' . $_SERVER['REQUEST_URI'], $succ);
-        if ($succ)
-        {
-            $response->show();
-            exit;
+        if (!$is_post) {
+        	$response = $this->cache->get('url-' . $_SERVER['REQUEST_URI'], $succ);
+        	if ($succ) {
+            	$response->show();
+            	exit;
+        	}
         }
         
         // Initialize modules
@@ -483,7 +485,7 @@ class CM5_Core
         $response->show();
         
         // Add cache hook
-        if ($response->cachable)
+        if (!$is_post && $response->cachable)
             $this->cache->set('url-' . $_SERVER['REQUEST_URI'], $response, 600);
     }
 }

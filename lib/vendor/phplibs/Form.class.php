@@ -44,7 +44,7 @@ class Form extends Form_Field_Container
 	 * @var integer
 	 * @see getResultCode()
 	 */
-	private $result_code = self::RESULT_NOTPROCESSED;
+	protected $result_code = self::RESULT_NOTPROCESSED;
 	
 	/**
 	 * Array with all event dispatchers for forms.
