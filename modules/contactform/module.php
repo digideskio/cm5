@@ -17,7 +17,7 @@ class CM5_Module_ContantForm extends CM5_Module
 		if (strstr($page->body, '##contactform') < 0)
 			return;
 
-		//Layout::getActive()->deactivate();
+//		Layout::getActive()->deactivate();
 		$offset = 0;
 		while(preg_match('/##contactform.*?##/s', (string)$page->body,
 			$form_match,
@@ -32,7 +32,7 @@ class CM5_Module_ContantForm extends CM5_Module
 			$form_text = preg_replace('/\n[\s]+/s', "\n", $form_text);
 			
 			preg_match_all('/##contactform[\s]+(?P<email>[\w_@\.]+)[\s]+\"(?P<title>[^\"]*)\"[\s]+"(?P<button_label>[^\"]*)\"[\s]+'.
-				'(?P<fields>.*(?<=\n))\-\r\n(?P<thank_you>[^#]+)##/s',
+				'(?P<fields>.*(?<=[\r\n]))\-[\r\n]+(?P<thank_you>[^#]+)##/s',
 				$form_text, $matches);
 			$target_email = $matches['email'][0];
 			$title = $matches['title'][0];
