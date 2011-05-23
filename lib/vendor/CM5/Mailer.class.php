@@ -79,9 +79,6 @@ class CM5_Mailer
 			foreach($options as $optname => $optval)
 				if ($options[$optname] == '')
 					unset($options[$optname]);
-			/*Layout::getActive()->deactivate();
-			var_dump($options);
-			exit;*/
 			$transport = new Zend_Mail_Transport_Smtp(CM5_Config::getInstance()->email->transport->host, $options);
 		} else {
 			$transport = new Zend_Mail_Transport_Sendmail();

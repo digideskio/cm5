@@ -104,8 +104,6 @@ class CM5_Module_Revisions extends CM5_Module
 		if ($values['revisions']['type'] == 'preview') {
 			$r = CM5_Module_RevisionModel::createPreview(
 				$form->getPage(), $values['title'], $values['slug'], $values['body']);
-			//header('Content-type: application/json');
-			//echo json_encode(array('revision' =>$r->id));
 			Net_HTTP_Response::redirect(url($form->getPage()->getRelativeUrl() . '?revision=' . $r->id));
 		}
 	}
@@ -124,7 +122,6 @@ class CM5_Module_Revisions extends CM5_Module
 	public function initializeFrontend()
 	{
 		CM5_Core::getInstance()->events()->connect('page.post-fetchdata', array($this, 'onPagePostFetchData'));
-		CM5_Core::getInstance()->events()->connect('page.post-render', array($this, 'onPagePostRender'));
 	}
 
 	//! Initialize module
@@ -159,19 +156,13 @@ class CM5_Module_Revisions extends CM5_Module
 		// Load this revision to page object
 		$rev->storeCopyToPage($page);
 		$this->revisioned_page = $page;
-	}
-	
-	public function onPagePostRender(Event $event)
-	{
-		$response = $event->filtered_value;
-		$page = $event->arguments['page'];
-		if ($page !== $this->revisioned_page)
-			return;	// This is not a known page
-
+		
 		// If it is a an xml request return json
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 			header('Content-Type: application/json');
-			$response->document = json_encode($page->to_array());
+			Layout::getActive()->deactivate();
+			echo json_encode($page->to_array());
+			exit;
 		}
 	}
 

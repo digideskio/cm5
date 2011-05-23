@@ -119,8 +119,9 @@ class Form_Field_Checkable extends Form_Field_Input
 	 * Hide setValue from interface.
 	 * @see setChecked()
 	 * @see setOptionValue()
+	 * @todo make this work like if setChecked($value==getOptionValue()) to improve API consistency.
 	 */
-	public function setValue()
+	public function setValue($value)
 	{
 		throw new RuntimeException('Dont use Checkable::setValue(). Use setChecked() or setOptionValue().');
 	}

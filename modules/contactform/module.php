@@ -17,7 +17,6 @@ class CM5_Module_ContantForm extends CM5_Module
 		if (strstr($page->body, '##contactform') < 0)
 			return;
 
-//		Layout::getActive()->deactivate();
 		$offset = 0;
 		while(preg_match('/##contactform.*?##/s', (string)$page->body,
 			$form_match,
