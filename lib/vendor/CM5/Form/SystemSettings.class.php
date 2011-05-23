@@ -69,7 +69,7 @@ class CM5_Form_SystemSettings extends Form_Html
             			'min' => 0, 'max' => 65535, 'step' => 1, 'value' => $config->email->transport->port)),
             		field_select('ssl', array('label' => 'Secure connection', 'value' => $config->email->transport->ssl,
             			'optionlist' => array(
-            			'none' => 'None',
+            			'' => 'None',
             			'ssl' => 'SSL',
             			'tls' => 'TLS'
             		))),

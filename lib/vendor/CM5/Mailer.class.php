@@ -75,7 +75,14 @@ class CM5_Mailer
 			return self::$mailer;
 
 		if (@CM5_Config::getInstance()->email->transport->protocol == 'smtp') {
-			$transport = new Zend_Mail_Transport_Smtp(CM5_Config::getInstance()->email->transport->host, CM5_Config::getInstance()->email->transport->toArray());
+			$options = CM5_Config::getInstance()->email->transport->toArray();
+			foreach($options as $optname => $optval)
+				if ($options[$optname] == '')
+					unset($options[$optname]);
+			/*Layout::getActive()->deactivate();
+			var_dump($options);
+			exit;*/
+			$transport = new Zend_Mail_Transport_Smtp(CM5_Config::getInstance()->email->transport->host, $options);
 		} else {
 			$transport = new Zend_Mail_Transport_Sendmail();
 		}

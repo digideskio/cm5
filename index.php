@@ -66,9 +66,10 @@ try{
 	require __DIR__ . '/web/not_found.php';
 }catch (Exception $e) {
 	header('HTTP/1.1 501 Internal server error ');
-	etag('h2', $e->getMessage());
+	etag('h2', 'There was an Internal server error. The administrators have been notified. Sorry for the inconvenience.');
 	if (Layout::getActive())
 		Layout::getActive()->flush();
+	CM5_Logger::getInstance()->crit(get_class($e) .  " : {$e->getMessage()} @ {$e->getFile()}:{$e->getLine()} ");
 	exit;
 }
 

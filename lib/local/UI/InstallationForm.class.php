@@ -79,7 +79,16 @@ class UI_InstallationForm extends Form_Html
             'db' => array(),
             'site' => array(),
             'module' => array(),
-            'email' => array()
+            'email' => array(
+        		'transport' => array(
+        			'protocol' => 'sendmail',
+        			'host' => '',
+        			'port' => '',
+        			'ssl' => '',
+        			'auth' => '',
+        			'username' => '',
+        			'password' => ''
+        		))
         ), true);
         $config->db = $values['db'];
         $config->site->upload_folder = realpath(__DIR__ . '/../../../uploads');
