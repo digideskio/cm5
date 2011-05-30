@@ -42,9 +42,9 @@ class DefaultThemeLayout extends CM5_ThemeLayout
             if ($p['status'] !== 'published')
                 continue;
 
-            $sublink = $parent_link->create_link($p['title'], url($p['uri']));
+            $sublink = $parent_link->createLink($p['title'], url($p['uri']));
             if ($p['uri'] === '/')
-                $sublink->set_autoselect_mode('equal');
+                $sublink->setAutoselectMode('equal');
                 
             $this->__add_menu_entries($sublink, $p['children'], $max_depth - 1);
         }

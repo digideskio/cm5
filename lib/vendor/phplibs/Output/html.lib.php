@@ -38,7 +38,6 @@ function tag()
 function etag()
 {	
     $tag = new Output_HTMLTag(func_get_args());
-    ob_clean();
     if (!$tag->append_to_default_parent())
         echo $tag;
     return $tag;

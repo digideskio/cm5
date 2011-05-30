@@ -56,13 +56,13 @@ function module_action($module_name, $action)
 
 	Layout::getActive()->getDocument()->title = CM5_Config::getInstance()->site->title .
         " | Module: {$module->getMetaInfoEntry('title')} > {$action['display']}";
-	Layout::getActive()->getSubmenu()->create_entry($module->getMetaInfoEntry('title'));
+	Layout::getActive()->getSubmenu()->createEntry($module->getMetaInfoEntry('title'));
 	foreach($module->getActions() as $a)
 	{
-		CM5_Layout_Admin::getInstance()->getSubmenu()->create_link(
+		CM5_Layout_Admin::getInstance()->getSubmenu()->createLink(
 		$a['display'],
             ''
-            )->set_link(UrlFactory::craft('module.action', $module->getMetaInfoEntry('nickname'), $a['name']), true);
+            )->setLink(UrlFactory::craft('module.action', $module->getMetaInfoEntry('nickname'), $a['name']), true);
 	}
 
 	etag('div class="contents"')->push_parent();

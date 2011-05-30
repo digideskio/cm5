@@ -111,12 +111,12 @@ class UI_InstallationForm extends Form_Html
         if ($values['db']['build'])
         {
             $dbprefix = $config->db->prefix;
-            if (DB_Conn::get_link()->multi_query(require($this->db_build_file)))
-                while (DB_Conn::get_link()->next_result());
+            if (DB_Conn::getLink()->multi_query(require($this->db_build_file)))
+                while (DB_Conn::getLink()->next_result());
             
-            if (DB_Conn::get_link()->errno !== 0)
+            if (DB_Conn::getLink()->errno !== 0)
                 etag('strong class="error" nl_escape_on', 'Error executing SQL build script.\n' .
-                    DB_Conn::get_link()->error);
+                    DB_Conn::getLink()->error);
         }
         
         

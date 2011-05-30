@@ -169,7 +169,7 @@ class CM5_Module_Revisions extends CM5_Module
 	public function onEnable()
 	{
 		$dbprefix = CM5_Config::getInstance()->db->prefix;
-		if (DB_Conn::get_link()->multi_query(require(__DIR__ . '/../install/build-script.php')))
-		while (DB_Conn::get_link()->next_result());
+		if (DB_Conn::getLink()->multi_query(require(__DIR__ . '/../install/build-script.php')))
+		while (DB_Conn::getLink()->next_result());
 	}
 }

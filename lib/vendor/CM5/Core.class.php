@@ -439,7 +439,7 @@ class CM5_Core
         self::$instance->loadModules();
 
         // Initialize themes
-        self::$instance->loadThemes();
+        self::$instance->loadThemes();        
         
         $response = new CM5_Response();
                 
@@ -450,8 +450,9 @@ class CM5_Core
         if (!$stop_propagation)
         {  
             // Check for CMS pages
-            $selected_layout = $this->getSelectedTheme()->getLayoutClass();
-        	$selected_layout::getInstance()->activateSlot();
+            $this->getSelectedTheme()->initialize();
+            $selected_layout = $this->getSelectedTheme()->getLayout();
+        	$selected_layout->activateSlot();
             
             if ($url == '')
                 $p = CM5_Model_Page::open(1);   // Home page
@@ -469,13 +470,13 @@ class CM5_Core
             $this->events->filter('page.post-fetchdata', $p, array('url' => $url, 'response' => $response));
             
             $this->events->filter('page.pre-render', $p, array('url' => $url, 'response' => $response));
-            $selected_layout::getInstance()->getDocument()->title = $p->title . ' | ' . CM5_Config::getInstance()->site->title;
+            $selected_layout->getDocument()->title = $p->title . ' | ' . CM5_Config::getInstance()->site->title;
             etag('div class="article"',
                 tag('h1 class="title"', $p->title),
                 tag('div html_escape_off', $p->body)
             );
-            $selected_layout::getInstance()->deactivate();
-            $response->document = $selected_layout::getInstance()->getDocument()->render();
+            $selected_layout->deactivate();
+            $response->document = $selected_layout->getDocument()->render();
 
             // Trigger post render
             $this->events->filter('page.post-render', $response, array('url' => $url, 'page' => $p));

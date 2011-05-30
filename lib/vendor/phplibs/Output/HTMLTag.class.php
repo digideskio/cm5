@@ -285,7 +285,8 @@ class Output_HTMLTag
 	//! Append a text child
 	public function append_text($text)
 	{
-	    $this->childs[] = (string) $text;
+		if ($text != '')
+	    	$this->childs[] = (string) $text;
 	}
 	
 	//! Prepend a child

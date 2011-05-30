@@ -26,8 +26,11 @@ require_once __DIR__ . '/SmartMenuEntry.class.php';
 //! Demo class of a smart menu
 class SmartMenu
 {
-    //! Internal first level menu entry
-    private $main_menu = array();
+    /**
+     * Internal first level menu entry
+     * @var SmartMenuEntry
+     */ 
+    private $root_entry;
 
     //! Attributes to add on menu
     private $menu_attribs = array();
@@ -38,7 +41,7 @@ class SmartMenu
      */
     public function __construct($attribs = array())
     {
-        $this->main_menu = new SmartMenuEntry();
+        $this->root_entry = new SmartMenuEntry();
         $this->menu_attribs = $attribs;
     }
 
@@ -47,9 +50,9 @@ class SmartMenu
      * @param $display The text to be displayed.
      * @param $id A unique id for this menu entry that can be used to reference it.
      */
-    public function create_entry($display, $id = null)
+    public function createEntry($display, $id = null)
     {   
-        return $this->main_menu->create_entry($display, $id);
+        return $this->root_entry->createEntry($display, $id);
     }
 
     //! Create a new link entry in main menu
@@ -57,17 +60,27 @@ class SmartMenu
      * @param $display The text to be displayed on link.
      * @param $link The actual link of entry.
      * @param $id A unique id for this menu entry that can be used to reference it.
+     * @return SmartMenuEntry
      */    
-    public function create_link($display, $link, $id = null)
+    public function createLink($display, $link, $id = null)
     {   
-        return $this->main_menu->create_link($display, $link, $id);
+        return $this->root_entry->createLink($display, $link, $id);
     }
     
     //! Render menu and return html tree.
     public function render()
     {	
-        $ul = $this->main_menu->render_childs();
+        $ul = $this->root_entry->renderChildren();
         $ul->attributes = array_merge($ul->attributes, $this->menu_attribs);
         return $ul;
+    }
+    
+    /**
+     * Get the root entry
+     * @return SmartMenuEntry
+     */ 
+    public function getRootEntry()
+    {
+    	return $this->root_entry;
     }
 }

@@ -37,6 +37,16 @@ abstract class CM5_Theme extends CM5_Module
     abstract public function getLayoutClass();
     
     /**
+     * Get the instance of the getLayoutClass()
+     * @return Layout
+     */
+	public function getLayout()
+	{
+		$class_name = $this->getLayoutClass();
+		return $class_name::getInstance();
+	}
+	
+    /**
      * (non-PHPdoc)
      * @see CM5_Module::getModuleType()
      */

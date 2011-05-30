@@ -43,19 +43,19 @@ class CM5_Layout_Admin extends Layout
         });
 
         if (Authz::is_allowed('page', 'admin'))
-            $this->mainmenu->create_link('Pages', url('/admin/editor'));
+            $this->mainmenu->createLink('Pages', url('/admin/editor'));
         if (Authz::is_allowed('file', 'admin'))
-            $this->mainmenu->create_link('Files', url('/admin/files'));
+            $this->mainmenu->createLink('Files', url('/admin/files'));
         if (Authz::is_allowed('module', 'admin'))
-            $this->mainmenu->create_link('Modules', url('/admin/modules'));
+            $this->mainmenu->createLink('Modules', url('/admin/modules'));
         if (Authz::is_allowed('theme', 'admin'))
-            $this->mainmenu->create_link('Themes', url('/admin/themes'));
+            $this->mainmenu->createLink('Themes', url('/admin/themes'));
         if (Authz::is_allowed('user', 'admin'))
-            $this->mainmenu->create_link('Users', url('/admin/users'));
+            $this->mainmenu->createLink('Users', url('/admin/users'));
         if (Authz::is_allowed('log', 'view'))
-            $this->mainmenu->create_link('Log', url('/admin/log'));
+            $this->mainmenu->createLink('Log', url('/admin/log'));
         if (Authz::is_allowed('system.settings', 'admin'))
-            $this->mainmenu->create_link('Settings', url('/admin/settings'));
+            $this->mainmenu->createLink('Settings', url('/admin/settings'));
     }
     
     public function getSubmenu()

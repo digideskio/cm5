@@ -163,7 +163,7 @@ class DB_Conn
     /**
     * @throws NotConnectedException if DB_Conn is not connected
     */
-    static public function get_link()
+    static public function getLink()
     {   
         if (self::$dbconn === null)
             throw new NotConnectedException('DB_Conn::' . __FUNCTION__ . '() demands established connection!');

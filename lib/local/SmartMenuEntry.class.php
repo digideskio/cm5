@@ -40,14 +40,14 @@ class SmartMenuEntry
     //! Autoselect mode for links
     private $autoselect_mode = 'prefix';
 
-    //! Childs of this entry
-    private $childs = array();
+    //! Children of this entry
+    private $children = array();
 
     //! Extra custom html attributes entry's LI element.
     public $extra_attr = array();
 
     //! Check if it is selected
-    public function is_selected()
+    public function isSelected()
     {
         $REQUEST_URL = $_SERVER['REQUEST_URI'];
         if ($this->autoselect_mode === false)
@@ -62,13 +62,16 @@ class SmartMenuEntry
         return false;
     }
     
-    //! Render this entry and all its childs;
+    /**
+     * Render this entry and all its children;
+     * @return Output_HTMLTag
+     */ 
     public function render()
     {
         if ($this->type === 'link')
         {
             $li = tag('li', tag('a', array('href' => $this->link), $this->display), $this->extra_attr);
-            if ($this->is_selected())
+            if ($this->isSelected())
                 $li->add_class('selected');
         }
         else if ($this->type === 'custom')
@@ -76,19 +79,22 @@ class SmartMenuEntry
         else if ($this->type == 'text')
             $li = tag('li', $this->display, $this->extra_attr);
 
-        // Add childs if any
-        if (!empty($this->childs))
-            $li->append($this->render_childs());
+        // Add children if any
+        if (!empty($this->children))
+            $li->append($this->renderChildren());
             
         return $li;
     }
 
-    //! Render only the childs of this entry.
-    public function render_childs()
+    /**
+     *  Render only the children of this entry.
+     *  @return Output_HTMLTag
+     */
+    public function renderChildren()
     {
         $ul = tag('ul');
         
-        foreach($this->childs as $entry)
+        foreach($this->children as $entry)
             $entry->render($entry)->appendTo($ul);
 
         return $ul;
@@ -98,15 +104,16 @@ class SmartMenuEntry
     /**
      * @param $display The text to be displayed.
      * @param $id A unique id for this menu entry that can be used to reference it.
+     * @return SmartMenuEntry
      */
-    public function create_entry($display, $id = null)
+    public function createEntry($display, $id = null)
     {   
         $entry = new SmartMenuEntry();
-        $entry->set_display($display);
+        $entry->setDisplay($display);
         if ($id !== null)
-            $this->childs[$id] = $entry;
+            $this->children[$id] = $entry;
         else
-            $this->childs[] = $entry;
+            $this->children[] = $entry;
             
         return $entry;
     }
@@ -116,32 +123,53 @@ class SmartMenuEntry
      * @param $display The text to be displayed on link.
      * @param $link The actual link of entry.
      * @param $id A unique id for this menu entry that can be used to reference it.
+     * @return SmartMenuEntry
      */    
-    public function create_link($display, $link, $id = null)
+    public function createLink($display, $link, $id = null)
     {   
-        $entry = $this->create_entry($display, $id);
-        $entry->set_type('link');
-        $entry->set_link($link);
+        $entry = $this->createEntry($display, $id);
+        $entry->setType('link');
+        $entry->setLink($link);
         return $entry;
     }
 
-    //! Get a child based on its id
-    public function get_child($id)
+    /**
+     * Get a child based on its id
+     * @return SmartMenuEntry
+     */ 
+    public function getChild($id)
     {
-        if (isset($this->childs[$id]))
-            return $this->childs[$id];
+        if (isset($this->children[$id]))
+            return $this->children[$id];
         return NULL;
+    }
+    
+    /**
+     * Remove a child from the entries
+     */
+    public function removeChild($id)
+    {
+    	unset($this->children[$id]);
+    }
+    
+    /**
+     * Get all children
+     * @return array
+     */
+    public function getChildren()
+    {
+    	return $this->children;
     }
 
     //! Set the display of this entry
-    public function & set_display($display)
+    public function & setDisplay($display)
     {
         $this->display = $display;
         return $this;
     }
 
     //! Set the type of this entry   
-    public function & set_type($type)
+    public function & setType($type)
     {
         if (in_array($type, self::$types, true))
             $this->type = $type;
@@ -149,14 +177,14 @@ class SmartMenuEntry
     }
 
     //! Set the link of this entry
-    public function & set_link($link)
+    public function & setLink($link)
     {
         $this->link = (string)$link;
         return $this;
     }
 
     //! Set the autoselect mode of this entry
-    public function & set_autoselect_mode($mode)
+    public function & setAutoselectMode($mode)
     {
         if (in_array($mode, self::$modes, true))
             $this->autoselect_mode = $mode;
@@ -164,28 +192,26 @@ class SmartMenuEntry
     }
 
     //! Get the display of this entry
-    public function get_display()
+    public function getDisplay()
     {
         return $this->display;
     }
 
     //! Get the type of this entry
-    public function get_type()
+    public function getType()
     {
         return $this->type;
     }
 
     //! Get the link of this entry
-    public function get_link()
+    public function getLink()
     {
         return $this->link;
     }
 
     //! Get the autoselect mode of this entry
-    public function get_autoselect_mode()
+    public function getAutoselectMode()
     {
         return $this->autoselect_mode;
     }
 }
-
-?>

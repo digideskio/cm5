@@ -30,9 +30,13 @@ class CM5_Module_ContantForm extends CM5_Module
 			$form_text = html_entity_decode(preg_replace('/\<[\s]*br[^\>]*\>/s', '', $form_match[0][0]));
 			$form_text = preg_replace('/\n[\s]+/s', "\n", $form_text);
 			
-			preg_match_all('/##contactform[\s]+(?P<email>[\w_@\.]+)[\s]+\"(?P<title>[^\"]*)\"[\s]+"(?P<button_label>[^\"]*)\"[\s]+'.
+			$results = preg_match_all('/##contactform[\s]+(?P<email>[\w_@\.]+)[\s]+\"(?P<title>[^\"]*)\"[\s]+"(?P<button_label>[^\"]*)\"[\s]+'.
 				'(?P<fields>.*(?<=[\r\n]))\-[\r\n]+(?P<thank_you>[^#]+)##/s',
 				$form_text, $matches);
+			if (!$results) {
+				$offset = $replace['start'] + $replace['length']; 
+				continue;
+			}
 			$target_email = $matches['email'][0];
 			$title = $matches['title'][0];
 			$button_label = $matches['button_label'][0];
