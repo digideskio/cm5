@@ -255,7 +255,7 @@ class CM5_Model_Upload extends DB_Record
         }
             
         header("Content-Disposition: {$dispo};" .
-        	rfc2231_encode('filename', $this->filename));
+        	rfc2231_encode('filename', $this->filename, 'utf-8'));
         echo $this->getData();
     }
     

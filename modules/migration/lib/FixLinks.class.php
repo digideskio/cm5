@@ -84,7 +84,7 @@ class CM5_Module_Migration_FixLinks extends Form_Html
         foreach(CM5_Model_Page::open_all() as $p)
     	{    	   			
 			$changed = preg_replace_callback(
-		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[\w\-\.]+))\b#',
+		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[^\s]+))#',
 		        array($this, '__fix_links_callback'),
 		        $p->body,
 		        -1,
@@ -104,6 +104,6 @@ class CM5_Module_Migration_FixLinks extends Form_Html
 		foreach($this->fixed as $c)
 			$ul->append(tag('li',
 				"{$c['orig-url']} => {$c['new-url']}"
-			));		
+			));
     }
 }

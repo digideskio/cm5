@@ -159,10 +159,12 @@ function rfc2231_encode($name, $value, $charset='', $lang='', $ll=78) {
         // invalid parameter name;
         return false;
     }
-    if (strlen($charset) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $charset)) {
+    /*
+     * doesn't work for utf-8
+     * if (strlen($charset) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $charset)) {
         // invalid charset;
         return false;
-    }
+    }*/
     if (strlen($lang) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $lang)) {
         // invalid language;
         return false;
