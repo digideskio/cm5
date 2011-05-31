@@ -18,10 +18,21 @@ class CM5_Module_Migration_UploadForm extends Form_Html
     
     public function onInitialized()
     {
+    	// Import files already in database
     	$current_uploads = array();
         foreach(CM5_Model_Upload::open_all() as $u)
             if (substr($u->filename, -7) == '.xml.gz')
                 $current_uploads[$u->id] = "{$u->filename}  (" . date_exformat($u->lastmodified)->human_diff(null, false) . ")" ;
+
+        // Import files found at _import folder
+        $import_path = __DIR__ . '/../_import';
+        if (is_dir($import_path)) {
+	        $dir = dir($import_path);
+	        while($file = $dir->read()) {
+	        	if (substr($file, -7) == '.xml.gz')
+	        		$current_uploads[$import_path . '/' .$file] = '[found at _import] ' . $file;
+	        }
+        }
 
     	$this->addMany(
     		field_select('uploaded', array('label' => 'Archives already uploaded on server:', 
@@ -32,9 +43,12 @@ class CM5_Module_Migration_UploadForm extends Form_Html
     	
     	if (empty($current_uploads))
         {
-            $f = & $this->remove('uploaded');
-            $f['type'] = 'custom';
-            $f['value'] = '&nbsp;&nbsp;&nbsp;(No archive was found...)';
+        	
+            $this->remove('uploaded');
+            /*
+             @TODO Add support for positioning adding.            
+            $this->add(field_raw('uploaded', array('escape' => false, 'value' => '&nbsp;&nbsp;&nbsp;(No archive was found...)')));
+            */
         }
     }
     
@@ -57,7 +71,13 @@ class CM5_Module_Migration_UploadForm extends Form_Html
         $values = $this->getValues();
         if (!empty($values['uploaded']))
         {
-            $this->upload_id = $values['uploaded'];
+        	if (is_numeric($values['uploaded'])) {
+            	$this->upload_id = $values['uploaded'];
+            	
+        	} else if (is_file($values['uploaded'])) {
+            	$data = file_get_contents($values['uploaded']);
+            	$this->upload_id = CM5_Model_Upload::createFromData($data, basename($values['uploaded']))->id;
+            }
         }
         else if ($values['new-archive'])
         {

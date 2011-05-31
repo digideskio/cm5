@@ -242,17 +242,20 @@ class CM5_Model_Upload extends DB_Record
     {   
         $dispo = 'inline';    
 
-        if (substr($this->mime, 0, 4) == 'text')
+        if (substr($this->mime, 0, 4) == 'text') {
             // All text/* translate to text/plain (for security)
             header('Content-Type: ' . 'text/plain');
-        else if (substr($this->mime, 0, 5) == 'image')
+        } else if (substr($this->mime, 0, 5) == 'image') {
             // Images are served as is
             header('Content-Type: ' . $this->mime);
-        else
+        } else {
+        	header('Content-Type: ' . $this->mime);
             // The rest are served as attachments
             $dispo = 'attachment';
+        }
             
-        header("Content-Disposition: {$dispo}; filename={$this->filename}");
+        header("Content-Disposition: {$dispo};" .
+        	rfc2231_encode('filename', $this->filename));
         echo $this->getData();
     }
     

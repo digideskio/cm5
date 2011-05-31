@@ -149,3 +149,39 @@ function html_linkify_urls($text, $replace_text = '<a href="${0}" target="_blank
 {
     return preg_replace('/((?:http|ftp):\/\/[^\s\<\>]*)/im', $replace_text, $text);
 }
+
+/**
+ * Encode rfc2231
+ * @link http://stackoverflow.com/questions/4968272/how-can-i-encode-a-filename-in-php-according-to-rfc-2231
+ */ 
+function rfc2231_encode($name, $value, $charset='', $lang='', $ll=78) {
+    if (strlen($name) === 0 || preg_match('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', $name)) {
+        // invalid parameter name;
+        return false;
+    }
+    if (strlen($charset) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $charset)) {
+        // invalid charset;
+        return false;
+    }
+    if (strlen($lang) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $lang)) {
+        // invalid language;
+        return false;
+    }
+    $value = "$charset'$lang'".preg_replace_callback('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', function($match) { return rawurlencode($match[0]); }, $value);
+    $nlen = strlen($name);
+    $vlen = strlen($value);
+    if (strlen($name) + $vlen > $ll-3) {
+        $sections = array();
+        $section = 0;
+        for ($i=0, $j=0; $i<$vlen; $i+=$j) {
+            $j = $ll - $nlen - strlen($section) - 4;
+            $sections[$section++] = substr($value, $i, $j);
+        }
+        for ($i=0, $n=$section; $i<$n; $i++) {
+            $sections[$i] = " $name*$i*=".$sections[$i];
+        }
+        return implode(";\r\n", $sections);
+    } else {
+        return " $name*=$value";
+    }
+}
