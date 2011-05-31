@@ -4,7 +4,7 @@ class Install_Layout extends Layout {
 	
 	
 	public function onInitialize() {
-		$version = array('0', '11', '0');
+		$version = array('0', '11', '1');
 		$this->getDocument()->add_ref_css(surl('/../static/css/admin.css'));
 		$this->getDocument()->add_ref_css(surl('/../static/debug/install.css'));
 		$this->getDocument()->title = 'CM5 - Installation';
