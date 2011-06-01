@@ -49,22 +49,25 @@ class CM5_Module_Migration_FixLinks extends Form_Html
     public function __fix_links_callback($matches)
     {
     	$logentry = array('orig-url' => $matches[0],
-    		'orig-fname' => $matches[4]);
+    		'orig-fname' => $matches['fname']);
     	
     	// Base check
     	if ($this->oldurlbase)
     	{
-    		$checkbase = substr($matches[3], strlen($matches[3])- strlen($this->oldurlbase));
+    		$checkbase = substr($matches['base'], strlen($matches['base'])- strlen($this->oldurlbase));
     		if ($this->oldurlbase != $checkbase)
     			return $matches[0];	// No match    		
     	}
     	
     	// Validate file
-		$f = CM5_Model_Upload::open_query()->where("filename = ?")->execute($matches[4]);
+		$f = CM5_Model_Upload::open_query()->where("filename = ?")->execute(html_entity_decode($matches['fname']));
 		if (!count($f))
 			return $matches[0];	// No change
 		
-		$newurl = $matches[1] . (string)UrlFactory::craft("upload.view", $f[0]);
+        $upload_view = (html_entity_decode($matches['fname']) != $matches['fname'])
+            ?htmlentities((string)UrlFactory::craft("upload.view", $f[0]))
+            :(string)UrlFactory::craft("upload.view", $f[0]);
+		$newurl = $matches['before'] . $upload_view;
 		
 		// Check if it is actual different
 		if ($newurl == $matches[0])
@@ -84,7 +87,7 @@ class CM5_Module_Migration_FixLinks extends Form_Html
         foreach(CM5_Model_Page::open_all() as $p)
     	{    	   			
 			$changed = preg_replace_callback(
-		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[^\s]+))#',
+		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[^\s"\']+))#',
 		        array($this, '__fix_links_callback'),
 		        $p->body,
 		        -1,
