@@ -38,6 +38,8 @@
  * @property boolean $is_image
  * @property integer $image_width
  * @property integer $image_height
+ * 
+ * @method CM5_Model_Upload create()
  */
 class CM5_Model_Upload extends DB_Record
 {
@@ -117,7 +119,8 @@ class CM5_Model_Upload extends DB_Record
 	
 	/**
      * Construct an upload from data
-     * @param UploadedFile $upload
+     * @param string $data Actual file data
+     * @param string $filename The filename of the file
      */
     static function createFromData($data, $filename)
     {   
@@ -206,12 +209,43 @@ class CM5_Model_Upload extends DB_Record
         $mime_type = self::getMimeFromData($data);
             
         // Overwrite old file
-        unlink($this->getStoragePath());
+        if (is_file($this->getStoragePath()))
+        	unlink($this->getStoragePath());
         $upload->move($this->getStoragePath());        
         
         // Save to database
         $this->filesize = strlen($data);
         $this->sha1_sum = sha1($data);
+        $this->lastmodified = new DateTime();
+        $this->mime = $mime_type;
+        $this->save();
+        
+        // Update image information
+        $this->updateImageInfo();
+    }
+    
+ 	/**
+     * Update data from data
+     * @param string $data Actual file data
+     */
+    public function updateFromData($data)
+    {
+        $upload_folder = CM5_Config::getInstance()->site->upload_folder;
+        
+        // Get mime type
+        $mime_type = self::getMimeFromData($data);
+        $datasum = sha1($data);
+            
+        // Overwrite old file
+        if (is_file($this->getStoragePath()))
+        	unlink($this->getStoragePath());
+        	
+        $this->store_file = $datasum . '.dat';
+        file_put_contents($this->getStoragePath(), $data);        
+        
+        // Save to database
+        $this->filesize = strlen($data);
+        $this->sha1_sum = $datasum;
         $this->lastmodified = new DateTime();
         $this->mime = $mime_type;
         $this->save();
@@ -300,7 +334,8 @@ CM5_Model_Upload::events()->connect('op.pre.delete', function($e) {
         CM5_Model_Upload::$thumb_cache->delete($r->id);
     
     // delete file from file system
-    unlink($r->getStoragePath());
+    if (is_file($r->getStoragePath()))
+    	unlink($r->getStoragePath());
 });
 
 CM5_Model_Upload::events()->connect('op.pre.create', function($e) {

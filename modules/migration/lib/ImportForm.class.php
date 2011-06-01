@@ -3,8 +3,8 @@
 
 class CM5_Module_Migration_ImportForm extends Form_Html
 {
+	public $archive_upload;
     public $archive;
-    public $upload_id;
     private function add_page($p, &$current_pages, $depth = 0)
     {
         $prefix = str_repeat(" ", $depth * 3) . "|--" . (count($p['children'])?"+ ":"- ");
@@ -13,10 +13,10 @@ class CM5_Module_Migration_ImportForm extends Form_Html
             $this->add_page($c, $current_pages, $depth + 1);
     }
     
-    public function __construct($archive, $upload_id)
+    public function __construct($archive_upload)
     {
-        $this->upload_id = $upload_id;
-        $this->archive = simplexml_load_string(gzdecode($archive->getData()));
+        $this->archive_upload = $archive_upload;
+        $this->archive = simplexml_load_string(gzdecode($archive_upload->getData()));
         
         parent::__construct(null, array(
         		'attribs' => array('class' => 'form'),
@@ -42,6 +42,12 @@ class CM5_Module_Migration_ImportForm extends Form_Html
         		array('label' => 'Or full restore database by replacing current content (pages and files).'))
 		);
     }
+    
+    private static function getLatestUploadId()
+    {
+    	$max = DB_Conn::query_fetch_all('SELECT max(id) FROM ' .CM5_Model_Upload::get_table());
+    	return $max[0][0];
+    } 
 
     public function onProcessValid()
     {
@@ -68,17 +74,29 @@ class CM5_Module_Migration_ImportForm extends Form_Html
             
             if (count($this->archive->xpath('//files')))
             {
-                foreach(CM5_Model_Upload::open_all() as $u)
-                    $u->delete();
+            	// Delete all files except the uploaded one
+                foreach(CM5_Model_Upload::open_all() as $u) {
+                	if ($u->id != $this->archive_upload->id)
+                    	$u->delete();
+                }
+                
                 
                 foreach($this->archive->xpath('//files/file') as $f)
                 {
-                    $u = CM5_Model_Upload::createFromData(base64_decode((string)$f), (string)$f['filename']);
-                    $u->id = (string)$f['id'];
-                    $u->description = (string)$f['description'];
-                    $u->uploader = (string)$f['uploader'];
-                    $u->save();
+                	// Avoid colision of archive
+                	if ((string)$f['id'] == $this->archive_upload->id) {
+                		$this->archive_upload->id = self::getLatestUploadId() + 10;
+                		$this->archive_upload->save();
+                	}
+                    $u = CM5_Model_Upload::create(array(
+                    	'id' => (string)$f['id'],
+                    	'filename' => (string)$f['filename'],
+                    	'description' => (string)$f['description'],
+                    	'uploader' => (string)$f['uploader']));
+                    $data = base64_decode((string)$f);
+                    $u->updateFromData($data);
                 }
+                
             }
         }
         else

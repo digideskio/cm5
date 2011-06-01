@@ -42,13 +42,13 @@ class CM5_Module_Migration extends CM5_Module
 	{
 		if (($fid = Net_HTTP_RequestParam::get('fid')) !== null)
 		{
-			if (($f = CM5_Model_Upload::open($fid)) === false)
+			if (($upload = CM5_Model_Upload::open($fid)) === false)
 			throw new Exception404();
-			$frm = new CM5_Module_Migration_ImportForm($f, $fid);
+			$frm = new CM5_Module_Migration_ImportForm($upload);
 			if ($frm->process() == Form::RESULT_VALID) {
 				etag('div class="message"',
 		            'Import was done completed succesfully. You can now ',
-				tag('a', 'delete')->attr('href', (string)UrlFactory::craft('upload.delete', $frm->upload_id)),
+				tag('a', 'delete')->attr('href', (string)UrlFactory::craft('upload.delete', $frm->archive_upload->id)),
 		            ' uploaded archive if you wish.'
 		            );
 			}
