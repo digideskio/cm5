@@ -40,8 +40,7 @@ function show_themes()
 }
 
 function theme_switch($theme_name)
-{
-	CM5_Core::getInstance()->loadThemes();
+{	
 	if (($theme = CM5_Core::getInstance()->getModule($theme_name)) === null)
 		throw new Exception404();
 
@@ -67,7 +66,6 @@ function theme_switch($theme_name)
 
 function theme_configure($theme_name)
 {
-	CM5_Core::getInstance()->loadThemes();
 	if (($theme = CM5_Core::getInstance()->getModule($theme_name)) === null)
 	throw new Exception404();
 

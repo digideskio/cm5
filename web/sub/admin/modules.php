@@ -40,10 +40,9 @@ Stupid::chain_reaction();
 
 function show_modules()
 {
-	$grid = new CM5_Widget_ModulesGrid(CM5_Core::getInstance()->getModules());
-	etag('div',
-	$grid->render()
-	);
+	$grid = new CM5_Widget_ModulesGrid(
+		array_filter(CM5_Core::getInstance()->getModules(), function($m) { return $m->getModuleType() == 'generic';}));
+	etag('div',	$grid->render()	);
 }
 
 function module_action($module_name, $action)

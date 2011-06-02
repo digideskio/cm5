@@ -40,6 +40,7 @@
  * @property integer $image_height
  * 
  * @method CM5_Model_Upload create()
+ * @method CM5_Model_Upload open()
  */
 class CM5_Model_Upload extends DB_Record
 {

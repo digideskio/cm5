@@ -64,8 +64,7 @@ abstract class CM5_Theme extends CM5_Module
     {
         $theme_class = $this->getLayoutClass();
         if (!isset($theme_class::$theme_nickname))
-            throw new RuntimeException('Theme Layout class must have static property "theme_nickname"!');
-        $theme_class::getInstance();
+            throw new RuntimeException('Theme Layout class must have static property "theme_nickname"!');        
     }
     
     /**

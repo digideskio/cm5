@@ -42,6 +42,8 @@ require_once __DIR__ . '/../authnz.php';
 // Load modules
 CM5_Core::getInstance()->switchBackendWorkingContext();
 CM5_Core::getInstance()->loadModules();
+CM5_Core::getInstance()->loadThemes();
+CM5_Core::getInstance()->getSelectedTheme()->initialize('backend');
 
 // Special handling for special urls
 Stupid::add_rule(function() {require(__DIR__ . '/../login.php'); },
