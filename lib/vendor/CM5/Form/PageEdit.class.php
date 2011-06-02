@@ -121,7 +121,8 @@ class CM5_Form_PageEdit extends Form_Html
 	   	foreach($values as $name => $value) {
     		if (in_array($name, array('preview')))
         		continue;
-			$this->page->{$name} = $value;
+        	if (isset($this->page->{$name}))
+				$this->page->{$name} = $value;
 		}
     	$this->page->save();
     }

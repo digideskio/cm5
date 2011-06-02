@@ -25,7 +25,7 @@ CM5_Layout_FailOver::getInstance()->getDocument()->title = 'Not Found: ' . $_SER
 header("HTTP/1.1 404 Not Found");
 
 if (Layout::getActive() == null)
-    CM5_Layout_FailOver::getInstance()->activateSlot();
+	CM5_Core::getInstance()->getSelectedTheme()->getLayout()->activateSlot();
 
 etag('div class="not-found"',
 	tag('h1 class="error"', "Not Found: \"{$_SERVER['REQUEST_URI']}\" "),

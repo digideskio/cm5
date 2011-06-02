@@ -4,7 +4,9 @@ require_once(__DIR__ . '/Interface.class.php');
 require_once(__DIR__ . '/SameNameContainer.class.php');
 
 /**
- * Base class to implement "fields container" concept. 
+ * Base class to implement "fields container" concept.
+ * @todo Add suport for manipulating order and offset.
+ * 	e.g. if you add() somehow you should be able to tell before or after this or at position.
  */
 class Form_Field_Container implements Form_Field_Interface
 {

@@ -82,8 +82,8 @@ class CM5_Widget_UploadsGrid extends Output_HTML_Grid
 			$res = '';
 			if ($record->is_image)
 			$res .= tag('img class="thumb"',
-			array('alt' => $record->filename),
-			array('src' => UrlFactory::craft('upload.thumb', $record))
+				array('alt' => $record->filename),
+				array('src' => UrlFactory::craft('upload.thumb', $record))
 			);
 
 			$res .= tag('input readonly="readonly" class="url"',

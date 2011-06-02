@@ -23,16 +23,20 @@
 
 class CM5_Module_ContentMagic extends CM5_Module
 {
+	public $events;
 
 	//! Initialize module
 	public function onInitialize()
 	{
+		$this->events = new EventDispatcher(array(
+			'subpages.render-line'
+		));
 		$c = CM5_Core::getInstance();
-		$c->events()->connect('page.pre-render', array($this, 'event_pre_render'));
-		$c->events()->connect('page.post-render', array($this, 'event_post_render'));
+		$c->events()->connect('page.pre-render', array($this, 'onPagePreRender'));
+		$c->events()->connect('page.post-render', array($this, 'onPagePostRender'));
 	}
 
-	private function replace_subpages(CM5_Model_Page $p)
+	private function replaceSubpages(CM5_Model_Page $p)
 	{
 		if (strstr($p->body, '##subpages##') === false)
 		return;
@@ -45,13 +49,17 @@ class CM5_Module_ContentMagic extends CM5_Module
 			->execute('published', $p->id);
 
 		$contents_el = tag('div class="subpages-index"', $ul = tag('ul'));
-		foreach($subpages as $sp)
-			$ul->append(tag('li', UrlFactory::craft('page.view', $sp)->anchor($sp->title)));
+		foreach($subpages as $sp) {
+			$li = tag('li', UrlFactory::craft('page.view', $sp)->anchor($sp->title));
+			if ($this->events)
+				$this->events->filter('subpages.render-line', $li, array('page' => $sp));
+			$ul->append($li);
+		}
 
 		$p->body = str_replace('##subpages##', (string)$contents_el, $p->body);
 	}
 
-	private function execute_redirect(CM5_Model_Page $p, CM5_Response $r)
+	private function executeRedirect(CM5_Model_Page $p, CM5_Response $r)
 	{
 		if (strstr($p->body, '##redirect ') === false)
 			return;
@@ -67,20 +75,20 @@ class CM5_Module_ContentMagic extends CM5_Module
 	}
 
 	//! Handler for pre rendering
-	public function event_pre_render($event)
+	public function onPagePreRender($event)
 	{
 		$p = $event->filtered_value;
 
 		// Execute subpages
-		$this->replace_subpages($p);
+		$this->replaceSubpages($p);
 	}
 
-	public function event_post_render($event)
+	public function onPagePostRender($event)
 	{
 		$resp = $event->filtered_value;
 
 		// Execute subpages
-		$this->execute_redirect($event->arguments['page'] , $resp);
+		$this->executeRedirect($event->arguments['page'] , $resp);
 	}
 }
 

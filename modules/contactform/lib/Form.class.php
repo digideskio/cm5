@@ -17,7 +17,7 @@ class CM5_Module_ContantForm_Form extends Form_Html{
 		parent::__construct(null, array(
 			'action' => '#contact_form_' . $form_id,
 			'title' => $title,
-			'nobrowservalidation' => true,
+			'nobrowservalidation' => false,
 			'attribs' => array(
 				'id' => 'contact_form_' . $form_id,
 				'class' => 'form contact',

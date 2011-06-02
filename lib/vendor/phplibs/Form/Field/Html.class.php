@@ -106,7 +106,7 @@ class Form_Field_Html extends Form_Field
 				$attribs[$attr] = $attr;
 		
 		// Add pattern if exists
-		if ($this->options->has('pattern')) {
+		if ($this->options->get('pattern')) {
 			$html_pattern = trim($this->options['pattern'], '^$' . $this->options['pattern'][0]);
 			$attribs['pattern'] = $html_pattern;
 		}
