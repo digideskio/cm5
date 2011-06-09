@@ -174,7 +174,8 @@ class CM5_Module_Search extends CM5_Module
 		Output_HTMLTag::get_current_parent()->append($frm->render());
 		if ($frm->getResultCode() == Form::RESULT_VALID) {
 			$query_str = $frm->get('query')->getValue();
-			$results = new Paginator($this->getSearchResults($query_str), 5);
+			$query = Zend_Search_Lucene_Search_QueryParser::parse($query_str, 'UTF-8');
+			$results = new Paginator(CM5_Module_Search_Indexer::open()->getEngine()->find($query), 5);
 			$results->setCurrentIndex(isset($_GET['page'])?$_GET['page']:1);
 			
 			etag('em', 'found ' . count($results->getData()) . ' pages.');
@@ -202,9 +203,6 @@ class CM5_Module_Search extends CM5_Module
 		return $div;
 	}
 	
-	/**
-	 * @todo Add an api url to return json results for autocomplete
-	 */
 	public function onEventPageRequest(Event $event) {
 		$response = $event->arguments['response'];
 		if ($event->arguments['url'] == '/search') {
