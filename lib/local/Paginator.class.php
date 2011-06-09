@@ -53,12 +53,10 @@ class Paginator extends ArrayObject
 	{
 		$this->data = $data;
 		$this->items_per_page = ($items_per_page > 1)?$items_per_page:1;
-		$total_pages = (count($this->data) + $this->items_per_page - 1) / $this->items_per_page; // fast ceil()
-		$this->current_index = ($current_page >= 1) && ($current_page <= $total_pages)
-			?$current_page
-			:1;
+		$total_pages = (count($this->data) + $this->items_per_page - 1) / $this->items_per_page; // fast ceil()		
 		for($i = 1; $i <= $total_pages; $i++)
-			parent::offsetSet($i, new Paginator_Page($this, $i));		
+			parent::offsetSet($i, new Paginator_Page($this, $i));
+		$this->setCurrentIndex($current_page);
 	}
 	
 	/**
@@ -99,6 +97,17 @@ class Paginator extends ArrayObject
 	}
 	
 	/**
+	 * Set the current page index
+	 * @param $index A valid indexer
+	 */
+	public function setCurrentIndex($current_index)
+	{
+		$this->current_index = ($current_index >= 1) && ($current_index <= $this->count())
+			?$current_index
+			:1;
+	}
+	
+	/**
 	 * Get the actual current page object.
 	 * @return Paginator_Page
 	 */
@@ -114,6 +123,24 @@ class Paginator extends ArrayObject
 	public function getPage($index)
 	{
 		return $this->offsetGet($index);		
+	}
+	
+	/**
+	 * Get the first page
+	 * @return Paginator_Page
+	 */
+	public function getFirstPage()
+	{
+		return $this->offsetGet(1);
+	}
+	
+	/**
+	 * Get the last page
+	 * @return Paginator_Page
+	 */
+	public function getLastPage()
+	{
+		return $this->offsetGet($this->count());
 	}
 	
 	/**

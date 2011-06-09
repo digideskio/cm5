@@ -120,7 +120,7 @@ class Paginator_Page implements IteratorAggregate, Countable
 	 */
 	public function isLastPage()
 	{
-		return $this->index >= $this->owner->getTotalPages();
+		return $this->index >= count($this->owner);
 	}
 	
 	/**
