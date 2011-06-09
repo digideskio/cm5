@@ -197,8 +197,6 @@ class Form extends Form_Field_Container
 			return $files;
 		};
 		
-		
-		
 		if ($submitted == null){
 			$submitted = ($_SERVER['REQUEST_METHOD'] == 'POST') 
 				? (count($_FILES))

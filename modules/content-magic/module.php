@@ -23,7 +23,7 @@
 
 class CM5_Module_ContentMagic extends CM5_Module
 {
-	public $events;
+	protected $events;
 
 	//! Initialize module
 	public function onInitialize()
@@ -36,6 +36,11 @@ class CM5_Module_ContentMagic extends CM5_Module
 		$c->events()->connect('page.post-render', array($this, 'onPagePostRender'));
 	}
 
+	public function events()
+	{
+		return $this->events;
+	}
+	
 	private function replaceSubpages(CM5_Model_Page $p)
 	{
 		if (strstr($p->body, '##subpages##') === false)

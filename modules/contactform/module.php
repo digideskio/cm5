@@ -72,13 +72,10 @@ class CM5_Module_ContantForm extends CM5_Module
 			// Render back
 			$page->body = substr_replace($page->body, (string)$render, $replace['start'], $replace['length']);
 			$offset = $replace['start'] + strlen($render);
-			
 		}
-	
-		
 	}
-	
 }
+
 return array(
 	'class' => 'CM5_Module_ContantForm',
 	'nickname' => 'contactform',

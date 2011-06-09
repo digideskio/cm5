@@ -455,5 +455,3 @@ class Output_HTMLTag
 		return false;
 	}
 }
-
-?>

@@ -27,10 +27,10 @@ class CM5_Module_SEO extends CM5_Module
 	public function onInitialize()
 	{
 		$c = CM5_Core::getInstance();
-		$c->events()->connect('page.request', array($this, 'event_page_request'));
+		$c->events()->connect('page.request', array($this, 'onEventPageRequest'));
 	}
 
-	public function generate_sitemap()
+	public function generateSitemap()
 	{
 		$xml = "<?xml version='1.0' encoding='UTF-8'?>";
 		$xml .= '<?xml-stylesheet type="text/xsl" href="' .
@@ -56,7 +56,7 @@ class CM5_Module_SEO extends CM5_Module
             return $xml . $urlset;
 	}
 
-	public function generate_robots()
+	public function generateRobots()
 	{
 		return "User-Agent: *\n" .
             "Allow: /\n" .
@@ -69,14 +69,14 @@ class CM5_Module_SEO extends CM5_Module
             'Sitemap: ' . (empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . url('/sitemap.xml');
 	}
 
-	public function event_page_request($event)
+	public function onEventPageRequest($event)
 	{
 		$response = $event->arguments['response'];
 		if ($event->arguments['url'] == '/sitemap.xml')
 		{
 			$event->filtered_value = true;
 			$response->addHeader('Content-Type: text/xml');
-			$response->document = $this->generate_sitemap();
+			$response->document = $this->generateSitemap();
 		}
 		else if ($event->arguments['url'] == '/sitemap.xsl')
 		{
@@ -88,7 +88,7 @@ class CM5_Module_SEO extends CM5_Module
 		{
 			$event->filtered_value = true;
 			$response->addHeader('Content-Type: text/plain');
-			$response->document = $this->generate_robots();
+			$response->document = $this->generateRobots();
 		}
 	}
 }
