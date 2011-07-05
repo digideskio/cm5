@@ -125,6 +125,10 @@ class CM5_Module_Search extends CM5_Module
 		return $this->events;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see CM5_Module::onInitialize()
+	 */
 	public function onInitialize()
 	{
 		require_once __DIR__ . '/lib/Indexer.class.php';
@@ -135,6 +139,17 @@ class CM5_Module_Search extends CM5_Module
 			'results.post-process',
 			'results.post-render',
 		));
+		
+		$this->declareAction('rebuild', 'Rebuild', 'rebuildIndex');
+	}
+	
+	/**
+	 * Request to rebuild index
+	 */
+	public function rebuildIndex()
+	{
+		CM5_Module_Search_Indexer::rebuild();
+		etag('p', 'Index has been rebuild successfully!');
 	}
 	
 	/**
