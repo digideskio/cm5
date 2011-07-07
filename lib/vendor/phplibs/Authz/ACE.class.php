@@ -61,7 +61,7 @@ class Authz_ACE
     }
     
     //! Get the action this entry refers to.
-    public function get_action()
+    public function getAction()
     {
         return $this->action;
     }

@@ -1,444 +1,88 @@
 <?php
 /*
  *  This file is part of CM5 <http://code.0x0lab.org/p/cm5>.
- *  
+ *
  *  Copyright (c) 2010 Sque.
- *  
+ *
  *  CM5 is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published 
+ *  it under the terms of the GNU General Public License as published
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  CM5 is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with CM5.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  *  Contributors:
  *      Sque - initial API and implementation
  */
 
-class CM5_Module_Migration_ExportForm extends Output_HTML_Form
-{
-    public function __construct()
-    {
-        $files_size = 0;
-        foreach(Upload::raw_query()->select(array('filesize'))->execute() as $f)
-            $files_size += $f['filesize'];
-        parent::__construct(
-            array(
-                'files' => array('display' => 'Include also files in exported archive (' . html_human_fsize($files_size) . ')', 'type' => 'checkbox')
-            ),
-            array(
-                'title' => 'Export CMS Content',
-                'buttons' => array(
-                    'Download' => array('type' => 'submit')
-                )
-            )
-        );
-    }
-    
-    public function on_valid($values)
-    {
-        Layout::open('admin')->deactivate();
+require_once __DIR__ . '/lib/ExportForm.class.php';
+require_once __DIR__ . '/lib/UploadForm.class.php';
+require_once __DIR__ . '/lib/ImportForm.class.php';
+require_once __DIR__ . '/lib/FixLinks.class.php';
 
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->appendChild($archive = $dom->createElement("cms_archive"));
-        $archive->setAttribute("version", '1');
-        
-        // Meta
-        $archive->appendChild($meta = $dom->createElement('meta'));
-        $meta->appendChild($title = $dom->createElement('title'));
-        $title->appendChild(new DomText(GConfig::get_instance()->site->title));
-        $meta->appendChild($base_url = $dom->createElement('base_url'));
-        $base_url->appendChild(new DomText((empty($_SERVER['HTTPS'])?'http':'https') .'://' . $_SERVER['HTTP_HOST'] . surl('/')));
-        
-        // Pages
-        $archive->appendChild($pages = $dom->createElement('pages'));
-        foreach(Page::open_all() as $p)
-        {
-            $pages->appendChild($page = $dom->createElement('page'));
-            $page->setAttribute('title', $p->title);
-            $page->setAttribute('id', $p->id);
-            $page->setAttribute('parent_id', $p->parent_id);
-            $page->setAttribute('order', $p->order);
-            $page->setAttribute('slug', $p->slug);
-            $page->setAttribute('status', $p->status);
-            $page->setAttribute('system', $p->system);
-            $page->setAttribute('author', $p->author);
-            $page->setAttribute('created', $p->created->format('U'));
-            $page->setAttribute('lastmodified', $p->lastmodified->format('U'));
-            $page->appendChild(new DOMText($p->body));
-        }
-        
-        // Files
-        if ($values['files'])
-        {
-            $archive->appendChild($files = $dom->createElement('files'));
-            foreach(Upload::open_all() as $f)
-            {
-                $files->appendChild($file = $dom->createElement('file'));
-                $file->setAttribute('id', $f->id);
-                $file->setAttribute('filename', $f->filename);
-                $file->setAttribute('description', $f->description);
-                $file->setAttribute('uploader', $f->uploader);
-                $file->appendChild(new DOMText(base64_encode($f->get_data())));
-            }
-        }
-    
-        $filename = str_replace(' ', '_', GConfig::get_instance()->site->title) . '-backup-' . date_create()->format('Y-m-d_H-i');
-        error_log($filename);
-        header('Content-Type: application/x-gzip');
-        header("Content-Disposition: attachment; filename=$filename.xml.gz");
-        echo gzencode($dom->saveXML()); 
-        exit;
-    }
-}
 
-class CM5_Module_Migration_UploadForm extends Output_HTML_Form
-{
-    public $upload_id = null;
-    
-    public function __construct()
-    {
-        $current_uploads = array();
-        foreach(Upload::open_all() as $u)
-            if (substr($u->filename, -7) == '.xml.gz')
-                $current_uploads[$u->id] = "{$u->filename}  (" . date_exformat($u->lastmodified)->human_diff(null, false) . ")" ;
-                
-        parent::__construct(
-            array(
-                'uploaded' => array('display' => 'Archives already uploaded on server:', 'type' => 'radio', 'mustselect' => false, 
-                    'optionlist' => $current_uploads),
-                'new-archive' => array('display' => 'Or upload a new archive on server', 'type' => 'file', 'mustselect' => false,
-                    'hint' => '.xml.gz file generated by export process ( limit ' . ini_get('upload_max_filesize') . ')')
-            ),
-            array(
-                'title' => 'Upload archive to server',
-                'buttons' => array(
-                    'Process' => array('type' => 'submit')
-                )
-            )
-        );
-        
-        if (empty($current_uploads))
-        {
-            $f = & $this->get_field('uploaded');
-            $f['type'] = 'custom';
-            $f['value'] = '&nbsp;&nbsp;&nbsp;(No archive was found...)';
-        }
-    }
-    
-    public function on_post()
-    {
-        $newarchive = $this->get_field('new-archive');
-        if (($newarchive == null) || (empty($newarchive['value'])))
-            return;
-        
-        if (substr($newarchive['value']['orig_name'], -7) !== '.xml.gz')
-            $this->invalidate_field('archive', 'The file must be a valid archive ');
-            
-        if (gzdecode($newarchive['value']['data']) === false)
-            $this->invalidate_field('archive', 'The file must be a valid archive ');
-    }
-    
-    public function on_valid($values)
-    {
-        var_dump($values);
-        if ($values['uploaded'])
-        {
-            $this->upload_id = $values['uploaded'];
-        }
-        else if ($values['new-archive'])
-        {
-            $f = Upload::from_file($values['new-archive']['data'], $values['new-archive']['orig_name']);
-            $this->upload_id = $f->id;
-        }
-    }
-}
-
-class CM5_Module_Migration_ImportForm extends Output_HTML_Form
-{
-    public $archive;
-    
-    private function add_page($p, &$current_pages, $depth = 0)
-    {
-        $prefix = str_repeat(" ", $depth * 3) . "|--" . (count($p['children'])?"+ ":"- ");
-        $current_pages[$p["id"]] = $prefix . $p["title"];
-        foreach($p['children'] as $c)
-            $this->add_page($c, $current_pages, $depth + 1);
-    }
-    
-    public function __construct($archive, $upload_id)
-    {
-        $this->upload_id = $upload_id;
-        $this->archive = simplexml_load_string(gzdecode($archive->get_data()));
-        
-        $current_pages = array(0 => '+ Root');        
-        foreach(CM5_Core::get_instance()->get_tree() as $p)
-            $this->add_page($p, $current_pages);
-
-        parent::__construct(
-            array(
-                'root-page' => array('display' => 'Root page to import archive.', 'type' => 'dropbox', 'optionlist' => $current_pages,
-                    'htmlattribs' => array('class' => 'monospace'), 'mustselect' => true),
-                'flush-pages' => array('display' => 'Or full restore database by replacing current content (pages and files).',
-                    'type' => 'checkbox',),
-
-            ),
-            array(
-                'title' => 'Import archive',
-                'buttons' => array(
-                    'Import' => array('type' => 'submit')
-                )
-            )
-        );
-    }
-
-    public function on_valid($values)
-    {
-
-        if ($values['flush-pages'])
-        {
-            Page::raw_query()->delete()->execute();
-
-            foreach($this->archive->xpath('//pages/page') as $p)
-            {
-                $parent_id = ($p['parent_id'] == ''?null:(string)$p['parent_id']);
-
-                $attributes = array();
-                foreach($p->attributes() as $name => $value)
-                    $attributes[$name] = (string)$value;
-                $attributes['created'] = new DateTime('@' . $attributes['created']);
-                $attributes['lastmodified'] = new DateTime('@' . $attributes['lastmodified']);
-                $attributes['parent_id'] = $parent_id;
-                $attributes['body'] = (string)$p;
-
-                $newpage = Page::create($attributes);
-            }
-            
-            if (count($this->archive->xpath('//files')))
-            {
-                foreach(Upload::open_all() as $u)
-                    $u->delete();
-                
-                foreach($this->archive->xpath('//files/file') as $f)
-                {
-                    $u = Upload::from_file(base64_decode((string)$f), (string)$f['filename']);
-                    $u->id = (string)$f['id'];
-                    $u->description = (string)$f['description'];
-                    $u->uploader = (string)$f['uploader'];
-                    $u->save();
-                }
-            }
-        }
-        else
-        {
-            $new_parent = ($values['root-page'] == 0?null:$values['root-page']);
-            $old_to_new_ids = array();
-            
-            foreach($this->archive->xpath('//pages/page') as $p)
-            {
-                if ($p['system'] == "1")
-                    continue;   // Skip system pages in this mode
-                    
-                if ($p['parent_id'] == '')
-                    $parent_id = $new_parent;
-                else
-                {
-                    if (isset($old_to_new_ids[(string)$p['parent_id']]))
-                        $parent_id = $old_to_new_ids[(string)$p['parent_id']];
-                    else
-                    {
-                        var_dump('skipped', $p);
-                        continue;
-                    }
-                }
-                
-                $attributes = array();
-                foreach($p->attributes() as $name => $value)
-                    $attributes[$name] = (string)$value;
-
-                $attributes['created'] = new DateTime('@' . $attributes['created']);
-                $attributes['lastmodified'] = new DateTime('@' . $attributes['lastmodified']);
-                unset($attributes['id']);
-                $attributes['parent_id'] = $parent_id;
-                $attributes['body'] = (string)$p;
-                
-                $newpage = Page::create($attributes);
-                
-                $old_to_new_ids[(string)$p['id']] = $newpage->id;
-            }
-        }
-        
-        etag('div class="message"',
-            'Import was done completed succesfully. You can now ',
-                tag('a', 'delete')->attr('href', (string)UrlFactory::craft('upload.delete', $this->upload_id)),
-            ' uploaded archive if you wish.'
-        );
-        $this->hide();
-
-    }
-}
-
-class CM5_Module_Migration_FixLinks extends Output_HTML_Form
-{
-    public function __construct()
-    {
-        parent::__construct(
-            array(
-                'description' => array('type' => 'custom', 'hint' =>
-	                'Sometimes after migration links pointing to uploads are broken.
-	    			This may happen if you changed domain and you used absolute urls, or
-	    			because of moving site to a new subfolder. This tool will search for this links
-	    			and update them so they point again at the right resources.',
-            		'value' => ''),
-            	'url-base' => array('display' => 'The url base of old links.', 'hint' =>
-            		'This is an optional base to make algorithm more acurate. You usually put the base
-            		of the old site before migration for example http://old-host/here-is-cms or relative
-            		url if you want to fix relative urls /here-is-cms'),
-            'write-changes' => array('display' => 'Write changes to database.', 'type' => 'checkbox',
-            	'hint' => 'By default fix links works in preview mode if you want to actually make this changes
-            		check this box.'),
-            'user-validation' => array('display' => 'Fixing links requires searching and editing each page.
-                	Although the algorithm is sophisticated to increase accuracy there is a possibility that some
-                	changes may be wrong. Before continuing you should backup your site.
-                	Are you sure you want to continue?',
-                    'type' => 'checkbox',),
-            ),
-            array(
-                'title' => 'Fix internal links',
-                'buttons' => array(
-                    'Fix' => array('type' => 'submit')
-                )
-            )
-        );
-    }
-    
-    public function on_post()
-    {
-    	if (!$this->get_field_value('user-validation'))
-    		$this->invalidate_field('user-validation', 'You must read and understand the risk before continuing!');
-    }
-    
-    public function __fix_links_callback($matches)
-    {
-    	$logentry = array('orig-url' => $matches[0],
-    		'orig-fname' => $matches[4]);
-    	
-    	// Base check
-    	if ($this->oldurlbase)
-    	{
-    		$checkbase = substr($matches[3], strlen($matches[3])- strlen($this->oldurlbase));
-    		if ($this->oldurlbase != $checkbase)
-    			return $matches[0];	// No match    		
-    	}
-    	
-    	// Validate file
-		$f = Upload::open_query()->where("filename = ?")->execute($matches[4]);
-		if (!count($f))
-			return $matches[0];	// No change
-		
-		$newurl = $matches[1] . (string)UrlFactory::craft("upload.view", $f[0]);
-		
-		// Check if it is actual different
-		if ($newurl == $matches[0])
-			return $matches[0];
-			
-		$logentry['new-url'] = $newurl;	
-		$this->fixed[] = $logentry;
-		return $newurl;
-    }
-    
-    public function on_valid($values)
-    {    	
-    	$this->fixed = array();
-    	$this->oldurlbase = $values['url-base'];
-    	
-        foreach(Page::open_all() as $p)
-    	{    	   			
-			$changed = preg_replace_callback(
-		        '#(?P<before>[^\w:\-/\.]|^)((?P<base>[\w:\-/\.]+)/file/(?P<fname>[\w\-\.]+))\b#',
-		        array($this, '__fix_links_callback'),
-		        $p->body,
-		        -1,
-		        $count
-		    );
-		    
-		    if ($count && $values['write-changes'])
-		    {
-		    	$p->body = $changed;
-		      	$p->save();
-		    }
-    	}
-    	
-    	etag('h3', count($this->fixed) . ($values['write-changes']?' urls were found and fixed!':' urls were found.'));
-    	$ul = etag('ul');
-    	
-		foreach($this->fixed as $c)
-			$ul->append(tag('li',
-				"{$c['orig-url']} => {$c['new-url']}"
-			));
-		$this->hide();
-    }
-}
 
 class CM5_Module_Migration extends CM5_Module
 {
-    //! The name of the module
-    public function info()
-    {
-        return array(
-            'nickname' => 'migration',
-            'title' => 'Import/Export pages',
-            'description' => 'Add support for importing and exporting pages.'
-        );
-    }
-    
-    //! Initialize module
-    public function init()
-    {
-        $this->declare_action('import', 'Import', 'request_import');
-        $this->declare_action('export', 'Export', 'request_export');
-        $this->declare_action('fixlinks', 'Fix links', 'request_fixlinks');
-    }
-    
-    public function request_import()
-    {
-        if (($fid = Net_HTTP_RequestParam::get('fid')) !== null)
-        {
-            if (($f = Upload::open($fid)) === false)
-                not_found();
-            $frm = new CM5_Module_Migration_ImportForm($f, $fid);
-            etag('div', $frm->render());
-        }
-        else
-        {
-            $frm = new CM5_Module_Migration_UploadForm();
-            etag('div', $frm->render());
-            if ($frm->upload_id !== null)
-            {
-                $url = UrlFactory::craft('module.action', $this->info_property('nickname'), 'import') . '?fid=' . $frm->upload_id;
-                Net_HTTP_Response::redirect($url);
-            }
-        }
-    }
-    
-    
-    public function request_export()
-    {
-        $frm = new CM5_Module_Migration_ExportForm();
-        etag('div', $frm->render());
-    }
-    
-    public function request_fixlinks()
-    {
-    	$frm = new CM5_Module_Migration_FixLinks();
-        etag('div', $frm->render());
-    }
+	//! Initialize module
+	public function onInitialize()
+	{
+		$this->declareAction('import', 'Import', 'request_import');
+		$this->declareAction('export', 'Export', 'request_export');
+		$this->declareAction('fixlinks', 'Fix links', 'request_fixlinks');
+	}
+
+	public function request_import()
+	{
+		if (($fid = Net_HTTP_RequestParam::get('fid')) !== null)
+		{
+			if (($upload = CM5_Model_Upload::open($fid)) === false)
+			throw new Exception404();
+			$frm = new CM5_Module_Migration_ImportForm($upload);
+			if ($frm->process() == Form::RESULT_VALID) {
+				etag('div class="message"',
+		            'Import was done completed succesfully. You can now ',
+				tag('a', 'delete')->attr('href', (string)UrlFactory::craft('upload.delete', $frm->archive_upload->id)),
+		            ' uploaded archive if you wish.'
+		            );
+			}
+			else
+			etag('div', $frm->render());
+		}
+		else
+		{
+			$frm = new CM5_Module_Migration_UploadForm();
+			etag('div', $frm->render());
+			if ($frm->upload_id !== null)
+			{
+				$url = UrlFactory::craft('module.action', $this->getMetaInfoEntry('nickname'), 'import') . '?fid=' . $frm->upload_id;
+				Net_HTTP_Response::redirect($url);
+			}
+		}
+	}
+
+	public function request_export()
+	{
+		$frm = new CM5_Module_Migration_ExportForm();
+		etag('div', $frm->render());
+	}
+
+	public function request_fixlinks()
+	{
+		$frm = new CM5_Module_Migration_FixLinks();
+		etag('div', $frm->render());
+	}
 }
 
-CM5_Module_Migration::register();
+return array(
+	'class' => 'CM5_Module_Migration',
+	'nickname' => 'migration',
+	'title' => 'Import/Export pages',
+	'description' => 'Add support for importing and exporting pages.'
+);

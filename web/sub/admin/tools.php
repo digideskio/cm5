@@ -30,6 +30,7 @@ Stupid::add_rule('pages_tree',
     array('type' => 'url_path', 'chunk[3]' => '/^pages_tree$/')
 );
 Stupid::set_default_action('default_tools');
+Layout::getActive()->deactivate();
 Stupid::chain_reaction();
 
 function tool_translit()
@@ -62,7 +63,7 @@ function pages_ext_tree_loader($tree)
 function pages_tree()
 {
 	header('Content-type: text/plain; charset=UTF-8');
-	$tree = CM5_Core::get_instance()->get_tree();
+	$tree = CM5_Core::getInstance()->getTree();
 	$tree = pages_ext_tree_loader($tree);
 	echo json_encode($tree);
 }

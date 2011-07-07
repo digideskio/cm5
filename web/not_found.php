@@ -20,18 +20,16 @@
  */
 
 
-if ($dl = Layout::open('default'))
-    $dl->activate();
-else
-    $dl = Layout::open('failover')->activate();
-
-$dl->get_document()->title = 'Not Found: ' . $_SERVER['REQUEST_URI'];
+CM5_Layout_FailOver::getInstance()->getDocument()->title = 'Not Found: ' . $_SERVER['REQUEST_URI'];
 
 header("HTTP/1.1 404 Not Found");
 
+if (Layout::getActive() == null)
+	CM5_Core::getInstance()->getSelectedTheme()->getLayout()->activateSlot();
+
 etag('div class="not-found"',
-tag('h1 class="error"', "Not Found: \"{$_SERVER['REQUEST_URI']}\" "),
-tag('p', 'Sorry we were unable to find any information about this url. ')
+	tag('h1 class="error"', "Not Found: \"{$_SERVER['REQUEST_URI']}\" "),
+	tag('p', 'Sorry we were unable to find any information about this url. ')
 );
-exit;
-?>
+
+Layout::getActive()->flush();

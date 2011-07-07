@@ -55,13 +55,12 @@ class DB_Record
 		if (($md = DB_Model::open($model_name)) !== NULL)
 			return $md;
 
-		$fields = get_static_var($model_name, 'fields');
-		$table = (property_exists($model_name, 'table')?get_static_var($model_name, 'table'):
-		    call_user_func(array($model_name,'get_table')));
-		$rels = (isset_static_var($model_name, 'relationships')
-			?get_static_var($model_name, 'relationships')
-			:array()
-		);
+		$fields = $model_name::$fields;
+		$table = property_exists($model_name, 'table')?$model_name::$table
+			:$model_name::get_table();
+		$rels = isset($model_name::$relationships)
+			?$model_name::$relationships
+			:array();
 		if (isset(self::$dynamic_relationships[$model_name]))
 		    $rels = array_merge($rels, self::$dynamic_relationships[$model_name]);
 					
@@ -718,5 +717,9 @@ class DB_Record
 	{	// Initialize static
 		$this->model = self::init_model(get_class($this));
 	}
+	
+	public function to_array()
+	{
+		return $this->fields_data;
+	}
 }
-?>

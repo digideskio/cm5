@@ -40,9 +40,10 @@ class Event
 
     //! Construct event object
     public function __construct($name, $type, $arguments = array())
-    {   $this->name = $name;
-    $this->arguments = $arguments;
-    $this->type = $type;
+    {
+    	$this->name = $name;
+	    $this->arguments = $arguments;
+	    $this->type = $type;
     }
 }
 
@@ -104,7 +105,7 @@ class Event
 class EventDispatcher
 {
     //! An array with all events and their listeners.
-    private $event_listeners = array();
+    private $event_listeners;
 
     //! An array with global listeners
     private $global_listeners = array();
@@ -115,8 +116,7 @@ class EventDispatcher
      */
     public function __construct($event_names = array())
     {   
-        foreach($event_names as $e)
-            self::declare_event($e);
+    	$this->event_listeners = array_fill_keys($event_names, array());
     }
     
     //! Declare an event on this dispatcher
@@ -200,7 +200,8 @@ class EventDispatcher
     {   
         // Check if it wants to connect to global listeners
         if ($event_name === NULL)
-        {   if (array_search($callable, $this->global_listeners, true) === false)
+        {
+        	if (array_search($callable, $this->global_listeners, true) === false)
             {   
                 $this->global_listeners[] = $callable;
                 return true;

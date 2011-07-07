@@ -114,8 +114,8 @@ class Output_HTMLDoc
 
     public function __construct()
     {
-        $this->body = new Output_HTMLTag('body');
-        $this->head = new Output_HTMLTag('head');
+        $this->body = new Output_HTMLTag(array('body'));
+        $this->head = new Output_HTMLTag(array('head'));
     }
 
     //! Get body Output_HTMLTag
@@ -212,7 +212,7 @@ class Output_HTMLDoc
     	    	' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' .
         		'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" >';
 	    else
-	        $r = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html>';
+	        $r = '<!DOCTYPE html><html lang="en">';
         
         // HEAD
         $this->head->append(tag('title', $this->title));
@@ -233,5 +233,3 @@ class Output_HTMLDoc
         return $r;
     }
 };
-
-?>

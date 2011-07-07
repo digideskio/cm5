@@ -34,12 +34,15 @@ h1{
     margin: 0px;
     background-color: #000000;
     font-family: "Courier New";
+    background: #000000 url('images/gear.png') no-repeat 10px top;
+    padding-left: 150px;
 }
 
 h1 span{
     display: inline;
     font-size: 0.5em;
     color: gray;
+    margin-left: 5px;
 }
 a {
 	text-decoration: none;
@@ -52,17 +55,16 @@ a:hover {
 }
 
 #main-menu{
-    background-color: #d20000;
     border-bottom: 1px solid #454545;
 }
 
 #wrapper{
-    background-color: #757575;
+    background-color: #6D695C;
 }
 
 #content{
     min-height: 550px;
-    padding: 1px 5px;
+    padding: 10px 10px;
 }
 
 #login-info{
@@ -84,13 +86,19 @@ a:hover {
 #footer{
     clear: both;
     text-align: left;
-    border-top: 1px solid #454545;
-    background-color: #d20000;
+    border-top: 1px solid #454545;   
     padding: 2px 10px;
     color: #b2b2b2;
     font-size: 0.8em;
 }
 
+#main-menu, #footer {
+	background-color: #7B9348;
+	background-image: -moz-linear-gradient(center top , #829C29, #65713B);
+	background-image: -webkit-linear-gradient(#829C29, #65713B);
+	background-image: -o-linear-gradient(#829C29, #65713B);
+	background-image: linear-gradient(#829C29, #65713B);
+}
 #footer ul{
     list-style-type: none;
     padding: 0px;
@@ -115,25 +123,26 @@ a:hover {
     height: auto;
 }
 
-#page_editor dt.type-dropbox{
+#page_editor li[data-name=status]{
     display: block;
     position: absolute;
     top: 25px;
     right: 90px;
+    margin: 0px;
 }
 
-#page_editor dt a.view{
+#page_editor li a.view{
     position: absolute;
     top: 25px;
     right: 25px;
 }
 
 
-#page_editor dt.type-dropbox label{
+#page_editor li[data-name=status] label > span{
     display: none;
 }
 
-#page_editor dt{
+#page_editor li{
     margin-bottom: 10px;
 }
 
@@ -144,7 +153,7 @@ a:hover {
     border: 1px solid #a2a2a2;
 }
 
-#page_editor label{
+#page_editor label > span{
     font-size: 0.8em;
     color: #b2b2b2;
 }
@@ -154,23 +163,24 @@ a:hover {
     margin: 2px;
     cursor: pointer;
     font-weight: bold;
-    background-color: gray;
+    background-color: #9AA287;
     padding: 2px 6px;
     background-position: 5px center;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
     display: inline-block;
+    color: #3A3434;
 }
 
 .button:hover{
     color: #f2f222;
-    background-color: #454545;
+    background-color: #171717;
 }
 
 .button.pressed{
     color: #f2a122;
-    background-color: #454545;
+    background-color: #292828;
 }
 
 .button:active{
@@ -182,22 +192,26 @@ a:hover {
 .menu
 {
     margin: 0px 15px;
-    padding: 2px;
-	font: 12pt Monospace, "Courrier New";
+    padding: 0px;	
 }
 
 .menu li{
-    display: inline;
+    display: inline-block;
     margin: 0px 5px;
     padding: 0px;
 
 }
 .menu li a{
-    padding: 5px;
+	display: block;
+    padding: 3px 5px;
+    font: 9pt Verdana;
+    font-weight: bold;
+    color: #e5e5e5;
 }
 
 .menu li.selected a{
-	color: #eaea22;
+	color: white;
+	background-color: black;
 }
 
 /* 2nd lvl menus */
@@ -216,17 +230,19 @@ a:hover {
 
 /* submenu */
 .submenu{
-    margin: 0px;
-    padding: 4px 0px;
+    margin: -10px -10px 20px -10px;
+    padding: 2px 0px;
     border-bottom: 1px solid #656565;
-    background-color: #EAEA22;
+    background-color: #C4C200;
     font-size: 0.8em;
     color: #232323;
 }
 
-.submenu a{
+.submenu li a{
     color: #232323;
     border: 1px solid transparent;
+    font-size: 0.9em;
+    padding: 2px 5px;
 }
 
 .submenu li.selected a{
@@ -242,8 +258,7 @@ a:hover {
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
-
-    color: #EAEA22;
+    color: #d1d1d1;
 }
 
 /** Pages tree **/
@@ -251,15 +266,10 @@ a:hover {
 {
     float: left;
     width: 20%;
-    font-size: 8pt;
-    background-color: #656565;
+    font-size: 8pt;    
     padding: 10px;
     margin: 5px 0px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid #898989;
-    position: relative;
+    position: relative;   
 }
 
 #pages_tree .resort{
@@ -344,19 +354,14 @@ a:hover {
     height: 5px;
 }
 
-/** ui-form **/
-.ui-form{
+/** .form **/
+.form{
     margin: 5px auto;
-    width: 500px;
-    background-color: #656565;
-    padding: 15px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid #898989;
+    width: 500px;    
+    padding: 15px;    
 }
 
-.ui-form .title{
+.form .title{
     display: block;
     font-size: 1.2em;
     font-weight: bold;
@@ -365,21 +370,28 @@ a:hover {
     margin-bottom: 5px;
 }
 
-.ui-form label{
+.form label > span{
     display: block;
     margin: 5px 0px 2px 0px;
     font-size: 0.9em;
 }
 
-.ui-form dt.type-radio{
-    margin-bottom: 10px;
+.form ul.fields {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
 }
 
-.ui-form dt.type-radio span{
-    display: block;
+.form li{
+    margin: 3px 0px 3px 0px;
 }
 
-.ui-form input[type=text], .ui-form input[type=password], .ui-form textarea{
+.form li input[type=radio], .form li input[type=checkbox]{
+    vertical-align: middle;
+    margin: 3px 7px 4px 5px;
+}
+
+.form input[type=text], .form input[type=password], .form textarea, .form input[type=color], .form input[type=email], .form input[type=url]{
     border: 1px solid black;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -387,137 +399,156 @@ a:hover {
     padding: 2px;
     width: 98%;
     background-color: #dedede;
+    resize: vertical;
 }
 
-.ui-form input[type=text]{
+.form input[type=color] {
+	width: 5em;
+}
+.form input[type=text]{
     height: 16px;
 }
 
-.ui-form input[type=text]:focus, .ui-form textarea{
+.form input[type=text]:focus, .form textarea:focus, .form input[type=email]:focus, .form input[type=url]:focus{
     background-color: white;
     border: 1px solid #d20000;
 }
 
-.ui-form input.color{
+.form input.color{
     width: 6em;
 }
 
-.ui-form .buttons{
+.form fieldset {
+	border: 1px solid #626262;
+	margin: 10px auto;
+}
+
+.form .buttons{
     text-align: right;
     margin-top: 8px;
 }
 
-.ui-form .buttons input{
+.form .buttons input{
     margin-left: 15px;
 }
 
-.ui-form-hint, .ui-form-error{
+.form .hint, .form .error{
     display: block;
-    color: #b3b3b3;
+    color: #929292;
     font-size: 9pt;
 }
 
-.ui-form-error{
-    color: #ff4545;
+.form .error{
+    color: #ff7745;
     font-weight: bold;
 }
 
-.ui-form-checklist{
+.form-checklist{
     list-style-type: none;
     margin: 0px;
     padding: 0px;
 }
 
-.ui-form-checklist input{
+.form-checklist input{
     margin-right: 8px;
 }
 
-.ui-page-form {
+.form.page-editor {
     width: auto;
 }
 
-.ui-page-form input[type=submit]{
+input[type=submit], input[type=button]{
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	-moz-box-shadow: 0px 0px 2px #343434;
 	box-shadow: 1px 1px 2px #343434;
 	-webkit-box-shadow: 1px 1px 2px #343434;
-	padding: 2px 20px;
+	padding: 2px 10px;
 	font: 11pt "Trebuchet MS";
 	border: 1px solid #9a9a9a;	
-	text-shadow: 1px 1px 2px #323232;
+	text-shadow: #323232 1px 1px 2px ;
 	cursor: pointer;
 	margin-right: 5px; 
 }
 
-.ui-page-form input[type=submit], .ui-page-form input[type=submit][disabled]{
-	background: -webkit-gradient(
-	    linear,
-	    left bottom,
-	    left top,
-	    color-stop(0.79, rgb(128,128,128)),
-	    color-stop(1, rgb(207,207,207))
-	);
-	background: -moz-linear-gradient(
-	    center bottom,
-	    rgb(128,128,128) 79%,
-	    rgb(207,207,207) 100%
-	);
+input[type=submit], input[type=submit][disabled], input[type=button], input[type=button][disabled]{
+	background-color: #B6BB9B;	
+	background-image: -webkit-linear-gradient(bottom, #7E7E76 9%, #B6BB9B 100%);
+	background-image: -moz-linear-gradient(bottom, #7E7E76 9%, #B6BB9B 100%);
+	background-image: -o-linear-gradient(bottom, #7E7E76 9%, #B6BB9B 100%);
+	background-image: linear-gradient(bottom, #7E7E76 9%, #B6BB9B 100%);
 	color: #d3d3d3;
 }
+input[type=submit]{
+	background-color: #516229;
+	background: -webkit-linear-gradient(bottom, #516229 9%, #88B133);
+	background: -moz-linear-gradient(bottom, #516229 9%, #88B133);
+	background: -o-linear-gradient(bottom, #516229 9%, #88B133);
+	background: linear-gradient(bottom, #516229 9%, #88B133);	
+	color: #d3d3d3;
+	padding: 2px 20px;
+}
 
-.ui-page-form input[type=submit][disabled]{
+input[type=submit][disabled], input[type=button][disabled]{
 	color: #878787;	
 	text-shadow: none;
 }
 
-.ui-page-form input[type=submit]:hover{
-	border-color: #666666;
+input[type=button]:hover {
+	background-image: -webkit-linear-gradient(top, #7E7E76 9%, #B6BB9B 100%);
+	background-image: -moz-linear-gradient(top, #7E7E76 9%, #B6BB9B 100%);
+	background-image: -o-linear-gradient(top, #7E7E76 9%, #B6BB9B 100%);
+	background-image: linear-gradient(top, #7E7E76 9%, #B6BB9B 100%);
+	color: #d3d3d3;
+}
+
+input[type=submit]:hover{
+	background: -webkit-linear-gradient(top, #516229 9%, #88B133);
+	background: -moz-linear-gradient(top, #516229 9%, #88B133);
+	background: -o-linear-gradient(top, #516229 9%, #88B133);
+	background: linear-gradient(top, #516229 9%, #88B133);	
 	color: white;
-	text-shadow: 1px 1px 2px #222222;
-	
 }
 	
 .loading input[type=submit]{
 	background: rgb(186, 186, 186) url('images/loading-small.gif') no-repeat 2px center !important;
 }
 
-.ui-form .button.suggest{
+.form .button.suggest{
     height: 14px;
 }
 
-.ui-form.ui-login{
+.form.login{
     width: 300px;
-    margin-top: 110px;
+    margin-top: 256px;
 }
 
-.ui-form.ui-login input[type=text], .ui-form.ui-login input[type=password]{
+.form.login input[type=text], .form.login input[type=password]{
     font-size: 1.5em;
     height: auto;
 }
 
-.ui-form-upload-edit .filename{
+.form.upload-edit .filename{
     font-size: 1.2em;
     font-weight: bold;
 }
 
-.ui-form-upload-edit .size{
+.form.upload-edit .size{
     margin-left: 1em;
 }
 
-.ui-form-moduleconfig{
+.form-moduleconfig{
     width: 800px ;
+}
+
+.form.confirm {
+	margin-top: 40px;
 }
 /** ui-grid **/
 .ui-grid{
-    margin: 5px auto;
-    background-color: #656565;
-    padding: 15px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid #898989;
+    margin: 5px auto;    
+    padding: 15px;    
 }
 
 .ui-grid table{
@@ -534,12 +565,13 @@ a:hover {
 
 .ui-grid thead{
     color: white;
-    background-color: #454545;
+    background-color: #332B24;
 }
 
 .ui-grid thead th{
+	border-bottom: 3px solid #912828;
     border-right: 1px solid #9a9a9a;
-    padding: 3px 15px;
+    padding: 3px 8px;
     text-align: left;
 }
 
@@ -548,17 +580,16 @@ a:hover {
 }
 
 .ui-grid table.ui-grid-list tbody{
-    background-color: #696969;
+    background-color: #65635D;
     font-size: 9pt;
 }
 
 .ui-grid table.ui-grid-list tbody tr.ui-even{
-    background-color: #757575;
+    background-color: #6C6961;
 }
 
 .ui-grid table.ui-grid-list tbody tr:hover{
-    background-color: #858585;
-    color: #343434;
+    background-color: #5F5441;
 }
 
 .ui-grid table.ui-grid-list tbody tr td{
@@ -601,7 +632,7 @@ a:hover {
 
 .ui-grid ul.info li{
     margin: 0px;
-    padding: 3px 3px;
+    padding: 1px 3px;
     color: #b3b3b3;
 }
 
@@ -627,12 +658,26 @@ a:hover {
 }
 
 .ui-grid-uploads .url{
-    background-color: #858585;
+    background-color: #A0A0A0;
     border: 1px solid #565656;
     padding: 2px 5px;
     margin: 3px auto;
     display: inline-block;
 }
+
+/** Users grid **/
+.ui-grid.users tbody tr td:FIRST-CHILD{
+	color: #9AD001;
+}
+.ui-grid.users .disabled{
+	color: #9C9A9A;
+	font-style: italic; 
+}
+
+.ui-grid.users tbody tr.disabled td:FIRST-CHILD{
+	color: inherit;
+}
+
 
 /** Log grid **/
 .ui-grid-log .priority{
@@ -640,7 +685,7 @@ a:hover {
 }
 
 .ui-grid-log .priority.notice{
-    background-color: #7c7634 !important;
+    background-color: #928D4B !important;
     color: white !important;
 }
 
@@ -650,7 +695,7 @@ a:hover {
 }
 
 .ui-grid-log .priority.err, .ui-grid-log .priority.crit, .ui-grid-log .priority.alert, .ui-grid-log .priority.emerg{
-    background-color: #f51919 !important;
+    background-color: #B71313 !important;
     color: white !important;
 }
 
@@ -691,17 +736,26 @@ a:hover {
 }
 
 .light-on {
-    background-image: url('images/led-green.gif');
+    background-image: url('images/led-large-green.png');
     background-repeat: no-repeat;
     background-position: left center;
     padding-left: 16px;
 }
 
 .light-off {
-    background-image: url('images/led-gray.gif');
+    background-image: url('images/led-large-red.png');
     background-repeat: no-repeat;
     background-position: left center;
     padding-left: 16px;
+}
+
+/** buttons **/
+.button.strong {
+	background-color: #454545;
+	color: #D3D3D3;
+}
+.button.strong:hover {
+	background-color: black;
 }
 
 .button.add, .button.delete, .button.edit, .button.download, .button.light-on, .button.light-off{
@@ -743,7 +797,7 @@ a:hover {
 }
 
 /** Uploads panel **/
-.panel.uploads{
+.panel.uploads, .panel.users{
     padding: 5px 5px;
 }
 /** Log filters **/
@@ -769,4 +823,15 @@ a:hover {
     position: absolute;
     right: 10px;
     top: 5px;
+}
+
+
+/** Boxes **/
+.form , .ui-grid, #pages_tree{
+	background-color: #48463E;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #898989;
+    box-shadow: 0px 0px 8px #454545;
 }

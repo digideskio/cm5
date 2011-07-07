@@ -38,7 +38,7 @@ function surl($relative)
 function transliterate($str, $delimiter = '-')
 {   
     static $transliteration_maps = array();
-    require_once dirname(__FILE__) . '/transliterations/greek.inc.php';
+    require_once __DIR__ . '/transliterations/greek.inc.php';
     
     // Do replaces
     foreach($transliteration_maps as $map)
@@ -58,4 +58,3 @@ function transliterate($str, $delimiter = '-')
 
 	echo $clean;
 }
-?>

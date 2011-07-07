@@ -21,21 +21,23 @@
 
 
 //! Create a new tag
+/**
+ * @return Output_HTMLTag
+ * Enter description here ...
+ */
 function tag()
 {	
-    $args = func_get_args();
-    return call_user_func_array(
-        array(new ReflectionClass('Output_HTMLTag'), 'newInstance'),
-        $args
-    );
+    return new Output_HTMLTag(func_get_args());    
 }
 
 //! Create a tag and echo it
+/**
+ * * @return Output_HTMLTag
+ * Enter description here ...
+ */
 function etag()
 {	
-    $args = func_get_args();
-    $tag = call_user_func_array('tag', $args);
-    ob_clean();
+    $tag = new Output_HTMLTag(func_get_args());
     if (!$tag->append_to_default_parent())
         echo $tag;
     return $tag;
@@ -74,6 +76,10 @@ function html_human_fsize($size, $postfix = 'ytes')
     return ceil($size/1073741824) . ' GB' . $postfix;
 }
 
+/**
+ * @param DateTime $dt
+ * @return Output_DateFormat
+ */
 function date_exformat($dt)
 {
     return new Output_DateFormat($dt);
@@ -83,6 +89,15 @@ function date_exformat($dt)
 function esc_html($text)
 {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
+
+function etag_var_dump()
+{
+	$args = func_get_args();
+	ob_start();
+	call_user_func_array('var_dump', $args);
+	$data = ob_get_clean();
+	etag('pre', $data);
 }
 
 //! Escape white space
@@ -135,4 +150,40 @@ function html_linkify_urls($text, $replace_text = '<a href="${0}" target="_blank
     return preg_replace('/((?:http|ftp):\/\/[^\s\<\>]*)/im', $replace_text, $text);
 }
 
-?>
+/**
+ * Encode rfc2231
+ * @link http://stackoverflow.com/questions/4968272/how-can-i-encode-a-filename-in-php-according-to-rfc-2231
+ */ 
+function rfc2231_encode($name, $value, $charset='', $lang='', $ll=78) {
+    if (strlen($name) === 0 || preg_match('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', $name)) {
+        // invalid parameter name;
+        return false;
+    }
+    /*
+     * doesn't work for utf-8
+     * if (strlen($charset) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $charset)) {
+        // invalid charset;
+        return false;
+    }*/
+    if (strlen($lang) !== 0 && !preg_match('/^[A-Za-z]{1,8}(?:-[A-Za-z]{1,8})*$/', $lang)) {
+        // invalid language;
+        return false;
+    }
+    $value = "$charset'$lang'".preg_replace_callback('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', function($match) { return rawurlencode($match[0]); }, $value);
+    $nlen = strlen($name);
+    $vlen = strlen($value);
+    if (strlen($name) + $vlen > $ll-3) {
+        $sections = array();
+        $section = 0;
+        for ($i=0, $j=0; $i<$vlen; $i+=$j) {
+            $j = $ll - $nlen - strlen($section) - 4;
+            $sections[$section++] = substr($value, $i, $j);
+        }
+        for ($i=0, $n=$section; $i<$n; $i++) {
+            $sections[$i] = " $name*$i*=".$sections[$i];
+        }
+        return implode(";\r\n", $sections);
+    } else {
+        return " $name*=$value";
+    }
+}

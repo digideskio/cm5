@@ -258,36 +258,39 @@ ul.code li.info {
 	background-color: #652323;
 }
 
-/* ui-form ui-installation */
-div.ui-form.ui-installation{
+/* form installation */
+.form.installation {
 	width: 500px;
 }
 
-div.ui-form.ui-installation h4{
-	margin-top: 30px;
-	margin-bottom: 10px;
-	padding-bottom: 5px;
-	border-bottom: 1px solid gray;
+.form.installation h4{
+	padding: 0px 5px;
 }
-div.ui-form.ui-installation input[type=text], div.ui-form.ui-installation input[type=password]{
+.form.installation input[type=text], .form.installation input[type=password]{
 	width: 99%;
 }
 
-div.ui-form.ui-installation label{
+.form.installation label{
 	font-weight: bold;
 }
 
-div.ui-form.ui-installation dt{
+.form.installation ul.fields {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+
+.form.installation li{
     margin-bottom: 15px;
 }
 
-.ui-form-hint {
+.form .hint {
     display: block;
     color: gray;
     font-style: italic;
 }
 
-.ui-form-error {
+.form .error {
     display: block;
     font-weight: bold;
     color: red;

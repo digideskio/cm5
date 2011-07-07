@@ -21,8 +21,8 @@
  *      Sque - initial API and implementation
  */
 
-require_once dirname(__FILE__) . '/lib/vendor/phplibs/ClassLoader.class.php';
-require_once dirname(__FILE__) . '/lib/tools.lib.php';
+require_once __DIR__ . '/lib/vendor/phplibs/ClassLoader.class.php';
+require_once __DIR__ . '/lib/tools.lib.php';
 
 
 
@@ -37,39 +37,44 @@ require_once dirname(__FILE__) . '/lib/tools.lib.php';
 // Autoloader for local and phplibs classes
 $phplibs_loader = new ClassLoader(
     array(
-    dirname(__FILE__) . '/lib/vendor/phplibs',
-    dirname(__FILE__) . '/lib/local'
+    __DIR__ . '/lib/vendor/phplibs',
+    __DIR__ . '/lib/vendor',
+    __DIR__ . '/lib/local'
 ));
 $phplibs_loader->set_file_extension('.class.php');
 $phplibs_loader->register();
 
 // Zend
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/lib/vendor');
-$zend_loader = new ClassLoader(array(dirname(__FILE__) . '/lib/vendor'));
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/lib/vendor');
+$zend_loader = new ClassLoader(array(__DIR__ . '/lib/vendor'));
 $zend_loader->register();
 
 // Load static library for HTML
-require_once dirname(__FILE__) . '/lib/vendor/phplibs/Output/html.lib.php';
+require_once __DIR__ . '/lib/vendor/phplibs/Output/html.lib.php';
 
 // Load urls library
-require_once dirname(__FILE__) . '/lib/urls.lib.php';
+require_once __DIR__ . '/lib/urls.lib.php';
+
+// Preload enviroment
+require_once __DIR__ . '/lib/vendor/phplibs/DB/Conn.class.php';
+require_once __DIR__ . '/lib/vendor/CM5/Core.class.php';
 
 // Load configuration file
-GConfig::$default_config = array(
+CM5_Config::$default_config = array(
     'module' => array(),
     'enabled_modules' => '',
 );
-GConfig::$config_file = dirname(__FILE__) . '/config.inc.php';
-GConfig::load_config();
-$config = GConfig::get_instance();
+CM5_Config::$config_file = __DIR__ . '/config.inc.php';
+CM5_Config::load();
+$config = CM5_Config::getInstance();
 
 // Database connection
 DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema, true);
 DB_Conn::query('SET NAMES utf8;');
 DB_Conn::query("SET time_zone='+0:00';");
 DB_Conn::events()->connect('error',
-    create_function('$e', ' error_log( $e->arguments["message"]); 
-    CM5_Logger::get_instance()->crit($e->arguments["message"]);'));
+    function($e){ error_log( $e->arguments["message"]); 
+    CM5_Logger::getInstance()->crit($e->arguments["message"]); });
 //DB_Conn::events()->connect('stmt.executed',
 //    create_function('$e', ' error_log( $e->arguments[0]); '));
 
@@ -78,6 +83,4 @@ date_default_timezone_set($config->site->timezone);
 
 // Initialize CMS
 $cache_engine = new Cache_File($config->site->cache_folder, 'pages_');
-CM5_Core::init($cache_engine);
-
-?>
+CM5_Core::initialize($cache_engine);

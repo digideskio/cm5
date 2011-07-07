@@ -28,4 +28,5 @@ CKEDITOR.editorConfig = function( config )
     ];
     config.scayt_autoStartup = false;
     config.startupOutlineBlocks = true;
+    config.entities_greek = false;
 };

@@ -24,7 +24,7 @@
 
 
 /**
- * Folders and files that must be upgrades
+ * Folders and files that must be upgraded
  * @var array
  */
 $for_upgrade = array(
@@ -146,6 +146,26 @@ function smartCopy($source, $dest, $options=array('folderPermission'=>0755,'file
 }
 
 /**
+ * Recursive delete of directory
+ * @param unknown_type $dir
+ */
+function rrmdir($dir) 
+{
+	if (is_dir($dir)) {
+		$objects = scandir($dir);
+		foreach ($objects as $object) {
+			if ($object != "." && $object != "..") {
+				if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+			}
+		}
+	reset($objects);
+	rmdir($dir);
+	} else {
+		unlink($dir);
+	}
+} 
+
+/**
  * Check if a folder is a CM5 package/installation
  * @param string $basedir The path to folder that must be checked.
  * @return boolean True if it was or false if not.
@@ -185,7 +205,10 @@ function is_cm5_directory($basedir)
  */
 function get_cm5_version($basedir)
 {
-	$core_file = $basedir . "/lib/local/CM5/Core.class.php";
+	if (is_file($basedir . "/lib/vendor/CM5/Core.class.php"))
+		$core_file = $basedir . "/lib/vendor/CM5/Core.class.php";	// Post 0.11
+	else
+		$core_file = $basedir . "/lib/local/CM5/Core.class.php";	// Pre 0.11 
 	
 	$res = preg_match('#\$version[\s]*=[\s]*array\(([\s]*([\d]+)[\s]*,[\s]*)([\s]*([\d]+)[\s]*,[\s]*)([\s]*([\d]+)[\s]*[\s]*)[\s]*\)#', file_get_contents($core_file), $matches);
 	if (!count($res))
@@ -269,7 +292,7 @@ $simulated = isset($options['go'])?false:true;
  * The name of this file
  * @var string
  */
-$executable = basename($_SERVER['argv']);
+$executable = basename($_SERVER['argv'][0]);
 
 /**
  * Target CM5 installation folder
@@ -283,7 +306,7 @@ if (! is_cm5_directory($target))
  * Target CM5 installation version
  * @var array
  */
-$target_version = get_cm5_version($target);
+$targetVersion = get_cm5_version($target);
 
 /**
  * Source CM5 package folder
@@ -304,15 +327,15 @@ if ($target == $source )
 	die("You cannot upgrade the source. Source and target must be different.\n");
 
 // Compare target source version
-if (compare_version($target_version, $source_version) >= 0 )
+if (compare_version($targetVersion, $source_version) >= 0 )
 	die("You can only upgrade to a newer version.\n");
 
 /*--- DATA IS OK, LETS WORK -- */
 	
 // Output Header 
 echo "\nCM5 \033[31;1m↑\033[0mupgrade\033[31;1m↑\033[0m " . ($simulated?'(simulated)':'') . "\n";
-echo "Version: [" . version_to_str($target_version) . "] => [" . version_to_str($source_version) . "] ";
-if (is_upgrade_supported($target_version, $source_version)) {
+echo "Version: [" . version_to_str($targetVersion) . "] => [" . version_to_str($source_version) . "] ";
+if (is_upgrade_supported($targetVersion, $source_version)) {
 	echo "\033[32;1msupported\033[0m.\n";
 } else {
 	echo "\033[31;1mNOT SUPPORTED\033[0m.\n";
@@ -353,6 +376,7 @@ foreach($for_upgrade as $upgradable) {
 	if ($simulated) {
 		echo "\033[32;1msimulated\033[0m\n";
 	} else {
+		rrmdir($t_upgradable);	// Delete before writting over
 		if (! ($res = smartCopy($s_upgradable, $t_upgradable))) {
 			echo "\033[31;1merror\033[0m\n";
 			$errors = true;

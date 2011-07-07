@@ -20,7 +20,7 @@
  */
 
 
-class UI_InstallationForm extends Output_HTML_Form
+class UI_InstallationForm extends Form_Html
 {
     public $config_file;
 
@@ -35,66 +35,64 @@ class UI_InstallationForm extends Output_HTML_Form
         $zone_identifiers = DateTimeZone::listIdentifiers();
         foreach($zone_identifiers as $zone)
             $this->tzones[$zone] = $zone;
-        parent::__construct(array(
-            'site-title' => array('display' => 'Title', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-            'db' => array('type' => 'custom', 'value' => '<h4>Database Options</h4>'),
-			'db-host' => array('display' => 'Host', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-            'db-schema' => array('display' => 'Database', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-			'db-user' => array('display' => 'Username', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-			'db-pass' => array('display' => 'Password', 'type' => 'password', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-			'db-pass2' => array('display' => '', 'type' => 'password', 'regcheck' => '/^.+$/',
-				'onerror' => 'This field is mandatory.'),
-            'db-prefix' => array('display' => 'Tables prefix', 
-				'hint' => 'You can set this to a custom string to avoid naming collision.'),
-			'db-build' => array('display' => 'Execute database creation script', 'type' => 'checkbox'),
-            'hr-other' => array('type' => 'custom', 'value' => '<h4>Other Options</h4>'),
-            'timezone' => array('display' => 'Default timezone', 'type' => 'dropbox',
-                'optionlist' => $this->tzones,
-                'onerror' => 'Select a valid time zone'),
-            ),
-        array('title' => '', 'css' => array('ui-form', 'ui-installation'),
+        parent::__construct(null, array(
+        	'title' => 'Setup new CM5 installation.', 'attribs' => array('class' => 'form installation'),
 		    'buttons' => array(
-		        'Save' => array('display' =>'Install'),
+		        'Save' => array('label' =>'Install'),
                 )
             )
         );
+        
+        $this->addMany(
+	        field_text('site-title', array('label' => 'Title of site', 'required' => true)),
+	        field_set('db', array('label' => 'Database Options'))
+	        ->addMany(
+	        	field_text('host', array('label' => 'Server host', 'required' => true)),
+	        	field_text('schema', array('label' => 'Database', 'required' => true)),
+	        	field_text('user', array('label' => 'Username', 'required' => true)),
+	        	field_password('pass', array('label' => 'Password', 'required' => true)),
+	        	field_text('prefix', array('label' => 'Tables prefix',
+	        		'hint' => 'You can set this to a custom string to avoid naming collision.')),
+	        	field_checkbox('build', array('label' => 'Execute database creation script',
+	        		'hint' => 'By checking this, database will be rebuilt.'))
+			),
+			field_select('timezone', array('label' => 'Default timezone', 'optionlist' => $this->tzones))
+		);	
     }
 
-    public function on_post()
-    {   $values = $this->field_values();
+    public function onProcessPost()
+    {   
+    	$values = $this->getValues();
     
-        if ($this->get_field_value('db-pass') != $this->get_field_value('db-pass2'))
-        {
-            $this->invalidate_field('db-pass2', 'The two password are not the same');
-        }
-        if ($this->is_valid())
+        if ($this->isValid())
         {
             // Try to connect
-            if (!DB_Conn::connect($values['db-host'], $values['db-user'], $values['db-pass'], $values['db-schema']))
-                $this->invalidate_field('db-host', 'Error connecting on database.');
+            if (!@DB_Conn::connect($values['db']['host'], $values['db']['user'], $values['db']['pass'], $values['db']['schema']))
+                $this->get('db')->get('host')->invalidate('Error connecting on database.');
         }
     }
     
-    public function on_valid($values)
+    public function onProcessValid()
     {
+    	$values = $this->getValues();
         $config = new Zend_Config(array(
             'db' => array(),
             'site' => array(),
             'module' => array(),
-            'email' => array()
+            'email' => array(
+        		'transport' => array(
+        			'protocol' => 'sendmail',
+        			'host' => '',
+        			'port' => '',
+        			'ssl' => '',
+        			'auth' => '',
+        			'username' => '',
+        			'password' => ''
+        		))
         ), true);
-        $config->db->host = $values['db-host'];
-        $config->db->user = $values['db-user'];
-        $config->db->pass = $values['db-pass'];
-        $config->db->schema = $values['db-schema'];
-        $config->db->prefix = $values['db-prefix'];
-        $config->site->upload_folder = realpath(dirname(__FILE__) . '/../../../uploads');
-        $config->site->cache_folder = realpath(dirname(__FILE__) . '/../../../cache');
+        $config->db = $values['db'];
+        $config->site->upload_folder = realpath(__DIR__ . '/../../../uploads');
+        $config->site->cache_folder = realpath(__DIR__ . '/../../../cache');
         $config->site->theme = 'default';
         $config->site->title = $values['site-title'];
         
@@ -110,15 +108,15 @@ class UI_InstallationForm extends Output_HTML_Form
         // Reset database
         DB_Conn::connect($config->db->host, $config->db->user, $config->db->pass, $config->db->schema);
 
-        if ($values['db-build'])
+        if ($values['db']['build'])
         {
             $dbprefix = $config->db->prefix;
-            if (DB_Conn::get_link()->multi_query(require($this->db_build_file)))
-                while (DB_Conn::get_link()->next_result());
+            if (DB_Conn::getLink()->multi_query(require($this->db_build_file)))
+                while (DB_Conn::getLink()->next_result());
             
-            if (DB_Conn::get_link()->errno !== 0)
+            if (DB_Conn::getLink()->errno !== 0)
                 etag('strong class="error" nl_escape_on', 'Error executing SQL build script.\n' .
-                    DB_Conn::get_link()->error);
+                    DB_Conn::getLink()->error);
         }
         
         
@@ -136,20 +134,5 @@ class UI_InstallationForm extends Output_HTML_Form
 				unlink($config->site->cache_folder . '/' . $entry);
             }
         }
-        			
-        // Show result
-        $this->hide();
-        
-        etag('strong', 'Installation finished succesfully !');
-        etag('p class="error"', 'For security reasons you must delete folder "install" from web server.');
-        
-        $relative_folder = implode('/', array_slice(explode('/', dirname($_SERVER['SCRIPT_NAME'])), 0, -1));        
-        if (!empty($relative_folder))
-            etag('p class="error"', 'Site is running under a subdirectory, for proper support of ' .
-                'cool urls, the .htaccess file must be edit and the option ', tag('strong', 'RewriteBase'),
-                ' should be change to: ',
-            tag('pre class="code"', "RewriteBase $relative_folder")
-            );
     }
 }
-?>

@@ -1,0 +1,103 @@
+@CHARSET "UTF-8";
+
+#page_editor li[data-name="status"] {
+    right: 100px !important;
+}
+
+fieldset[name=revisions] ul.history {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+	font-size: 0.8em;
+	display: block;
+	max-height: 100px;
+	overflow: auto;
+}
+
+fieldset[name=revisions] ul.history span.author{
+	color: #D5CE39;
+	margin-right: 3px;
+}
+
+fieldset[name=revisions] ul.history span.ip{
+	color: #9F6709;
+	margin-right: 3px;
+}
+
+fieldset[name=revisions] ul.history span.summary{
+	color: #d1d1d1;
+	font-style: italic;
+	min-width: 250px;
+	margin-right: 10px;
+}
+
+fieldset[name=revisions] ul.history span.date{
+	color: #D5CE39;	
+	margin: 0px 5px 0px 5px;
+}
+
+fieldset[name=revisions] ul.history span.auto{
+    color: #D04318;
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+fieldset[name=revisions] ul.history li {
+	margin: 1px 0px !important;
+}
+
+fieldset[name=revisions] ul.history li:first-child {
+	border-top: 1px solid #AB4F4F;
+    padding-top: 3px;
+}
+fieldset[name=revisions] ul.history li:last-child {
+	border-bottom: 1px solid #AB4F4F;
+    padding-bottom: 3px;
+}
+ fieldset[name=revisions] ul.history li.current {
+	background-color: #565656;
+	padding-left: 79px;
+}
+
+fieldset[name=revisions] ul.history li.current .button{
+	display: none;
+}
+
+fieldset[name=revisions] .button{
+    margin: 1px 3px;
+    padding: 0px 3px;
+}
+
+fieldset[name=revisions] .button{
+    background-image: none;
+}
+
+fieldset.collapsable {
+	border-width: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+	
+fieldset.collapsable legend{
+	cursor: pointer;
+	padding-left: 16px;
+	background: url('images/toggle-expand-light.png') no-repeat left center;
+}
+
+fieldset.collapsable ul.fields{
+	display: none;
+}
+
+fieldset.collapsable.expand {
+	border-width: 1px;
+	margin-bottom: 10px;
+	padding: 4px 8px 10px 8px;
+}
+
+fieldset.collapsable.expand legend{
+	background-image: url('images/toggle-collapse-light.png')
+}
+
+fieldset.collapsable.expand ul.fields{
+	display: block;
+}

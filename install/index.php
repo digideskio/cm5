@@ -21,64 +21,79 @@
  *      Sque - initial API and implementation
  */
 
-require_once dirname(__FILE__) . '/../lib/vendor/phplibs/ClassLoader.class.php';
-require_once dirname(__FILE__) . '/../lib/tools.lib.php';
+require_once __DIR__ . '/../lib/vendor/phplibs/ClassLoader.class.php';
+require_once __DIR__ . '/../lib/tools.lib.php';
 
 // Autoloader for local and phplibs classes
 $phplibs_loader = new ClassLoader(
     array(
-    dirname(__FILE__) . '/../lib/vendor/phplibs',
-    dirname(__FILE__) . '/../lib/local'
+    __DIR__ . '/../lib/vendor/phplibs',
+    __DIR__ . '/../lib/local'
 ));
 $phplibs_loader->set_file_extension('.class.php');
 $phplibs_loader->register();
 
 // Zend
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../lib/vendor');
-$zend_loader = new ClassLoader(array(dirname(__FILE__) . '/../lib/vendor'));
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/../lib/vendor');
+$zend_loader = new ClassLoader(array(__DIR__ . '/../lib/vendor'));
 $zend_loader->register();
 
 // Load static library for HTML
-require_once dirname(__FILE__) . '/../lib/vendor/phplibs/Output/html.lib.php';
+require_once __DIR__ . '/../lib/vendor/phplibs/Output/html.lib.php';
+require_once __DIR__ . '/layout.php';
 
 // File names
-$fn_config = dirname(__FILE__) . '/../config.inc.php';
-$fn_htaccess = dirname(__FILE__) . '/../.htaccess';
+$fn_config = __DIR__ . '/../config.inc.php';
+$fn_htaccess = __DIR__ . '/../.htaccess';
 
-
-$dl = new Layout('debug');
-$dl->activate();
-$dl->get_document()->add_ref_css(surl('/../static/debug/debug.css'));
-$dl->get_document()->title = 'Installation';
-
-etag('h2', 'PHPLibs Skeleton');
-etag('h3', 'Installation process');
+$dl = Install_Layout::getInstance();
+$dl->activateSlot();
 
 // Make checks for writable files
 if (! is_writable($fn_config))
 {
-    etag('div class="error" nl_escape_on', 'Cannot continue installing site.
+    etag('div class="error" nl_escape_on', 'Cannot continue installing CM5.
         The configuration file "config.inc.php" must be writable, you can change
-        permissions and retry installation.');
+        permissions and retry.');
+    $dl->flush();
     exit;
 }
 
-if (! is_writable(dirname(__FILE__) . '/../uploads'))
+if (! is_writable(__DIR__ . '/../uploads'))
 {
-    etag('div class="error" nl_escape_on', 'Cannot continue installing site.
+    etag('div class="error" nl_escape_on', 'Cannot continue installing CM5.
         The uploads folder "/uploads" must be writable, you can change
-        permissions and retry installation.');
+        permissions and retry.');
+    $dl->flush();
     exit;
 }
 
-if (! is_writable(dirname(__FILE__) . '/../cache'))
+if (! is_writable(__DIR__ . '/../cache'))
 {
-    etag('div class="error" nl_escape_on', 'Cannot continue installing site.
+    etag('div class="error" nl_escape_on', 'Cannot continue installing CM5.
         The thumbnails cache folder "/cache" must be writable, you can change
-        permissions and retry installation.');
+        permissions and retry.');
+    $dl->flush();
     exit;
 }
 
-$f = new UI_InstallationForm($fn_config, dirname(__FILE__) . '/build-script.php');
-etag('div', $f->render());
-?>
+$f = new UI_InstallationForm($fn_config, __DIR__ . '/build-script.php');
+if ($f->process() == Form::RESULT_VALID){
+        
+		etag('div class="finished')->push_parent();
+        etag('h2', 'Installation finished succesfully !');
+        etag('p class="error"', 'For security reasons you must delete folder "install" from web server before starting using CM5.');
+        
+        $relative_folder = implode('/', array_slice(explode('/', dirname($_SERVER['SCRIPT_NAME'])), 0, -1));        
+        if (!empty($relative_folder)) 
+            etag('div class="notice"', 
+            	tag('p', 'Site is running under a subdirectory, for proper support of ' .
+                'cool urls, the .htaccess file must be edited and the option ', tag('strong', 'RewriteBase'),
+                ' should be change to: '),
+            	tag('pre class="code"', "RewriteBase $relative_folder")
+            );
+        Output_HTMLTag::pop_parent();
+} else
+	etag('div', $f->render());
+
+$dl->flush();

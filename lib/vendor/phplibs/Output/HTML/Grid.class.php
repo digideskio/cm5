@@ -327,13 +327,13 @@ class Output_HTML_Grid
 			}
 				
 			// Draw new line
-			etag('tr')->push_parent()->add_class(($count_rows % 2)?'ui-even':'');
+			$tr = etag('tr')->push_parent()->add_class(($count_rows % 2)?'ui-even':'');
 			
 			foreach($this->columns as $col_id => $c)
 			{	
 				// Get cell data
 				if (($c['customdata']) && method_exists($this, 'on_custom_data'))
-					$data = $this->on_custom_data($col_id, $recid, $rec);
+					$data = $this->on_custom_data($col_id, $recid, $rec, $tr);
 				else
 				{
 					if (is_object($rec))

@@ -164,9 +164,9 @@ class Output_HTMLTag
 	 * $article->render();
 	 * @endcode
 	 */
-	public function __construct()
+	public function __construct($args = array())
 	{		
-		$args = func_get_args();
+		//$args = func_get_args();
 		
 		if (count($args) == 0)
 			throw new InvalidArgumentException('HTMLTag constructor must take at least one argument with the tag');
@@ -285,7 +285,8 @@ class Output_HTMLTag
 	//! Append a text child
 	public function append_text($text)
 	{
-	    $this->childs[] = (string) $text;
+		if ($text != '')
+	    	$this->childs[] = (string) $text;
 	}
 	
 	//! Prepend a child
@@ -454,5 +455,3 @@ class Output_HTMLTag
 		return false;
 	}
 }
-
-?>

@@ -65,8 +65,10 @@ class DB_Conn
     */
     static public function events()
     {   
-        if (self::$events === NULL)
-            self::$events = new EventDispatcher(array(
+        if (self::$events !== NULL)
+        	return self::$events;
+
+        return self::$events = new EventDispatcher(array(
 	        	'connected',
 	        	'disconnected',
 	        	'error',
@@ -76,7 +78,6 @@ class DB_Conn
 	        	'stmt.executed',
 	        	'stmt.released',
             ));
-        return self::$events;
     }
 
     //! Initialize db connection
@@ -92,9 +93,6 @@ class DB_Conn
     {   
         self::$delayed_preparation = $delayed_preparation;
 
-        // Create events dispatcher if it does not exist
-        self::events();
-    
         // Disconnect
         self::disconnect();
     
@@ -109,12 +107,13 @@ class DB_Conn
     
         // Create the array of statemenets
         self::$stmts = array();
-        self::$events->notify('connected', array(
-                'host' => $server,
-                'username' => $user,
-                'password' => $pass,
-                'schema' => $schema
-        ));
+        if (self::$events)
+	        self::$events->notify('connected', array(
+	                'host' => $server,
+	                'username' => $user,
+	                'password' => $pass,
+	                'schema' => $schema
+	        ));
         return true;
     }
 
@@ -124,8 +123,9 @@ class DB_Conn
     */
     static public function disconnect()
     {   
-        if (self::$dbconn !== NULL)
-        {   self::events()->notify('disconnected');
+        if (self::$dbconn !== NULL) {
+        	if (self::$events)
+        		self::events()->notify('disconnected');
             self::$dbconn = NULL;
         }
         return true;
@@ -163,7 +163,7 @@ class DB_Conn
     /**
     * @throws NotConnectedException if DB_Conn is not connected
     */
-    static public function get_link()
+    static public function getLink()
     {   
         if (self::$dbconn === null)
             throw new NotConnectedException('DB_Conn::' . __FUNCTION__ . '() demands established connection!');
@@ -212,8 +212,8 @@ class DB_Conn
                 return false;
             }
             self::$stmts[$key]['handler'] = $stmt;
-
-            self::$events->notify('stmt.prepared', array('key' => $key));
+            if (self::$events)
+            	self::$events->notify('stmt.prepared', array('key' => $key));
         }
         return true;
     }
@@ -261,7 +261,8 @@ class DB_Conn
         self::$stmts[$key] = array('query' => $query);
     
         // Statement declared
-        self::$events->notify('stmt.declared', array('key' => $key, 'query' => $query));
+        if (self::$events)
+        	self::$events->notify('stmt.declared', array('key' => $key, 'query' => $query));
     
         // Delayed preparation check
         if (self::$delayed_preparation === false)
@@ -297,7 +298,8 @@ class DB_Conn
         unset(self::$stmts[$key]);
     
         // Notify
-        self::$events->notify('stmt.released', array('key' => $key));
+        if (self::$events)
+        	self::$events->notify('stmt.released', array('key' => $key));
     
         return true;
     }
@@ -323,7 +325,8 @@ class DB_Conn
     //! Raise an error
     static private function raise_error($msg)
     {	// Notify about the error
-        self::$events->notify('error', array('message' => $msg));
+    	if (self::$events)
+        	self::$events->notify('error', array('message' => $msg));
 
         // Log it as notice
         trigger_error($msg);
@@ -349,7 +352,8 @@ class DB_Conn
         }
     
         // Command executed
-        self::$events->notify('query', array('query' => $query));
+        if (self::$events)
+        	self::$events->notify('query', array('query' => $query));
     
         return $res;
     }
@@ -437,7 +441,8 @@ class DB_Conn
             return false;
         }
     
-        self::$events->notify('stmt.executed', array_merge(array($key), (isset($args)?$args:array())));
+        if (self::$events)
+        	self::$events->notify('stmt.executed', array_merge(array($key), (isset($args)?$args:array())));
     
         return self::$stmts[$key]['handler'];
     }

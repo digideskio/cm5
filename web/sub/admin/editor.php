@@ -81,7 +81,7 @@ function show_pages_tree($current_page_id)
         UrlFactory::craft('page.create', '')->anchor('add page')->add_class('add')
     );
 
-    foreach(CM5_Core::get_instance()->get_tree() as $p)
+    foreach(CM5_Core::getInstance()->getTree() as $p)
     {
         $ul->append(__draw_tree_entry($p, $current_page_id));
     }
@@ -90,56 +90,55 @@ function show_pages_tree($current_page_id)
 
 function page_editor_form($id)
 {
-    if (!$p = Page::open($id))
-        not_found();
+	Layout::getActive()->deactivate();
+    if (!$p = CM5_Model_Page::open($id))
+        throw new Exception404();
 
     header('Content-type: text/html; charset=UTF-8');
-	$frm = new UI_EditPage($p);
-    echo $frm->render();
+	$frm = new CM5_Form_PageEdit($p);
+    echo $frm->render();    
 }
 
 function page_editor()
 {
-    Layout::open('admin')->activate();
-    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));
-    Layout::open('admin')->get_document()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));
-    Layout::open('admin')->get_document()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/js/jquery.ba-hashchange.min.js'));    
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/ckeditor/ckeditor.js'));    
+	CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/ckeditor/config.js'));
+    CM5_Layout_Admin::getInstance()->getDocument()->add_ref_js(surl('/static/js/admin-pagemenu.js'));
    
     show_pages_tree(null);
     etag('div id="page_editor"');
+    etag('div', array('style' => 'clear: both;'));
 }
 
 function delete_page($page_id)
 {
-    if (!($p = Page::open($page_id)))
-        not_found();
+    if (!($p = CM5_Model_Page::open($page_id)))
+        throw new Exception404();
 
-    Layout::open('admin')->activate();
-    $frm = new UI_DeletePage($p);
+    $frm = new CM5_Form_PageDelete($p);
     etag('div', $frm->render());
 }
 
 function create_page()
 {
-    Layout::open('admin')->activate();
-    
     $parent_id = Net_HTTP_RequestParam::get('parent', 'get');
     if ($parent_id === '')
         $parent_id = null;
-    $frm = new UI_CreatePage($parent_id);
+    $frm = new CM5_Form_PageCreate($parent_id);
     etag('div', $frm->render());
     
     etag('script type="text/javascript" html_escape_off',"
     	var request_translit = function() {
 			$.get('../tools/transliterate', {
-				text : $('.ui-createpage-form input[name=title]').val()
+				text : $('.form.createpage input[name=title]').val()
 			}, function(data) {
-				$('.ui-createpage-form input[name=slug]').val(data);
+				$('.form.createpage  input[name=slug]').val(data);
 			});
 		};
 		
 		$(document).ready(function(){
-			$('.ui-createpage-form input[name=title]').change(request_translit);
+			$('.form.createpage input[name=title]').change(request_translit);
 			request_translit();
 		});
     ");
@@ -147,26 +146,22 @@ function create_page()
 
 function move_page($page_id)
 {
-    if (!($p = Page::open($page_id)))
-        not_found();
+    if (!($p = CM5_Model_Page::open($page_id)))
+        throw new Exception404();
         
     $parent_id = Net_HTTP_RequestParam::get('parent_id', 'post');
+    
     if ($parent_id === '')
         $parent_id = null;
-    else if ($page_id == $parent_id)
-    {
-        header("HTTP/1.1 501 Internal server error");
-        exit;
-    }
-    else if (!($parent = Page::open($parent_id)))
-        not_found();
+    else if ($page_id == $parent_id) {
+        throw new Exception500();
+    } else if (!($parent = CM5_Model_Page::open($parent_id)))
+        throw new Exception404();
 
     // Read slibing page order
     $slibing = Net_HTTP_RequestParam::get('page');
-    if ((!is_array($slibing)) || (!in_array($page_id, $slibing)))
-    {
-        header("HTTP/1.1 501 Internal server error");
-        exit;
+    if ((!is_array($slibing)) || (!in_array($page_id, $slibing))) {
+        throw new Exception500();
     }
 
     // Change parent id
@@ -179,11 +174,9 @@ function move_page($page_id)
         if ($s == $page_id)
             $sb = $p;
         else
-            $sb = Page::open($s);
-        if (!$sb)
-        {
-            header("HTTP/1.1 501 Internal server error");
-            exit;
+            $sb = CM5_Model_Page::open($s);
+        if (!$sb) {
+        	throw new Exception500();
         }
         $sb->order = $order;
         $sb->save();
@@ -193,12 +186,9 @@ function move_page($page_id)
 
 function pages_default()
 {
-    Layout::open('admin')->activate();
-    
-    $p = Page::open_query()->limit(1)->execute();
+    $p = CM5_Model_Page::open_query()->limit(1)->execute();
     if (count($p))
     	page_editor();
     else
         UrlFactory::craft('page.create', null)->redirect();
 }
-?>

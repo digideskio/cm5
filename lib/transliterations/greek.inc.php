@@ -271,5 +271,3 @@ $transliteration_maps['GR'] = array(
   'ή' => 'i',
   '·' => '',
 );
-
-?>

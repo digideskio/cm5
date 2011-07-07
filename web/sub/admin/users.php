@@ -21,7 +21,7 @@
  *      Sque - initial API and implementation
  */
 
-Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | Users panel";
+CM5_Layout_Admin::getInstance()->getDocument()->title = CM5_Config::getInstance()->site->title . " | Users panel";
 Stupid::add_rule('user_myprofile',
     array('type' => 'url_path', 'chunk[3]' => '/^\+myprofile$/')
 );
@@ -41,32 +41,27 @@ Stupid::chain_reaction();
 
 function user_myprofile()
 {
-    $user = User::open(Authn_Realm::get_identity()->id());
-        
-    Layout::open('admin')->activate();
-
-    $frm = new UI_UserEditMyProfile($user);
+    $user = CM5_Model_User::open(Authn_Realm::get_identity()->id());
+    $frm = new CM5_Form_UserEditMyProfile($user);
     etag('div', $frm->render());
 }
 
 function edit_user($username)
 {
-    if (!($u = User::open($username)))
-        not_found();
+    if (!($u = CM5_Model_User::open($username)))
+        throw new Exception404();
         
-    Layout::open('admin')->get_document()->title = GConfig::get_instance()->site->title . " | User: {$u->username}";
-    Layout::open('admin')->activate();
+    Layout::getActive()->getDocument()->title = CM5_Config::getInstance()->site->title . " | User: {$u->username}";
 
-    $frm = new UI_UserEdit($u);
+    $frm = new CM5_Form_UserEdit($u);
     etag('div', $frm->render());
 }
 
 function delete_user($username)
 {
-    if (!($u = User::open($username)))
-        not_found();
+    if (!($u = CM5_Model_User::open($username)))
+        throw new Exception404();
         
-    Layout::open('admin')->activate();
     if ($username == Authn_Realm::get_identity()->id())
     {
         etag('h2 class="error"', 'You cannot delete your self, login with another user before deleting this user.');
@@ -74,14 +69,14 @@ function delete_user($username)
         exit;
     }
     
-    $frm = new UI_ConfirmForm(
+    $frm = new CM5_Form_Confirm(
         "Delete user \"{$u->username}\"",
         "Are you sure? This action is inreversible!",
         'Delete',
-        create_function('$u','
+        function($u){
             $u->delete();
             UrlFactory::craft("user.admin")->redirect();
-        '),
+        },
         array($u),
         UrlFactory::craft("user.admin")
     );
@@ -90,22 +85,18 @@ function delete_user($username)
 
 function create_user()
 {
-    Layout::open('admin')->activate();
-    
-    $frm = new UI_UserCreate();
+    $frm = new CM5_Form_UserCreate();
     etag('div', $frm->render());
 }
 
 function show_users()
 {
-    Layout::open('admin')->activate();
-
-    $grid = new UI_UsersGrid(User::open_all());
+    $grid = new CM5_Widget_UsersGrid(CM5_Model_User::open_all());
     etag('div',
-        $grid->render(),
-        UrlFactory::craft('user.create')->anchor('Create user')
-            ->add_class('button')
-            ->add_class('add')
+    	tag('div class="panel"',        
+        	UrlFactory::craft('user.create')->anchor('Create user')
+            	->add_class('button add strong')
+        )->add_class('users'),
+        $grid->render()
     );
 }
-?>

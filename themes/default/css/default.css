@@ -149,3 +149,28 @@ h1{
 .menu li ul a{
     color: black;
 }
+
+
+/** Forms **/
+.form ul.fields {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.form ul.fields li{
+	margin-bottom: 15px;
+}
+	
+.form ul.fields label > span{
+	display: block;
+	font-weight: bold;
+}
+
+.form .hint, .form .error{
+	display: block;
+}
+
+.form .error {
+	color: red;
+}
