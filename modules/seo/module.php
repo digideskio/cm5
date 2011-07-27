@@ -44,13 +44,13 @@ class CM5_Module_SEO extends CM5_Module
             $pages = CM5_Model_Page::open_query()->where('status = ?')->execute('published');
             foreach ($pages as $p)
             {
-            	if ($p->status != 'published')
-            	continue;
+            	if (!$p->isPublic())
+            		continue;
             	tag('url',
-            	tag('loc', (string)UrlFactory::craft_fqn('page.view', $p)),
-            	tag('lastmod', gmdate('Y-m-d\TH:i:s+00:00', $p->lastmodified->format('U'))),
-            	tag('priority', '0.5'),
-            	tag('changefreq', 'weekly')
+            		tag('loc', (string)UrlFactory::craft_fqn('page.view', $p)),
+            		tag('lastmod', gmdate('Y-m-d\TH:i:s+00:00', $p->lastmodified->format('U'))),
+            		tag('priority', '0.5'),
+            		tag('changefreq', 'weekly')
             	)->appendto($urlset);
             }
             return $xml . $urlset;

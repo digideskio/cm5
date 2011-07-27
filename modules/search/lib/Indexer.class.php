@@ -61,13 +61,16 @@ class CM5_Module_Search_Indexer
 	 */
 	public function addPage(CM5_Model_Page $page)
 	{
+		if (!$page->isPublic())
+			return;
+			
 		$spage = new Zend_Search_Lucene_Document();
  
 		$spage->addField(Zend_Search_Lucene_Field::keyword('id', $page->id));
 		$spage->addField(Zend_Search_Lucene_Field::Text('title', $page->title, 'UTF-8'));
 		$spage->addField(Zend_Search_Lucene_Field::Text('slug', $page->slug, 'UTF-8'));
 		$spage->addField(Zend_Search_Lucene_Field::Text('url', $page->getRelativeUrl(), 'UTF-8'));
-		$spage->addField(Zend_Search_Lucene_Field::Text('body', strip_html_tags($page->body), 'UTF-8'));
+		$spage->addField(Zend_Search_Lucene_Field::Text('body', strip_html_tags(mb_strtolower($page->body)), 'UTF-8'));
 		 
 		// Add document to the index
 		$this->engine->addDocument($spage);

@@ -99,6 +99,22 @@ class CM5_Model_Page extends DB_Record
 
         $this->delete();
     }
+    
+    /**
+     * Check if page is public
+     */
+    public function isPublic()
+    {
+    	return $this->status == 'published';
+    }
+    
+    /**
+     * Check if page is draft
+     */
+    public function isDraft()
+    {
+    	return $this->status == 'draft';
+    }
 }
 
 CM5_Model_Page::events()->connect('op.pre.save', function($e) {
