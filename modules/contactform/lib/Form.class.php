@@ -59,8 +59,9 @@ class CM5_Module_ContantForm_Form extends Form_Html{
 	public function onProcessValid()
 	{
 		$values = $this->getValues();
-		$mail = new Zend_Mail();
+		$mail = new Zend_Mail('utf8');
 		$mail->setSubject(CM5_Config::getInstance()->site->title . ' | Contact Form [' . $this->title . ']');
+		$mail->setHeaderEncoding(Zend_Mime::ENCODING_BASE64);
 		$mail->addTo($this->target_email, $this->target_email);
 		$body = '';
 		foreach($values as $name => $value) {
