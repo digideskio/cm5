@@ -147,7 +147,6 @@ class CM5_Module_Search_Indexer
 // Enable UTF-8 analyzer
 Zend_Search_Lucene_Analysis_Analyzer::setDefault(
     new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_CaseInsensitive());
-    
 CM5_Module_Search_Indexer::$index_directory = __DIR__ . '/../_data';
 
 

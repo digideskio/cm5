@@ -28,6 +28,9 @@ require_once __DIR__ . '/lib/tools.lib.php';
  * Here you can write code that will be executed at the begining of each page instance
  */
 
+// We are 100% UTF-8
+mb_internal_encoding('UTF-8');
+
 // Autoloader for local and phplibs classes
 $phplibs_loader = new ClassLoader(
     array(
