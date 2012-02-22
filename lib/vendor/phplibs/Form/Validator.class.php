@@ -304,9 +304,19 @@ class Form_Validator
 	public static function inArray($subject_array, $error = 'This is not an acceptable option.')
 	{
 		return function($value, & $result_error, $field) use($subject_array, $error) {
-			if (! in_array($value, $subject_array)) {
-				$result_error = $error;
-				return false;
+			if (is_array($value)) {
+				// Test all values
+				foreach($value as $v) {
+					if (! in_array($v, $subject_array)) {
+						$result_error = $error;
+						return false;
+					}
+				}
+			} else {
+				if (! in_array($value, $subject_array)) {
+					$result_error = $error;
+					return false;
+				}
 			}
 			return true;
 		};

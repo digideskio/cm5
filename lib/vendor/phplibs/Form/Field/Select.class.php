@@ -87,11 +87,19 @@ class Form_Field_Select extends Form_Field_Html
 	 */
 	private function renderOption($value, $label)
 	{
-		return tag('option html_escape_off',
-				array('value' => $value),
-				($value == $this->getValue())?array('selected'=>'selected'):array(),
-				esc_sp(esc_html((string)$label))
-			);
+		$option = tag('option html_escape_off',
+				array('value' => $value),esc_sp(esc_html((string)$label)));
+		//var_dump($this->getValue());
+		if ($this->options['multiple']) {
+			if (in_array($value, $this->getValue())) {
+				$option->attr('selected', 'selected');
+			}
+		}else {
+			if ($value == $this->getValue()) {
+				$option->attr('selected', 'selected');
+			}
+		}
+		return $option;
 	}
 	
 	/**
@@ -101,7 +109,13 @@ class Form_Field_Select extends Form_Field_Html
 	public function render($options)
 	{
 		$select = tag('select ',
-			$this->generateAttributes(), array('name' => $this->getHtmlFullName($options)));
+			$this->generateAttributes());
+		
+		if ($this->options->get('multiple')) {
+			$select->attr('name', $this->getHtmlFullName($options) .'[]');
+		} else {
+			$select->attr('name', $this->getHtmlFullName($options));
+		}
 		
 		foreach($this->getOptionList() as $opt_key => $opt_text) {
 			if (is_array($opt_text)) {

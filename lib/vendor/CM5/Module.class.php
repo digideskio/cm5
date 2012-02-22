@@ -143,9 +143,9 @@ abstract class CM5_Module extends CM5_Configurable
 		if (!method_exists($this, $method))
 		throw new InvalidArgumentException("Class $class_name has no method with name $method");
 		$this->user_actions[$name] = array(
-            'name' => $name,
-            'display' => $display,
-            'callback' => array($this, $method)
+			'name' => $name,
+			'display' => $display,
+			'callback' => array($this, $method)
 		);
 	}
 

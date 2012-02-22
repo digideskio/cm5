@@ -104,11 +104,18 @@ class Form_Field implements Form_Field_Interface
 	 */
 	protected function onParse($submitted)
 	{
-		return isset($submitted[$this->name])
-			?is_array($submitted[$this->name])
-				?$submitted[$this->name][0]	// In case of array get the first
-				:$submitted[$this->name]
-			:null;		
+		if (!isset($submitted[$this->name]))
+			return null;
+		
+		if (is_array($submitted[$this->name])) {
+			if ($this->options['multiple']) {
+				return $submitted[$this->name];
+			} else {
+				return $submitted[$this->name][0];
+			}
+		}
+			
+		return $submitted[$this->name];
 	}
 	
 	/**
