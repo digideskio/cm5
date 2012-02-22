@@ -89,7 +89,6 @@ class Form_Field_Select extends Form_Field_Html
 	{
 		$option = tag('option html_escape_off',
 				array('value' => $value),esc_sp(esc_html((string)$label)));
-		//var_dump($this->getValue());
 		if ($this->options['multiple']) {
 			if (in_array($value, $this->getValue())) {
 				$option->attr('selected', 'selected');
