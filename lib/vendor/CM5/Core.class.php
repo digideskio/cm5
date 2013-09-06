@@ -36,7 +36,7 @@ class CM5_Core
      * Static version of Core
      * @var array
      */
-    private $version = array(0, 12, 'alpha');
+    private $version = array(0, 12, 0);
     
     /**
      * Events dispatcher with all core events
